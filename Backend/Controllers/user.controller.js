@@ -1,58 +1,53 @@
 const userService = require('../Services/user.service')
 const userModel = require('../models/user.model')
 const mongoose = require('mongoose')
+const cloudinary = require('cloudinary').v2;
 
-
-
-const cloudinary = require('cloudinary').v2
-
-
-cloudinary.config({
-        cloud_name: process.env.CLOUD_NAME,
-        api_key: process.env.CLOUD_KEY,
-        api_secret: process.env.CLOUD_SECRET, // Click 'View API Keys' above to copy your API secret
-});
 
 
 module.exports.registerUser = async (req, res) => {
         try {
-
-
-                const { name, email, password, channelName } = req.body;
-                console.log(req.files)
-
-
-                if (!name || !email || !password) {
-                        return res.status(400).json({ error: 'Missing required fields' + email, password, name });
-                }
-
-
-
-                const hashedPassword = await userModel.hashpassword(password);
-
-
-                const uploadLogo = await cloudinary.uploader.upload(req.files.logo.tempFilePath)
-
-                const newUser = await userService.createUser(
-                        name,
-                        email,
-                        hashedPassword,
-                        channelName,
-                        uploadLogo.secure_url,
-                        uploadLogo.public_id,
-                )
-
-
-                return res.json(newUser);
-
-                console.log('Created user:', user);
-                return res.status(201).json(user);
+            const { name, email, password, channelName } = req.body;
+    
+            if (!name || !email || !password) {
+                return res.status(400).json({ error: 'Missing required fields' });
+            }
+    
+            const hashedPassword = await userModel.hashpassword(password);
+    
+            let uploadLogo = null;
+            if (req.file) {
+                uploadLogo = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream(
+                        { resource_type: 'auto' },
+                        (error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    ).end(req.file.buffer);
+                });
+            }
+    
+            const newUser = await userService.createUser(
+                name,
+                email,
+                hashedPassword,
+                channelName,
+                uploadLogo ? uploadLogo.secure_url : null,
+                uploadLogo ? uploadLogo.public_id : null
+            );
+    
+            console.log('Created user:', newUser);
+            return res.status(201).json(newUser);
         } catch (err) {
-                console.error('Error in registerUser:', err);
-                return res.status(500).json({ error: err.message, stack: err.stack });
+            console.error('Error in registerUser:', err);
+            return res.status(500).json({ error: err.message, stack: err.stack });
         }
-}
-
+    }
+    
 
 
 module.exports.login = async (req, res) => {
@@ -63,7 +58,7 @@ module.exports.login = async (req, res) => {
                 if (!email || !password) {
                         return res.json({ error: 'Email and password are required' });
                 }
-                
+
                 const user = await userModel.findOne({ email });
                 if (!user) {
                         return res.json({ error: 'User not found' });

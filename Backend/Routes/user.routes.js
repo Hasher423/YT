@@ -1,10 +1,10 @@
 const express = require('express');
 const Router = express.Router();
 const userController = require('../Controllers/user.controller')
+const upload = require('../Config/multer.config')
 
-
-Router.post('/signup' , userController.registerUser);
-Router.post('/login' , userController.login);
+Router.post('/signup', upload.single('logo'), userController.registerUser);
+Router.post('/login', userController.login);
 
 
 module.exports = Router;
