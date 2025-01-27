@@ -4,8 +4,9 @@ const app = express();
 const connection = require('./DBConnection/db');
 connection()
 const userRouter = require('./Routes/user.routes')
+const videoRouter = require('./Routes/video.routes')
 const fileUpload = require('express-fileupload');
-
+const { auth } = require('./Middlewares/auth.middleware')
 
 const configOfCloudinary = require('./Config/cloudinary.config')
 configOfCloudinary();
@@ -33,5 +34,6 @@ app.get('/', (req, res) => {
 
 
 app.use('/user', userRouter);
+app.use('/video', auth, videoRouter);
 
 module.exports = app;

@@ -5,6 +5,6 @@ const upload = require('../Config/multer.config')
 
 Router.post('/signup', upload.single('logo'), userController.registerUser);
 Router.post('/login', userController.login);
-
+Router.get('/logout', userController.logout);
 
 module.exports = Router;

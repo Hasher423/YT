@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.EDIT_SCROLL-BAR-SIDEBAR {
+  width: 200px;
+  overflow-y: scroll;
+  /* Enable scrolling */
+}
+
+.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar {
+  display: none;
+}
+
+.EDIT_SCROLL-BAR-SIDEBAR:hover::-webkit-scrollbar {
+  display: block !important;
+}
+
+/* Style the scrollbar */
+.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar {
+  width: 10px;
+  /* Scrollbar width */
+}
+
+/* Style the scrollbar track */
+.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+/* Style the scrollbar thumb */
+.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Hover effect for the thumb */
+.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.SCROLLBAR_OF_CATEGORY::-webkit-scrollbar{
+  display: none;
+}

@@ -1,17 +1,30 @@
 const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    title:{
+        type:String,
+        required:true,
+    },
+    description:{
+        type:String,
+        required:true,
+    },
+    comments:[],
     likedByUsers:[],
     dislikedByUsers:[],
     video_Url:{
-        type:String,
+        type:Object,
     },
     commentby:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
     thumbnail_Url:{
-        type:String,
+        type:Object,
     },
     category:{
         type:String,
@@ -24,7 +37,7 @@ const videoSchema = new mongoose.Schema({
         default:0
     },
 
-},{timestamps});
+},{timestamps: true});
 
 
 module.exports = mongoose.model('Video', videoSchema);
