@@ -13,10 +13,10 @@ module.exports.auth = async (req, res, next) => {
     }
 
     try {
-        const blacklist = await blackListTokensModel.find({ token });
+        const blacklist = await blackListTokensModel.findOne({ token });
         console.log('Token:', token);
         
-        if (blacklist.length > 0) {
+        if (blacklist) {
             return res.status(401).json({ message: 'Unauthorized: Token blacklisted' });
         }
 
