@@ -2,7 +2,7 @@ import React from 'react'
 
 const SearchBar = () => {
     return (
-        <div className='px-8 py-3 text-[2vw] flex items-center justify-between'>
+        <div className='px-8 py-3 text-[2vw] flex items-center justify-between bg-black'>
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[.8vw]'>
                 <i class="ri-menu-line text-white font-light text-[2vw]"></i>

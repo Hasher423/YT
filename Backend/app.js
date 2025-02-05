@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const connection = require('./DBConnection/db');
 connection()
+const cors = require('cors');
 const userRouter = require('./Routes/user.routes')
 const videoRouter = require('./Routes/video.routes')
 const fileUpload = require('express-fileupload');
@@ -17,13 +18,9 @@ configOfCloudinary();
 
 
 
-
-
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors());
 
 
 
@@ -33,7 +30,9 @@ app.get('/', (req, res) => {
 })
 
 
+
+
 app.use('/user', userRouter);
-app.use('/video', auth, videoRouter);
+app.use('/video',  videoRouter);
 
 module.exports = app;
