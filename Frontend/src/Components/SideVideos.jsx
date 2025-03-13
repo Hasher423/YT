@@ -4,7 +4,7 @@ const SideVideos = () => {
     return (
         <div>
             {/* SIDE VIDEO CONTAINER */}
-            <div className='bg--900 w-[30vw] h-screen p py-10'>
+            <div className='bg--900 flex-1 h-screen p py-10'>
                 {/* SINGLE VIDEO */}
                 <div className='flex items-center gap-2 border-b pb-5 border-b-zinc-500'>
                     {/* DIV OF THUMBNAIL  */}
@@ -17,7 +17,7 @@ const SideVideos = () => {
                     <div className='bg--900 w-[60%] text-white font-medium'>
                         <h1 className='overflow-hidden text-nowrap  '>
                             {
-                                '5 Secrets of Gratitude  | Happiness Unlocked '
+                                '5 Secrets of Gratitude  | Happiness Unlocked '.slice(0, 20) + '...'
                             }
 
                         </h1>

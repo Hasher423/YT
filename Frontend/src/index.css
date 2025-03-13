@@ -10,18 +10,19 @@
   /* Enable scrolling */
 }
 
+.EDIT_SCROLL-BAR-SIDEBAR:hover::-webkit-scrollbar {
+  display: none;
+}
+
 .EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar {
   display: none;
 }
 
-.EDIT_SCROLL-BAR-SIDEBAR:hover::-webkit-scrollbar {
-  display: block !important;
-}
 
-/* Style the scrollbar */
-.EDIT_SCROLL-BAR-SIDEBAR::-webkit-scrollbar {
-  width: 10px;
-  /* Scrollbar width */
+
+
+.EDIT_SCROLL-BAR-SIDEBAR:hover::-webkit-scrollbar {
+ display: none;
 }
 
 /* Style the scrollbar track */

@@ -1,14 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-const Controls = ({ video, duration, currentTime,play,mute }) => {
+const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay, mute, setMute }) => {
+
+    const vloumeBar = useRef(null)
+    const playback = useRef(null)
+    const [showPlayBack, setshowPlayBack] = useState(true)
+
+    const [volumeRange, setvolumeRange] = useState(100)
+
     const handleVolume = (e) => {
         const newVolume = Number((e.target.value / 100).toFixed(1));
         if (video.current) video.current.volume = newVolume;
     };
 
+
+
+
     const handleMute = () => {
         setMute((prevMute) => {
-            if (video.current) video.current.volume = prevMute ? 1 : 0;
+            if (video.current) video.current.volume = prevMute ? Number((vloumeBar.current.value / 100).toFixed(1)) : 0;
             return !prevMute;
         });
     };
@@ -39,7 +49,23 @@ const Controls = ({ video, duration, currentTime,play,mute }) => {
         }
     };
 
-    
+
+
+    useEffect(() => {
+
+
+        const handleKeyDown = (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                handlePlay();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [play]);
+
     return (
         <div>
             {/* Controls */}
@@ -70,7 +96,7 @@ const Controls = ({ video, duration, currentTime,play,mute }) => {
                             ) : (
                                 <i onClick={handleMute} className="ri-volume-up-fill text-[2vw] text-white cursor-pointer"></i>
                             )}
-                            <input type="range" className="w-[6vw]" onChange={handleVolume} />
+                            <input ref={vloumeBar} type="range" min="0" max="100" defaultValue={volumeRange} className="w-[6vw]" onChange={handleVolume} />
                         </div>
 
                         {/* Time Display */}
@@ -88,7 +114,49 @@ const Controls = ({ video, duration, currentTime,play,mute }) => {
 
                     {/* Right Controls */}
                     <div className="flex gap-3">
-                        <i className="ri-settings-3-fill text-[2vw] text-white"></i>
+                        <div className='flex flex-col '>
+                            <div
+                                ref={playback}
+                                className={`${showPlayBack ? 'opacity-0' : ''} absolute bottom-[7vw] flex flex-col py-2   right-[2vw] bg-black bg-opacity- text-white `}>
+                                <button
+                                    className='py-2 border-b-[1px] border-opacity-5 px-8  '
+                                    onClick={(e) => {
+                                        video.current.playbackRate = Number(e.target.innerHTML)
+                                        setshowPlayBack(!showPlayBack)
+
+                                        // handleSpeed(e.target.value)
+                                    }}> 0.5  </button>
+                                <button
+                                    className='py-2 border-b-[1px] border-opacity-5 px-8  '
+                                    onClick={(e) => {
+                                        video.current.playbackRate = Number(e.target.innerHTML)
+                                        setshowPlayBack(!showPlayBack)
+
+                                        // handleSpeed(e.target.value)
+                                    }}> 1.0 </button>
+                                <button
+                                    className='py-2 border-b-[1px] border-opacity-5 px-8  '
+                                    onClick={(e) => {
+                                        video.current.playbackRate = Number(e.target.innerHTML)
+                                        setshowPlayBack(!showPlayBack)
+
+                                        // handleSpeed(e.target.value)
+                                    }}> 1.5 </button>
+                                <button
+                                    className='py-2 border-b-[1px] border-opacity-5 px-8  '
+                                    onClick={(e) => {
+                                        video.current.playbackRate = Number(e.target.innerHTML)
+                                        setshowPlayBack(!showPlayBack)
+                                        // handleSpeed(e.target.value)
+                                    }}> 2.0 </button>
+                            </div>
+                            <i
+                                onClick={() => {
+                                    setshowPlayBack(!showPlayBack)
+                                }}
+                                className="ri-settings-3-fill text-[2vw] text-white"></i>
+                        </div>
+
                         <i className="ri-fullscreen-line text-[2vw] text-white cursor-pointer" onClick={toggleFullScreen}></i>
                     </div>
                 </div>

@@ -1,109 +1,79 @@
-// FILEPATH: e:/things/YT/Backend/Controllers/video.controller.js
-
 const cloudinary = require('cloudinary').v2;
 const { Readable } = require('stream');
-const videoModel = require('../models/video.model')
-const userModel = require('../models/user.model')
-// Assuming you've already configured Cloudinary in your project
+const videoModel = require('../models/video.model');
+const fs = require('fs');
+const userModel = require('../models/user.model');
+const { cloudinaryUploadChunked } = require('../Services/videoUpload.service.js');
+const { ToDataBase } = require('../Services/video.service.js')
 
 module.exports.createVideo = async (req, res) => {
+    const { title, description } = req.body;
+
+    // Validate required fields
+    if (!req.files || !req.files.video_Url) {
+        return res.status(400).json({ message: "Video file is required" });
+    }
+
     try {
-        const { title, description } = req.body;
+        const done = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
+        fs.unlink(req.files.video_Url[0].path, (err) => {
+            if (err) throw err;
+            console.log('video was deleted');
+        });
 
-        if (!req.files || !req.files.video_Url) {
-            return res.status(400).json({ message: 'Video file is required' });
-        }
+        const thumbnail = await cloudinaryUploadChunked(req.files.thumbnail[0].path, 'image');
+        fs.unlink(req.files.thumbnail[0].path, (err) => {
+            if (err) throw err;
+            console.log('thumbnail was deleted');
+        });
 
-        const videoFile = req.files.video_Url[0];
-        const thumbnailFile = req.files.thumbnail ? req.files.thumbnail[0] : null;
 
-        // Send initial response when upload starts
-        res.write(JSON.stringify({ message: "Upload started..." }) + "\n");
-
-        // Function to upload file to Cloudinary
-        const uploadToCloudinary = async (file, resourceType) => {
-            console.log('Uploading file:', file);
-            
-            const stream = cloudinary.uploader.upload_stream({ resource_type: resourceType });
-        
-            Readable.from(file.buffer).pipe(stream);
-        
-            return stream;
-        };
-        
-
-        // Upload video
-        const videoUpload = await uploadToCloudinary(videoFile, 'video');
-        res.write(JSON.stringify({ message: "Video uploaded successfully..." }) + "\n");
-
-        // Upload thumbnail if it exists
-        let thumbnailUpload = null;
-        if (thumbnailFile) {
-            thumbnailUpload = await uploadToCloudinary(thumbnailFile, 'image');
-            res.write(JSON.stringify({ message: "Thumbnail uploaded successfully..." }) + "\n");
-        }
-
-        // Save video data
-        const videoBASE = await videoModel.create({
+        const video = await  ToDataBase(
             title,
             description,
-            video_Url: {
-                url: videoUpload.secure_url,
-                public_id: videoUpload.public_id,
-                format: videoUpload.format,
-                resource_type: videoUpload.resource_type
+            {
+                url: done.response.data.url,
+                secureUrl: done.response.data.secure_url,
+                playback_url: done.response.data.playback_url,
             },
-            thumbnail_Url: thumbnailUpload ? {
-                url: thumbnailUpload.secure_url,
-                public_id: thumbnailUpload.public_id,
-                format: thumbnailUpload.format,
-                resource_type: thumbnailUpload.resource_type
-            } : null
-        });
+            {
+                url: thumbnail.response.data.url,
+                secureUrl: thumbnail.response.data.secure_url,
+            },
 
-        // Update user data
-        const user = await userModel.findById(req.user);
-        user.videoData.push({
-            video_Url: videoBASE.video_Url,
-            thumbnail_Url: videoBASE.thumbnail_Url
-        });
-        await user.save();
+            req.user_id
+        )
 
-        console.log(user);
+        res.json({ success: true, video});
 
-        // Final response
-        res.end(JSON.stringify({ message: "Upload process completed successfully" }));
-    } catch (error) {
-        console.error('Detailed error:', JSON.stringify(error, null, 2));
-        console.error('Stack trace:', error.stack);
-        res.end(JSON.stringify({ message: "Error uploading video and thumbnail", error: error.message }));
+    } catch (err) {
+        console.error("Upload Error:", err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
 
-
 module.exports.getVideos = async (req, res) => {
+    console.log(req.query.page)
     try {
-        const page = parseInt(req.query.page) || 1;
+        const page = parseInt(req.query.page) || 2;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const videos = await videoModel.find()
-            .skip(skip)
-            .limit(limit)
-
+        const videos = await videoModel.find().skip(skip).limit(limit);
         const totalVideos = await videoModel.countDocuments();
         const totalPages = Math.ceil(totalVideos / limit);
 
-        res.status(200).json({
+        return res.status(200).json({
             videos,
             currentPage: page,
             totalPages,
             totalVideos
         });
     } catch (error) {
-        console.error('Error fetching videos:', error);
-        res.status(500).json({ message: 'Error fetching videos', error: error.message });
+        return res.status(500).json({
+            message: 'Error fetching videos',
+            error: error.message
+        });
     }
 };
-

@@ -33,11 +33,11 @@ const MainVideos = () => {
             {/* CATEGORY */}
             <div className='px-6'>
                 <div className=' bg-red- py-[1vw]  h-[10vh] overflow-x-auto mt-4 SCROLLBAR_OF_CATEGORY' >
-                    {category.map((category, key) => {
+                    {/* {category.map((category, key) => {
                         return (
                             <div key={key} className='cursor-pointer bg-zinc-800 px-3 py-2 text-white rounded inline mx-2 font-medium'>{category}</div>
                         )
-                    })}
+                    })} */}
 
 
 
@@ -48,12 +48,12 @@ const MainVideos = () => {
 
 
                 <div className='bg-green- flex flex-wrap justify- '>
-                    {loading ? 'loading ' : videos.map((video) => {
+                    {loading ? 'loading ' : videos.map((video,index) => {
                         
                         return (<div className='h-[] w-[25vw]   bg-red- m-4'>
-                            <img
-                                className='w-full h-[%] bg-cover rounded bg-center'
-                                src={video.thumbnail_Url.url} alt="" />
+                            {index === 3 ? <img
+                                className='w-full  h-[70%] bg-cover rounded bg-center'
+                                src={video.video_Url.url} alt="" /> : null}
 
 
                             <div className='py-2'>
