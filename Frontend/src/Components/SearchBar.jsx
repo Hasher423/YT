@@ -33,7 +33,7 @@ const SearchBar = ({setshowSideBar}) => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed  z-[99] px-8 py-3 text-[2vw] flex items-center justify-between bg-[#0F0F0F]`}>
+            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center justify-between bg-[#0F0F0F]`}>
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[.8vw]'>
                 <i
@@ -43,9 +43,9 @@ const SearchBar = ({setshowSideBar}) => {
                 class="ri-menu-line text-white font-light text-[2vw]"></i>
                 <div className='flex items-center gap-[.2vw]'>
                     <img
-                        className='w-8 h-8 '
+                        className='w-8 h-8 ' 
                         src="/assets/images/ytlogo.png" alt="" />
-                    <h2 className='font-youtube text-[1.5vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute after:top-3 after:text-[.8vw] after:font-light '>YouTube</h2>
+                    <h2 className='font-youtube text-[1.6vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute after:top-3 after:text-[.8vw] after:font-light '>YouTube</h2>
                 </div>
             </div>
 
@@ -54,17 +54,17 @@ const SearchBar = ({setshowSideBar}) => {
 
             {/* SEARCHBAR AND MIC  */}
             <div className='bg-green-90 flex items-center gap-3 '>
-                <div className='border-[1px] w-[45vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
+                <div className='border-[1px] w-[40vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
                     <input
                         placeholder='Search '
-                        className='w-[90%] font-light  h-[] bg-zinc-800 px-3 text-white outline-blue-900 ml- rounded-l-3xl'
+                        className='w-[90%] text-[1.6vw] font- py-[.2vw] font-light bg-[#0F0F0F] px-3 text-white outline-blue-900 ml- rounded-l-3xl'
                         type="text" />
 
                     <i className="ri-search-line cursor-pointer  font-light text-custom-white ml-3"></i>
                 </div>
 
                 <div className='bg-zinc-700 rounded-full px-3 cursor-pointer'>
-                    <i className="ri-mic-fill rounded-full w-[5vw] text-white  h-[3vw] "></i>
+                    <i className="ri-mic-fill rounded-full text-[2vw] text-white  vw] "></i>
                 </div>
 
             </div>

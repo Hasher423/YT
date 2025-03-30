@@ -51,13 +51,13 @@ const MainVideos = () => {
                     {loading ? 'loading ' : videos.map((video,index) => {
                         
                         return (<div className='h-[] w-[25vw]   bg-red- m-4'>
-                            {index === 3 ? <img
+                            <img
                                 className='w-full  h-[70%] bg-cover rounded bg-center'
-                                src={video.video_Url.url} alt="" /> : null}
+                                src={video.thumbnail_Url.secureurl} alt="" />
 
 
                             <div className='py-2'>
-                                <h3 className='text-xl text-custom-white '>{video.title}</h3>
+                                <h3 className='text-xl text-custom-white '><a target='_blank' href={`${video.video_Url.secureUrl}`}>{video.title}</a></h3>
                                 <h3 className='text-xl text-zinc-500'>{video.description}</h3>
                             </div>
                         </div>)

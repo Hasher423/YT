@@ -8,13 +8,14 @@ const { ToDataBase } = require('../Services/video.service.js')
 
 module.exports.createVideo = async (req, res) => {
     const { title, description } = req.body;
-
+    
     // Validate required fields
-    if (!req.files || !req.files.video_Url) {
-        return res.status(400).json({ message: "Video file is required" });
+    if (!req.files.thumbnail || !req.files.video_Url) {
+        return res.status(400).json({ message: "Video or thumbnail file is required" });
     }
 
     try {
+        console.log(req.files)
         const done = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
         fs.unlink(req.files.video_Url[0].path, (err) => {
             if (err) throw err;
@@ -26,28 +27,42 @@ module.exports.createVideo = async (req, res) => {
             if (err) throw err;
             console.log('thumbnail was deleted');
         });
+        
+                console.log(thumbnail);
+         
+        
 
+        if (!thumbnail && !done) {
+           return  res.json({ error: 'video or thumnail could not be uploaded' });
+        }
+        
 
-        const video = await  ToDataBase(
+        const video = await ToDataBase(
             title,
             description,
             {
-                url: done.response.data.url,
-                secureUrl: done.response.data.secure_url,
-                playback_url: done.response.data.playback_url,
+                url: done?.url || done?.response.data.url,
+                secureUrl: done?.secure_url ||done?.response.data.secureurl ,
+                playback_url: done?.playback_url || done?.response.data.playback_url,
             },
             {
-                url: thumbnail.response.data.url,
-                secureUrl: thumbnail.response.data.secure_url,
+                url: thumbnail?.url || thumbnail?.response.data.url,
+                secureUrl: thumbnail?.secure_url || thumbnail?.response.data.secure_url,
             },
-
             req.user_id
-        )
+        );
 
-        res.json({ success: true, video});
+
+        res.json({ success: true, video });
 
     } catch (err) {
-        console.error("Upload Error:", err);
+        if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+            console.error("Network Error:");
+            res.status(500).json({ message: "net Error " });
+        } else {
+            console.error("Upload Error:", err);
+        }
+        console.log(err)
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
@@ -56,7 +71,7 @@ module.exports.createVideo = async (req, res) => {
 module.exports.getVideos = async (req, res) => {
     console.log(req.query.page)
     try {
-        const page = parseInt(req.query.page) || 2;
+        const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
