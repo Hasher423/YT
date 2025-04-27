@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
     videoData: [
         
     ],
+    category:[]
 }, { timestamps: true })
 
 
@@ -43,7 +44,7 @@ const userSchema = new mongoose.Schema({
 
 
 userSchema.statics.hashpassword = async (password) => {
-    const hash = bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10);
     return hash;
 }
 

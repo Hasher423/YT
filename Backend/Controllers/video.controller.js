@@ -8,7 +8,7 @@ const { ToDataBase } = require('../Services/video.service.js')
 
 module.exports.createVideo = async (req, res) => {
     const { title, description } = req.body;
-    
+    console.log(req.files, req.file)
     // Validate required fields
     if (!req.files.thumbnail || !req.files.video_Url) {
         return res.status(400).json({ message: "Video or thumbnail file is required" });
@@ -92,3 +92,15 @@ module.exports.getVideos = async (req, res) => {
         });
     }
 };
+
+module.exports.getVideo = async (req,res) =>{
+    try{
+        const video = await videoModel.findById(req.query.v);
+        if(!video){
+            return res.status(404).json({ message: 'Video not found' });
+        }
+        return res.json({ success: true, video });
+    }catch(error){
+        return res.status(500).json({ message: 'Error fetching video', error: error.message });
+    }
+}
