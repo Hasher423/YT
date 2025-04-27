@@ -1,19 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import 'remixicon/fonts/remixicon.css';
 import Controls from './Controls';
-
+import axios from 'axios';
+import { useLocation } from 'react-router-dom'
 const Videoplay = () => {
   const [play, setPlay] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1.0);
   const [mute, setMute] = useState(false);
-  const video = useRef(null);
+  const [video, setVideo] = useState(null);
+  const videoRef = useRef(null);
+  const location = useLocation()
+  const videoId = new URLSearchParams(location.search).get('v');
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (video.current) {
-        video.current.removeAttribute('controls'); // Ensure controls remain disabled in fullscreen
+      if (videoRef.current) {
+        videoRef.current.removeAttribute('controls'); // Ensure controls remain disabled in fullscreen
       }
     };
 
@@ -22,10 +26,21 @@ const Videoplay = () => {
   }, []);
 
 
+  useEffect(() => {
+    const fetchVideo = async () => {
+      const res = await axios.get(`http://localhost:3000/video/getVideo?v=${videoId}`);
+      
+      setVideo(res.data.video.video_Url.url);
+    };
+    fetchVideo();
+  }, []);
+  
+
+
   const toggleFullScreen = () => {
-    if (video.current) {
+    if (videoRef.current) {
       if (!document.fullscreenElement) {
-        video.current.requestFullscreen()
+        videoRef.current.requestFullscreen()
       } else {
         document.exitFullscreen();
       }
@@ -33,7 +48,7 @@ const Videoplay = () => {
   };
 
 
-  
+
 
 
   return (
@@ -41,18 +56,18 @@ const Videoplay = () => {
       <div className="relative w-full h-full">
         <div className="video w-full h-full obj">
           <video
-            ref={video}
+            ref={videoRef}
             className="rounded-xl w-full"
-            src="https://res.cloudinary.com/dmazphi1z/video/upload/v1743001170/my_videos/my_videos/video_1743001029911.mp4"
+            src={`${video}`}
             height={'100%'}
 
             onLoadedMetadata={() => {
-              if (video.current) {
-                video.current.removeAttribute('controls'); // Disable default controls
-                setDuration(video.current.duration);
+              if (videoRef.current) {
+                videoRef.current.removeAttribute('controls'); // Disable default controls
+                setDuration(videoRef.current.duration);
               }
             }}
-            onTimeUpdate={() => setCurrentTime(video.current.currentTime)}
+            onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
             onDoubleClick={toggleFullScreen}
           />
         </div>
@@ -65,7 +80,7 @@ const Videoplay = () => {
 
 
         <Controls
-          video={video}
+          video={videoRef}
           duration={duration}
           currentTime={currentTime}
           play={play}
@@ -74,7 +89,7 @@ const Videoplay = () => {
           setCurrentTime={setCurrentTime}
           setPlay={setPlay}
 
-          />
+        />
 
 
       </div>

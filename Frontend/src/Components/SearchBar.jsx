@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const SearchBar = ({setshowSideBar}) => {
+const SearchBar = ({ setshowSideBar }) => {
     const searchBar = useRef(null)
+    const [showPanel, setshowPanel] = useState(false)
     const [sticky, setsticky] = useState(false)
+
+    const handleShowPanel = () =>{
+        setshowPanel(!showPanel)
+    }
 
     useEffect(() => {
         let lastScrollTop = window.scrollY; // Initial scroll position
@@ -33,19 +39,19 @@ const SearchBar = ({setshowSideBar}) => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center justify-between bg-[#0F0F0F]`}>
+            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center justify-between bg-custom-black`}>
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[.8vw]'>
                 <i
-                onClick={() =>{
-                    setshowSideBar( prev => !prev)
-                }}
-                class="ri-menu-line text-white font-light text-[2vw]"></i>
+                    onClick={() => {
+                        setshowSideBar(prev => !prev)
+                    }}
+                    class="ri-menu-line text-white font-light text-[2vw]"></i>
                 <div className='flex items-center gap-[.2vw]'>
                     <img
-                        className='w-8 h-8 ' 
+                        className='w-8 h-8 '
                         src="/assets/images/ytlogo.png" alt="" />
-                    <h2 className='font-youtube text-[1.6vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute after:top-3 after:text-[.8vw] after:font-light '>YouTube</h2>
+                    <Link to={'/'} className='font-youtube text-[1.6vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute after:top-3 after:text-[.8vw] after:font-light '>YouTube</Link>
                 </div>
             </div>
 
@@ -75,13 +81,29 @@ const SearchBar = ({setshowSideBar}) => {
 
 
 
-            {/* CREATE CAHNNEL NOTIFICATION */}
+            {/* CREATE CHANNEL NOTIFICATION */}
             <div className='flex items-center justify-between gap-4 cursor-pointer'>
-                <div className='flex items-center bg-zinc-800 px-3 py-1 font-light rounded-xl text-[1.2vw] text-custom-white '>
-                    <i className="ri-add-line"></i>
-                    Create
+                <div className='relative flex items-center bg-zinc-800 px-3 py-1 font-light rounded-xl text-[1.2vw] text-custom-white'>
+                    { showPanel  ? <div  className='absolute font-semibold tracking-tighter -bottom-[7.8vw] right-[-2vw] bg-black whitespace-nowrap'>
+                        <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
+                            <div><i className="ri-video-add-line"></i></div>
+                            <Link to={'/UploadVideo'}>Upload video</Link>
+                        </div>
+                        <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
+                            <div><i className="ri-broadcast-line"></i></div>
+                            <div>Go live</div>
+                        </div>
+                        <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
+                            <div><i className="ri-file-text-line"></i></div>
+                            <div>Create post</div>
+                        </div>
+                    </div> : ''}
+                    <div className='text-[1.3vw]' onClick={handleShowPanel}>
+                        <i className="ri-add-line"></i>
+                        Create
+                    </div>
                 </div>
-                <div><i className="ri-notification-4-line text-white"></i></div>
+                <div className='text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
                 <div className='bg-red-900 w-9 h-9 rounded-full'>
                     <img src="" alt="" />
                 </div>

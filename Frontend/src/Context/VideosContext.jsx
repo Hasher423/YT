@@ -2,10 +2,10 @@ import React, { createContext, } from "react"
 
 export const Context = createContext();
 const VideosContext = ({ children }) => {
-    const videos = [];
+    const videos = ['hey', 'I', 'am', "HASHER"];
     return (
         <div>
-            <Context.Provider value={{ videos }}>
+            <Context.Provider value={[videos]}>
                 {children}
             </Context.Provider>
         </div>

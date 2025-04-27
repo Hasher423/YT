@@ -12,7 +12,7 @@ const VideoPlayer = () => {
             <SearchBar showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
             <div className='flex  min-w-screen p-5 pt-20'>
                 <SideBar showSideBar={showSideBar} />
-                <Videoplay />
+                <Videoplay  />
                 <SideVideos />
             </div>
         </div>

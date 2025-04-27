@@ -11,7 +11,7 @@ export default {
       },
       colors: {
         'custom-white': '#ffffff',
-        'custom-black': '#0f0f0f',
+        'custom-black': '#181818',
       },
       fontFamily: {
         'youtube': ['Roboto', 'Arial', 'sans-serif'],
