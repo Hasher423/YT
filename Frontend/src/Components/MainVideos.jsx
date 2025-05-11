@@ -18,7 +18,7 @@ const MainVideos = () => {
             const fetchVideos = async () => {
                 try {
                     console.log(import.meta.env.VITE_BACKEND_URI)
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/video/getVideos?page=1&limit=23`);
                     setvideos(response.data.videos);
                     console.log(response.data.videos);
 
