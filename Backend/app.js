@@ -15,11 +15,11 @@ const fileUpload = require('express-fileupload');
 const userRouter = require('./Routes/user.routes');
 const videoRouter = require('./Routes/video.routes');
 
-// Middleware
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+
+
+app.use(cors({ origin: '*' }));
+
+
 
 app.use(cookieParser());
 app.use(morgan('dev'));
