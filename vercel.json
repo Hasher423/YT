@@ -2,15 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "Frontend/package.json",
+      "use": "@vercel/next"  
+    },
+    {
+      "src": "Backend/server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server.js"
+      "dest": "Backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "Frontend/$1"
     }
-  ],
-  "installCommand": "npm install"
+  ]
 }
