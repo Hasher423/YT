@@ -3,11 +3,11 @@ const app  = require('./app.js');
 
 const server  = http.createServer(app);
 
+const serverless = require('serverless-http');
 
-server.listen(3000, () =>{
-    console.log('Server is running at port 3000');
-})
 
+
+module.exports.handler = serverless(app);
 
 
 
