@@ -17,7 +17,7 @@ const MainVideos = () => {
     useEffect(() => {
             const fetchVideos = async () => {
                 try {
-                    const response = await axios.get('http://192.168.0.12:3000/video/getVideos?page=1&limit=23');
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
                     setvideos(response.data.videos);
                     console.log(response.data.videos);
 

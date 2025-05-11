@@ -14,7 +14,7 @@ const SideVideos = () => {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/video/getVideos/')
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos/`)
                 setdata(response.data)
                 console.log(response)
             } catch (error) {
