@@ -39,7 +39,7 @@ const SearchBar = ({ setshowSideBar }) => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center justify-between bg-custom-black`}>
+            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[.8vw]'>
                 <i
@@ -60,7 +60,7 @@ const SearchBar = ({ setshowSideBar }) => {
 
             {/* SEARCHBAR AND MIC  */}
             <div className='bg-green-90 flex items-center gap-3 '>
-                <div className='border-[1px] w-[40vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
+                <div className='border-[1px] flex w-[40vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
                     <input
                         placeholder='Search '
                         className='w-[90%] text-[1.6vw] font- py-[.2vw] font-light bg-[#0F0F0F] px-3 text-white outline-blue-900 ml- rounded-l-3xl'

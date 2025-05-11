@@ -28,7 +28,7 @@ const Videoplay = () => {
 
   useEffect(() => {
     const fetchVideo = async () => {
-      const res = await axios.get(`http://localhost:3000/video/getVideo?v=${videoId}`);
+      const res = await axios.get(`http://192.168.0.12:3000/video/getVideo?v=${videoId}`);
       
       setVideo(res.data.video.video_Url.url);
     };
@@ -52,12 +52,12 @@ const Videoplay = () => {
 
 
   return (
-    <div className="video-container flex-1 h-[70%]  p-5 ">
+    <div className="video-container flex-1 bg-red-90 sm:h-[70%]  ">
       <div className="relative w-full h-full">
-        <div className="video w-full h-full obj">
+        <div className="video w-full sm:h-full h-[50vh] ">
           <video
             ref={videoRef}
-            className="rounded-xl w-full"
+            className=" w-[100%] h-[100vh%] "
             src={`${video}`}
             height={'100%'}
 

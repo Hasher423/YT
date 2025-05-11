@@ -69,10 +69,10 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
     return (
         <div>
             {/* Controls */}
-            <div className="controls w-full h-[90px] absolute bottom-0 py-4 px-3 bg-transparent">
+            <div className="controls w-full sm:h-[90px] absolute bottom-0 sm:py-4 px-3 bg-transparent">
                 <input
                     type="range"
-                    className="w-full"
+                    className="w-full "
                     min={0}
                     max={duration}
                     value={currentTime}
@@ -80,27 +80,28 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
                 />
                 <div className="controls flex w-full justify-between items-center">
                     {/* Left Controls */}
-                    <div className="flex items-center gap-5">
-                        <i className="ri-skip-back-fill text-[2vw] text-white"></i>
+                    <div className="flex items-center gap-3 sm:gap-5">
+                        <i className="ri-skip-back-fill text-[4vw] sm:text-[2vw] text-white"></i>
                         {play ? (
-                            <i onClick={handlePlay} className="ri-pause-fill text-[2vw] text-white cursor-pointer"></i>
+                            <i onClick={handlePlay} className="ri-pause-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         ) : (
-                            <i onClick={handlePlay} className="ri-play-fill text-[2vw] text-white cursor-pointer"></i>
+                            <i onClick={handlePlay} className="ri-play-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         )}
-                        <i className="ri-skip-forward-fill text-[2vw] text-white"></i>
+                        <i className="ri-skip-forward-fill text-[4vw] sm:text-[2vw] text-white"></i>
 
                         {/* Volume Controls */}
                         <div className="flex items-center gap-4">
                             {mute ? (
-                                <i onClick={handleMute} className="ri-volume-mute-line text-[2vw] text-white cursor-pointer"></i>
+                                <i onClick={handleMute} className="ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             ) : (
-                                <i onClick={handleMute} className="ri-volume-up-fill text-[2vw] text-white cursor-pointer"></i>
+                                <i onClick={handleMute}
+                                className="ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             )}
-                            <input ref={vloumeBar} type="range" min="0" max="100" defaultValue={volumeRange} className="w-[6vw]" onChange={handleVolume} />
+                            <input ref={vloumeBar} type="range" min="0" max="100" defaultValue={volumeRange} className="sm:w-[6vw] sm:block hidden " onChange={handleVolume} />
                         </div>
 
                         {/* Time Display */}
-                        <div className="text-white">
+                        <div className="text-white text-[4vw] sm:text-[1.4vw] ">
                             {`${Math.floor(currentTime / 60)}:${Math.floor(currentTime % 60)
                                 .toString()
                                 .padStart(2, '0')}`} /{' '}
@@ -113,7 +114,7 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
                     </div>
 
                     {/* Right Controls */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-[4vh] sm:gap-3">
                         <div className='flex flex-col '>
                             <div
                                 ref={playback}
@@ -154,10 +155,10 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
                                 onClick={() => {
                                     setshowPlayBack(!showPlayBack)
                                 }}
-                                className="ri-settings-3-fill text-[2vw] text-white"></i>
+                                className="ri-settings-3-fill text-[4vw] sm:text-[2vw] text-white"></i>
                         </div>
 
-                        <i className="ri-fullscreen-line text-[2vw] text-white cursor-pointer" onClick={toggleFullScreen}></i>
+                        <i className="ri-fullscreen-line text-[4vw] sm:text-[2vw] text-white cursor-pointer" onClick={toggleFullScreen}></i>
                     </div>
                 </div>
             </div>

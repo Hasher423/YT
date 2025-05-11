@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Context } from '../Context//VideosContext';
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 
 
@@ -30,24 +31,23 @@ const SideVideos = () => {
             {/* SIDE VIDEO CONTAINER */}
 
 
-            {console.log(data?.videos?.length > 0)}
-            {data?.videos?.length > 0 ? <div className='bg--900 flex-1  p py-10'>
+            {data?.videos?.length > 0 ? <div className='sm:bg-red-90 flex-1  p py-10'>
 
                 {data.videos.map((element, index) => {
-                    return (<div>
+                    return (<Link to={`?v=${element._id}`}>
                         {/* SINGLE VIDEO */}
                         <div
                             key={index}
-                            className={`flex leading-[2vw] gap-3  ${index === 0 ? 'pb-5' : 'pb-4'} `}>
+                            className={`sm:flex sm:leading-[2vw] gap-3  ${index === 0 ? 'pb-5' : 'pb-4'} `}>
                             {/* DIV OF THUMBNAIL  */}
                             <div className='relative' >
                                 <div className='bg-zinc-900 bg-opacity-30 w-[2vw] h-[1vw] absolute bottom-[.9vw] rounded-sm right-[.8vmax]'></div>
                                 <img
-                                    className='w-[15vw] max-h-[10vw] bg--900 border-[1px] border-zinc-900  rounded-xl bg-center object-contain'
+                                    className=' sm:w-[15vw] sm:max-h-[10vw]  border-[1px] border-zinc-900  sm:rounded-md bg-center object-contain'
                                     src={`${element.thumbnail_Url.url}`} alt="" />
                             </div>
                             {/* DETAILS OF VIDEO DIV */}
-                            <div className='bg--900 w-[60%] text-white font-medium'>
+                            <div className='bg--900 w-[60%] text-white font-medium px-3 sm:px-0'>
                                 <h1 className='overflow-hidden  text-wrap w-[15vmax] bg--900 '>
 
                                     {
@@ -65,7 +65,7 @@ const SideVideos = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>)
+                    </Link>)
                 })}
             </div> : (
                 <h1 className='w-[20vw] text-center text-white'>No videos available</h1>

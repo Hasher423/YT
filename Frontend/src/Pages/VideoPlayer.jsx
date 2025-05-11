@@ -10,7 +10,7 @@ const VideoPlayer = () => {
     return (
         <div className='min-h-screen min-w-screen bg-[#0F0F0F] '>
             <SearchBar showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
-            <div className='flex  min-w-screen p-5 pt-20'>
+            <div className='sm:flex sm:gap-6  min-w-screen sm:p-5  pt-16 sm:pt-20'>
                 <SideBar showSideBar={showSideBar} />
                 <Videoplay  />
                 <SideVideos />
