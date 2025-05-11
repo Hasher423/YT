@@ -16,7 +16,10 @@ module.exports.createVideo = async (req, res) => {
 
     try {
         console.log(req.files)
-        const done = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
+        const response = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
+        if(response.status == 'Error'){
+           return res.status(400).send(response.message)
+        }
         fs.unlink(req.files.video_Url[0].path, (err) => {
             if (err) throw err;
             console.log('video was deleted');
@@ -32,7 +35,7 @@ module.exports.createVideo = async (req, res) => {
          
         
 
-        if (!thumbnail && !done) {
+        if (!thumbnail && !response) {
            return  res.json({ error: 'video or thumnail could not be uploaded' });
         }
         
@@ -41,9 +44,9 @@ module.exports.createVideo = async (req, res) => {
             title,
             description,
             {
-                url: done?.url || done?.response.data.url,
-                secureUrl: done?.secure_url ||done?.response.data.secureurl ,
-                playback_url: done?.playback_url || done?.response.data.playback_url,
+                url: response?.url || response?.response.data.url,
+                secureUrl: response?.secure_url ||response?.response.data.secureurl ,
+                playback_url: response?.playback_url || response?.response.data.playback_url,
             },
             {
                 url: thumbnail?.url || thumbnail?.response.data.url,

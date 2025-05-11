@@ -14,7 +14,10 @@ module.exports.registerUser = async (req, res) => {
 
         const hashedPassword = await userModel.hashpassword(password);
 
-
+        const alreadyExists = await userModel.findOne({ email });
+        if(alreadyExists){
+            return res.status(409).send("User Already exists LOGIN")
+        }
 
         const newUser = await userService.createUser(
             name,
@@ -25,7 +28,7 @@ module.exports.registerUser = async (req, res) => {
         const token = await newUser.generateToken();
         res.cookie('token', token)
 
-        return res.status(201).json({user: newUser, token});
+        return res.status(201).json({ user: newUser, token });
     } catch (err) {
         console.error('Error in registerUser:', err);
         return res.status(500).json({ error: err.message, stack: err.stack });
@@ -37,14 +40,13 @@ module.exports.registerUser = async (req, res) => {
 module.exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
         if (!email || !password) {
-            return res.json({ error: 'Email and password are required' });
+            return res.status(455).json({ error: 'Email and password are required' });
         }
 
         const user = await userModel.findOne({ email });
         if (!user) {
-            return res.json({ error: 'User not found' });
+            return res.status(455).json({ error: 'User not found' });
 
         }
 
@@ -70,7 +72,7 @@ module.exports.logout = async (req, res) => {
     try {
         // res.cookie = '';
 
-        const token =   req.headers.authorization?.split(' ')[1] ||  req.cookies.token;
+        const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
 
         if (!token) {
             return res.status(400).json({ message: 'No token found' });
