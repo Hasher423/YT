@@ -53,7 +53,7 @@ const MainVideos = () => {
                 </div>
 
                 <div className='text-white bg-green- w-[100vw] flex justify-center py-2   '>
-                    {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
+                    {/* {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
                             loading ? <div className='LoaderOfMainVidoes'> </div> : videos.map((video, index) => {
                                 return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className='   bg-red- sm:m-4 '>
@@ -67,7 +67,7 @@ const MainVideos = () => {
                                     </div>
                                 </Link>)
                             })
-                        }</div>}
+                        }</div>} */}
 
 
                     <Link to={`/videoPlayer`} className='   bg-red- sm:m-4 '>
