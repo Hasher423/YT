@@ -58,7 +58,7 @@ const Videoplay = () => {
           <video
             ref={videoRef}
             className=" w-[100%] h-[100vh%] "
-            src={`${video}`}
+            src={`http://res.cloudinary.com/dmazphi1z/video/upload/v1746622564/my_videos/my_videos/video_1746622418584.mp4`}
             height={'100%'}
 
             onLoadedMetadata={() => {

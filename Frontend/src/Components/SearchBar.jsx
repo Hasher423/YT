@@ -46,7 +46,7 @@ const SearchBar = ({ setshowSideBar }) => {
                     onClick={() => {
                         setshowSideBar(prev => !prev)
                     }}
-                    class="ri-menu-line text-white font-light text-[2vw]"></i>
+                    className="ri-menu-line text-white font-light text-[2vw]"></i>
                 <div className='flex items-center gap-[.2vw]'>
                     <img
                         className='w-8 h-8 '

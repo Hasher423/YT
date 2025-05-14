@@ -15,22 +15,22 @@ const MainVideos = () => {
     const [errMessage, setErrMessage] = useState('');
 
     useEffect(() => {
-            const fetchVideos = async () => {
-                try {
-                    console.log(import.meta.env.VITE_BACKEND_URI)
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
-                    setvideos(response.data.videos);
-                    console.log(response.data.videos);
+        const fetchVideos = async () => {
+            try {
+                console.log(import.meta.env.VITE_BACKEND_URI)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
+                setvideos(response.data.videos);
+                console.log(response.data.videos);
 
-                    setloading(false);
-                } catch (err) {
-                    console.log(err.message);
-                    // setloading(false);
-                    setErrMessage(JSON.stringify(err))
-                }
-            };
+                setloading(false);
+            } catch (err) {
+                console.log(err.message);
+                // setloading(false);
+                setErrMessage(JSON.stringify(err))
+            }
+        };
 
-            fetchVideos();
+        fetchVideos();
     }, []);
 
 
@@ -56,7 +56,7 @@ const MainVideos = () => {
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
                             loading ? <div className='LoaderOfMainVidoes'> </div> : videos.map((video, index) => {
-                                return (<Link to={`/videoPlayer?v=${video._id}`} className='   bg-red- sm:m-4 '>
+                                return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className='   bg-red- sm:m-4 '>
                                     <img
                                         className=' sm:w-[28vw] w-[100vw]  sm:max-h-[16vmax]  bg-cover rounded bg-center'
                                         src={video.thumbnail_Url.secureurl} alt="" />
@@ -69,9 +69,22 @@ const MainVideos = () => {
                             })
                         }</div>}
 
+
+                    <Link to={`/videoPlayer`} className='   bg-red- sm:m-4 '>
+                        <img
+                            className=' sm:w-[28vw] w-[100vw]  sm:max-h-[16vmax]  bg-cover rounded bg-center'
+                            src={'https://res.cloudinary.com/dmazphi1z/image/upload/v1746898402/my_videos/my_thumbnail/thumbnail1746898402203.jpg'} alt="" />
+
+
+                        <div className='py-2 bg- h-[30vw] sm:h-[] px-3'>
+                            <h3 className='text-xl text-custom-white '>titleeeeeeeeeeeee</h3>
+                        </div>
+                    </Link>
+
                 </div>
             </div>
         </div>
+
     )
 }
 
