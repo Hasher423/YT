@@ -15,12 +15,21 @@ const MainVideos = () => {
     const [errMessage, setErrMessage] = useState('');
 
     useEffect(() => {
+<<<<<<< HEAD
         const fetchVideos = async () => {
             try {
                 console.log(import.meta.env.VITE_BACKEND_URI)
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
                 setvideos(response.data.videos);
                 console.log(response.data.videos);
+=======
+            const fetchVideos = async () => {
+                try {
+                    console.log(import.meta.env.VITE_BACKEND_URI)
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/video/getVideos?page=1&limit=23`);
+                    setvideos(response.data.videos);
+                    console.log(response.data.videos);
+>>>>>>> 2c0f11650d716d73b1e45115c26b086b125c2afa
 
                 setloading(false);
             } catch (err) {
