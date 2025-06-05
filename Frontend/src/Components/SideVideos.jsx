@@ -14,9 +14,8 @@ const SideVideos = () => {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/video/getVideos/`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos/`)
                 setdata(response.data)
-                console.log(response)
             } catch (error) {
                 console.error('Error fetching videos:', error)
             }
@@ -73,11 +72,6 @@ const SideVideos = () => {
             )}
         </div>
 
-        // <div className='w-[27vw] '>
-        //     <div className="singleVideo bg-zinc-800 w-full h-[20vmax]">
-
-        //     </div>
-        // </div>
     )
 }
 

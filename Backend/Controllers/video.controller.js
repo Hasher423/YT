@@ -17,8 +17,8 @@ module.exports.createVideo = async (req, res) => {
     try {
         console.log(req.files)
         const response = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
-        if(response.status == 'Error'){
-           return res.status(400).send(response.message)
+        if (response.status == 'Error') {
+            return res.status(400).send(response.message)
         }
         fs.unlink(req.files.video_Url[0].path, (err) => {
             if (err) throw err;
@@ -30,22 +30,22 @@ module.exports.createVideo = async (req, res) => {
             if (err) throw err;
             console.log('thumbnail was deleted');
         });
-        
-                console.log(thumbnail);
-         
-        
+
+        console.log(thumbnail);
+
+
 
         if (!thumbnail && !response) {
-           return  res.json({ error: 'video or thumnail could not be uploaded' });
+            return res.json({ error: 'video or thumnail could not be uploaded' });
         }
-        
+
 
         const video = await ToDataBase(
             title,
             description,
             {
                 url: response?.url || response?.response.data.url,
-                secureUrl: response?.secure_url ||response?.response.data.secureurl ,
+                secureUrl: response?.secure_url || response?.response.data.secureurl,
                 playback_url: response?.playback_url || response?.response.data.playback_url,
             },
             {
@@ -96,14 +96,14 @@ module.exports.getVideos = async (req, res) => {
     }
 };
 
-module.exports.getVideo = async (req,res) =>{
-    try{
+module.exports.getVideo = async (req, res) => {
+    try {
         const video = await videoModel.findById(req.query.v);
-        if(!video){
+        if (!video) {
             return res.status(404).json({ message: 'Video not found' });
         }
         return res.json({ success: true, video });
-    }catch(error){
+    } catch (error) {
         return res.status(500).json({ message: 'Error fetching video', error: error.message });
     }
 }

@@ -16,11 +16,12 @@ module.exports.cloudinaryUploadChunked = async (filepath, resourceType) => {
             status:"Error"
         }
     }
-    console.log('filesize' + fileSize.toString());
 
     const chunkSize = Math.ceil(fileSize / (1024 * 1024)) * (1024 * 1024);
 
     const totalChunks = Math.ceil(fileSize / chunkSize);
+    console.log(totalChunks);
+    
 
     try {
         const stream = fs.createReadStream(filepath);
@@ -48,15 +49,22 @@ module.exports.cloudinaryUploadChunked = async (filepath, resourceType) => {
             {
                 headers: formData.getHeaders(),
                 onUploadProgress: (progress) => {
-                    const chunkProgress = Math.round((progress.loaded / chunkSize) * 100);
+                    const chunkProgress = Math.round((progress.loaded * 100) / progress.total);
                     console.log(`Chunk Progress: ${chunkProgress}%`);
                 },
             }
         );
 
-        return { response }
+        return { response, status:'Success' }
     } catch (err) {
-        console.error(err);
+        console.error(err.code);
+        if(err.code === 'ENOTFOUND' ){
+            return {
+                message:"Internet not available",
+                status:"Error",
+            }
+        }
+        return{ err, status:"Error"}
     }
 
 

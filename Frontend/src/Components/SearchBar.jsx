@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -5,8 +6,10 @@ const SearchBar = ({ setshowSideBar }) => {
     const searchBar = useRef(null)
     const [showPanel, setshowPanel] = useState(false)
     const [sticky, setsticky] = useState(false)
+    const [theme, settheme] = useState('dark')
+    const [user, setuser] = useState('')
 
-    const handleShowPanel = () =>{
+    const handleShowPanel = () => {
         setshowPanel(!showPanel)
     }
 
@@ -33,25 +36,37 @@ const SearchBar = ({ setshowSideBar }) => {
     }, []);
 
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('http://localhost:3000/user/getuser', {
+                withCredentials: true,
+            });
+            setuser(response.data);
+            console.log(user)
+        };
+        fetchData();
+    }, []);
+
+
 
     return (
         <div
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed  z-[99] px-10 py-3 text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
+            ref={searchBar} className={`w-full fixed  z-[99] px-[3vw] sm:px-10 py-3 text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
             {/* HAMBURGER AND LOGO */}
-            <div className=' flex items-center gap-[.8vw]'>
+            <div className=' flex items-center gap-[2vw] sm:gap-[.8vw]'>
                 <i
                     onClick={() => {
                         setshowSideBar(prev => !prev)
                     }}
-                    className="ri-menu-line text-white font-light text-[2vw]"></i>
+                    className="ri-menu-line text-custom-white font-light text-[5vw] sm:text-[2vw]"></i>
                 <div className='flex items-center gap-[.2vw]'>
                     <img
-                        className='w-8 h-8 '
+                        className='w-[8vw] h-[8vw] sm:w-8 sm:h-8 '
                         src="/assets/images/ytlogo.png" alt="" />
-                    <Link to={'/'} className='font-youtube text-[1.6vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute after:top-3 after:text-[.8vw] after:font-light '>YouTube</Link>
+                    <Link to={'/'} className='font-youtube ml-[1.4vw] sm:ml-0 text-[3.3vw] sm:text-[1.6vw] text-custom-white tracking-tighter after:content-["PK"] after:text-gray-400 after:absolute sm:after:top-3 after:top-[3vw] after:text-[3vw] sm:after:text-[.8vw] after:font-light '>YouTube</Link>
                 </div>
             </div>
 
@@ -59,7 +74,7 @@ const SearchBar = ({ setshowSideBar }) => {
 
 
             {/* SEARCHBAR AND MIC  */}
-            <div className='bg-green-90 flex items-center gap-3 '>
+            <div className='bg-green-90 hidden  sm:flex items-center gap-3 '>
                 <div className='border-[1px] flex w-[40vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
                     <input
                         placeholder='Search '
@@ -80,11 +95,11 @@ const SearchBar = ({ setshowSideBar }) => {
 
 
 
-
             {/* CREATE CHANNEL NOTIFICATION */}
-            <div className='flex items-center justify-between gap-4 cursor-pointer'>
-                <div className='relative flex items-center bg-zinc-800 px-3 py-1 font-light rounded-xl text-[1.2vw] text-custom-white'>
-                    { showPanel  ? <div  className='absolute font-semibold tracking-tighter -bottom-[7.8vw] right-[-2vw] bg-black whitespace-nowrap'>
+            
+            <div className='flex items-center justify-between sm:gap-4 gap-[3vw] cursor-pointer'>
+                <div className='relative flex items-center bg-custon-white px-3 py-1 font-light sm:rounded-xl rounded-[3vw] text-[1.2vw] text-custom-white'>
+                    {showPanel ? <div className='absolute font-semibold tracking-tighter -bottom-[7.8vw] right-[-2vw] bg-black whitespace-nowrap '>
                         <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
                             <div><i className="ri-video-add-line"></i></div>
                             <Link to={'/UploadVideo'}>Upload video</Link>
@@ -98,14 +113,18 @@ const SearchBar = ({ setshowSideBar }) => {
                             <div>Create post</div>
                         </div>
                     </div> : ''}
-                    <div className='text-[1.3vw]' onClick={handleShowPanel}>
+                    <div className='text-[3vw] sm:text-[1.3vw] text-custom-white' onClick={handleShowPanel}>
                         <i className="ri-add-line"></i>
                         Create
                     </div>
                 </div>
-                <div className='text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
-                <div className='bg-red-900 w-9 h-9 rounded-full'>
-                    <img src="" alt="" />
+                <div className='text-[5vw] sm:text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
+                <div className='bg-red-900 w-[7vw] h-[7vw] sm:w-9 sm:h-9 rounded-full'>
+                    
+                    <img className='w-full h-full' src={``} alt="" />
+                </div>
+                <div className='bg-zinc-700 sm:hidden flex items-center justify-center w-[7vw] h-[7vw] text-[3.5vw] rounded-full'>
+                    <i className="ri-search-line cursor-pointer  font-light text-custom-white"></i>
                 </div>
             </div>
         </div>

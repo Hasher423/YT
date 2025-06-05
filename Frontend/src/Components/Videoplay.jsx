@@ -28,13 +28,12 @@ const Videoplay = () => {
 
   useEffect(() => {
     const fetchVideo = async () => {
-      const res = await axios.get(`http://192.168.0.12:3000/video/getVideo?v=${videoId}`);
-      
+      const res = await axios.get(`http://localhost:3000/video/getVideo?v=${videoId}`);
       setVideo(res.data.video.video_Url.url);
     };
     fetchVideo();
-  }, []);
-  
+  }, [videoId]);
+
 
 
   const toggleFullScreen = () => {
@@ -53,12 +52,13 @@ const Videoplay = () => {
 
   return (
     <div className="video-container flex-1 bg-red-90 sm:h-[70%]  ">
+
       <div className="relative w-full h-full">
         <div className="video w-full sm:h-full h-[50vh] ">
           <video
             ref={videoRef}
             className=" w-[100%] h-[100vh%] "
-            src={`http://res.cloudinary.com/dmazphi1z/video/upload/v1746622564/my_videos/my_videos/video_1746622418584.mp4`}
+            src={`${video}`}
             height={'100%'}
 
             onLoadedMetadata={() => {

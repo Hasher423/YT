@@ -4,8 +4,8 @@ const blackListTokensModel = require('../models/blackListTokens')
 const jwt = require('jsonwebtoken')
 
 module.exports.auth = async (req, res, next) => {
-    
-    const token = req.headers.authorization?.split(' ')[1] || req.cookies.token  ;
+        // console.log({req})
+    const token =  req.cookies.token  ;
 
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized: No token provided' });

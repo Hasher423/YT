@@ -9,14 +9,13 @@ cloudinary.config({
 
 
 
-module.exports.createUser = async (name, email, hashedPassword, channelName, logoUrl, logoId) => {
+module.exports.createUser = async (name, email, hashedPassword, channelName, logoId) => {
     try {
       const user = await userModel.create({
         name,
         email,
         password:hashedPassword,
         channelName,
-        logoUrl,
         logoId,
       });
       return user;

@@ -9,7 +9,7 @@ const { auth } = require('../Middlewares/auth.middleware');
 Router.post('/upload', upload.fields([
     { name: 'video_Url', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 }
-  ]), videoController.createVideo);
+  ]), auth ,videoController.createVideo);
 
 
 Router.get('/getVideos' , videoController.getVideos)

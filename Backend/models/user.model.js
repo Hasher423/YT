@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     
     logoId: {
-        type: String,
+        type: Object,
     },
     subscribers: {
         type: Number,
