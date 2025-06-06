@@ -47,7 +47,13 @@ module.exports.registerUser = async (req, res) => {
         );
         const token = await newUser.generateToken();
         console.log('token on generating ' + token);
-        res.cookie('token', token)
+        res.cookie('token', token, {
+            httpOnly: false,
+            secure: false,          // local dev = HTTP → must be false
+            sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        });
+
 
 
 
@@ -81,7 +87,16 @@ module.exports.login = async (req, res) => {
         }
 
         const token = await user.generateToken();
-        res.cookie('token', token)
+        res.cookie('token', token, {
+            httpOnly: false,
+            secure: false,          // local dev = HTTP → must be false
+            sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        });
+
+
+
+
         return res.json({ token, user });
     } catch (err) {
         console.error(err);

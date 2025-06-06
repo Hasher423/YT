@@ -1,5 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 
 const signup = () => {
     const [username, setusername] = useState('')
@@ -7,6 +9,9 @@ const signup = () => {
     const [password, setpassword] = useState('')
     const [channelName, setchannelName] = useState('')
     const [logo, setlogo] = useState([])
+
+
+    const navigate = useNavigate();
 
 
     const SubmitHandler = async (e) => {
@@ -17,19 +22,24 @@ const signup = () => {
             formData.append('email', email);
             formData.append('password', password);
             formData.append('channelName', channelName);
-            formData.append('logo', logo); // logo must be the File object from input
+            formData.append('logo', logo);
 
             const response = await axios.post('http://localhost:3000/user/signup', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true,
             });
-            console.log('User registered:', response.data);
+
+            if (response.data) {
+                navigate('/'); // Redirect to home
+            }
+
+
+            console.log('User registered:', response);
         } catch (error) {
-            console.error('Error registering:',  error.response.data);
+            console.error('Error registering:', error.response?.data);
         }
     };
+
 
 
 

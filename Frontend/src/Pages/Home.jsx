@@ -9,6 +9,7 @@ const Home = () => {
       <SearchBar />
       <div className='flex items w-screen'>
         <SideBar />
+
         <MainVideos />
       </div>
     </div>
