@@ -7,6 +7,7 @@ import Videoplay from './Components/Videoplay'
 import UploadVideo from './Pages/UploadVideo';
 import Signup from './Pages/Signup';
 import IsLoggedIn from './Pages/IsLoggedIn';
+import Login from './Pages/Login';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
         <Route path='/signup' element={<Signup />} ></Route>
+        <Route path='/login' element={<Login />} ></Route>
         <Route path="/video" element={<Videoplay />} />
         <Route path="/:videoPlayer" element={<VideoPlayer />} />
         <Route path="/UploadVideo" element={<UploadVideo />} />

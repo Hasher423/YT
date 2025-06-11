@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 
 const SideVideos = () => {
     const data1 = useContext(Context);
-    console.log(data1);
     const [data, setdata] = useState()
 
     useEffect(() => {

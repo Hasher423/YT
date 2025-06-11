@@ -51,7 +51,8 @@ module.exports.registerUser = async (req, res) => {
             httpOnly: false,
             secure: false,          // local dev = HTTP → must be false
             sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
-            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+            maxAge: 30 * 60 * 60 * 24 * 1000,// 30 days
+            path: '/',
         });
 
 
@@ -67,6 +68,8 @@ module.exports.registerUser = async (req, res) => {
 
 
 module.exports.login = async (req, res) => {
+    console.log(req.body);
+    
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -91,7 +94,8 @@ module.exports.login = async (req, res) => {
             httpOnly: false,
             secure: false,          // local dev = HTTP → must be false
             sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
-            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+            maxAge: 30 * 60 * 60 * 24 * 1000,// 30 days
+            path: '/',
         });
 
 
@@ -110,7 +114,7 @@ module.exports.logout = async (req, res) => {
     try {
         // res.cookie = '';
 
-        const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(400).json({ message: 'No token found' });
@@ -127,6 +131,10 @@ module.exports.logout = async (req, res) => {
 
 
 module.exports.getuser = async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
     try {
         const user = await userModel.findOne({ _id: req.user });
         return res.status(200).json({ user })
@@ -134,4 +142,13 @@ module.exports.getuser = async (req, res) => {
     catch (err) {
         console.error(err)
     }
+}
+
+
+module.exports.validateToken = async (req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+    res.json({ valid: true })
 }

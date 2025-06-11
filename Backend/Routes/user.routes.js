@@ -8,5 +8,6 @@ Router.post('/signup', upload.single('logo'), userController.registerUser);
 Router.post('/login', userController.login);
 Router.get('/logout', userController.logout);
 Router.get('/getuser', isLoggedIn.auth ,userController.getuser);
+Router.get('/validateToken',isLoggedIn.auth,userController.validateToken )
 
 module.exports = Router;

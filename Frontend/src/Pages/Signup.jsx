@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const signup = () => {
@@ -102,6 +102,8 @@ const signup = () => {
                         className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold py-[.6vw] rounded-md shadow-lg hover:from-red-700 hover:to-red-900 transition-all cursor-pointer"
                     />
 
+
+                    <p>Already have an account? <Link className='text-blue-600' to={'/login'}>Login</Link></p>
                 </form>
             </div>
         </div>

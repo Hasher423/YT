@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 const SearchBar = ({ setshowSideBar }) => {
     const searchBar = useRef(null)
     const [showPanel, setshowPanel] = useState(false)
+    const [showChannel, setshowChannel] = useState(false)
     const [sticky, setsticky] = useState(false)
     const [theme, settheme] = useState('dark')
     const [user, setuser] = useState('')
@@ -47,6 +48,21 @@ const SearchBar = ({ setshowSideBar }) => {
         fetchData();
     }, []);
 
+
+    const logOut = async () =>{
+        try {
+            const response = await axios.get('http://localhost:3000/user/logout'
+                ,{
+                    withCredentials: true,
+                }
+            );
+            if(response?.data?.message){
+                window.location.href = '/'
+            }
+        }catch(err) {
+            console.log(err)
+        }
+    }
 
 
     return (
@@ -119,12 +135,31 @@ const SearchBar = ({ setshowSideBar }) => {
                     </div>
                 </div>
                 <div className='text-[5vw] sm:text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
-                <div className='bg-red-900 w-[7vw] h-[7vw] sm:w-9 sm:h-9 rounded-full overflow-hidden'>
+                
+                <div 
+                onClick={() =>{
+                    setshowChannel(!showChannel)
+                }}
+                className='bg-red-900 w-[7vw] h-[7vw] sm:w-9 sm:h-9 rounded-full overflow-hidden'>
+                   {showChannel? <div className='absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
+                        <div className='py-1'>
+                            Channel
+                        </div>
+                        <div 
+                        onClick={() =>{
+                            logOut();
+                        }}
+                        className='pb-2'>
+                            Logout
+                        </div>
+                    </div>: ''}
                     <img
                         className='w-full h-full object-cover object-center'
                         src={`${user?.user?.logoId}`}
                         alt="IMAGEERROR"
                     />
+
+
                 </div>
 
                 <div className='bg-zinc-700 sm:hidden flex items-center justify-center w-[7vw] h-[7vw] text-[3.5vw] rounded-full'>
