@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import SideBar from './SideBar'
+import 'remixicon/fonts/remixicon.css';
+
 import { Link } from 'react-router-dom';
 
 
@@ -12,25 +14,40 @@ const MainVideos = () => {
 
     const [videos, setvideos] = useState(null)
     const [loading, setloading] = useState(true)
+    const [user, setuser] = useState(null)
     const [errMessage, setErrMessage] = useState('');
 
     useEffect(() => {
-            const fetchVideos = async () => {
-                try {
-                    console.log(import.meta.env.VITE_BACKEND_URI)
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
-                    setvideos(response.data.videos);
-                    console.log(response.data.videos);
+        const fetchVideos = async () => {
+            try {
+                console.log(import.meta.env.VITE_BACKEND_URI)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
+                setvideos(response.data.videos);
+                console.log(response.data.videos);
 
-                    setloading(false);
-                } catch (err) {
-                    console.log(err.message);
-                    // setloading(false);
-                    setErrMessage(JSON.stringify(err))
-                }
-            };
+                setloading(false);
+            } catch (err) {
+                console.log(err.message);
+                // setloading(false);
+                setErrMessage(JSON.stringify(err))
+            }
+        };
 
-            fetchVideos();
+        fetchVideos();
+    }, []);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('http://localhost:3000/user/getuser', {
+                withCredentials: true,
+            });
+            setuser(response.data.user);
+
+
+
+        };
+        fetchData();
     }, []);
 
 
@@ -55,15 +72,52 @@ const MainVideos = () => {
                 <div className='text-white bg-green- w-[100vw] flex justify-center py-2   '>
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
-                            loading ? <div className='LoaderOfMainVidoes'> </div> : videos.map((video, index) => {
-                                return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className='   bg-red- sm:m-4 '>
-                                    <img
-                                        className=' sm:w-[28vw] w-[100vw]  sm:max-h-[16vmax]  bg-cover rounded bg-center'
-                                        src={video.thumbnail_Url.secureurl} alt="" />
+                            loading ? <div className='LoaderOfMainVidoes '> </div> : videos.map((video, index) => {
+                                return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className=' sm:m-4'>
+                                    <div className='sm:w-[28vw]   '>
+                                        <div>
+                                            <img
+                                                className='w-full sm:max-h-[16vmax] object-cover rounded object-center'
+                                                src={video.thumbnail_Url.secureurl}
+                                                alt=""
+                                            />
+                                        </div>
 
 
-                                    <div className='py-2  am:min-h-[20vw] sm:h-[] px-3'>
-                                        <h3 className='text-xl text-custom-white '>{video.title.length > 20 ? video.title.slice(0, 30) + '...' : video.title}</h3>
+
+                                        <div className='flex  px-[.5vw] py-[.2vw] gap-[1vw] justify-between'>
+                                            <div className='w-[15%] mt-[1.4vw]'>
+                                                <img className='w-[4vw] h-[4vw] rounded-full' src={`${user?.logoId}`} alt="" />
+                                            </div>
+
+                                            <div className='w-[75%]  h-[100%]'>
+                                                {/* TITLE */}
+                                                <div className='  '>
+                                                    <div>
+                                                        <h3 className=' text-custom-white'>
+                                                            {video.title.length > 20 ? video.title.slice(0, 60) + '...' : video.title}
+                                                        </h3>
+                                                    </div>
+                                                </div>
+
+                                                {/* CHANNEL NAME */}
+                                                <div >
+                                                    <p className='text-zinc-600'>{user?.channelName}</p>
+                                                    <div className='flex items-center'>
+                                                        <p className='text-zinc-600'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
+                                                        <p className='text-zinc-600'> ------ ago</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div className='mt-[1vw]'>
+                                                <i className="ri-more-2-fill"></i> 
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </Link>)
                             })

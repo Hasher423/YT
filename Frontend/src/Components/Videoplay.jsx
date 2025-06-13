@@ -9,7 +9,8 @@ const Videoplay = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1.0);
   const [mute, setMute] = useState(false);
-  const [video, setVideo] = useState(null);
+  const [video, setVideo] = useState(null)
+  const [user, setuser] = useState(null);
   const videoRef = useRef(null);
   const location = useLocation()
   const videoId = new URLSearchParams(location.search).get('v');
@@ -29,11 +30,23 @@ const Videoplay = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       const res = await axios.get(`http://localhost:3000/video/getVideo?v=${videoId}`);
-      setVideo(res.data.video.video_Url.url);
+      setVideo(res);
+
     };
     fetchVideo();
   }, [videoId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get('http://localhost:3000/user/getuser', {
+        withCredentials: true,
+      });
+      setuser(response.data.user);
+
+
+    };
+    fetchData();
+  }, []);
 
 
   const toggleFullScreen = () => {
@@ -58,7 +71,7 @@ const Videoplay = () => {
           <video
             ref={videoRef}
             className=" w-[100%] h-[100vh%] "
-            src={`${video}`}
+            src={`${video?.data?.video?.video_Url?.url}`}
             height={'100%'}
 
             onLoadedMetadata={() => {
@@ -94,7 +107,24 @@ const Videoplay = () => {
 
       </div>
 
+      <div className=' w-full px-[1.5vw] py-[.7vw]'>
+        <div><p className='font-bold text-white text-[1.6vw]'>{video?.data?.video?.title}</p></div></div>
 
+      <div className='flex items-center justify-between'>
+        {/* CHANNEL PIC NAME AND SUBSCRIBE */}
+        <div className='flex items-center gap-[2vw] px-[1vw] '>
+          <div><img className='w-[3.5vw] h-[3.5vw] rounded-full object-cover' src={`${user?.logoId}`} alt="no" /></div>
+          <div className='text-custom-white font-bold'>{user?.channelName}</div>
+          <div className='bg-custom-white px-[1vw] py-[.5vw] rounded-3xl text-sm'><button>SUBSCRIBE</button></div>
+        </div>
+        {/* LIKE AND OTHER BUTTONS */}
+        <div className='text-custom-white flex items-center gap-[1vw] '>
+            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm'>781K</div>
+            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >Share</div>
+            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >Download</div>
+            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >....</div>
+        </div>
+      </div>
     </div>
   );
 };

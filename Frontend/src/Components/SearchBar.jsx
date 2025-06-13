@@ -43,7 +43,6 @@ const SearchBar = ({ setshowSideBar }) => {
                 withCredentials: true,
             });
             setuser(response.data);
-            console.log(response)
         };
         fetchData();
     }, []);

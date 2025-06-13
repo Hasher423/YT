@@ -50,7 +50,7 @@ const SideVideos = () => {
 
                                     {
                                         element.title.length > 30
-                                            ? `${element.title.slice(0, 40)}...`
+                                            ? `${element.title.slice(0, 30)}...`
                                             :
                                             `${element.title} `
                                     }

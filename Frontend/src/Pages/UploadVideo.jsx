@@ -1,142 +1,178 @@
 import React, { useState, useEffect } from 'react';
-
 import axios from 'axios';
-const UploadVideo = () => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [VideoData, setVideoData] = useState({});
-  const [IsDataGet, setIsDataGet] = useState(false)
-  const [IsError, setIsError] = useState(false)
-  const [uploadedPercentage, setUploadedPercentage] = useState(0)
-  const [isUploaded, setIsUploaded] = useState(null)
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+import { Navigate, useNavigate } from 'react-router-dom';
 
-  const handleDragLeave = () => setIsDragging(false);
+const UploadVideo = () => {
+  const [formData, setFormData] = useState({
+    video: null,
+    thumbnail: null,
+    title: '',
+    description: '',
+  });
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [error, setError] = useState(null);
+  const Navigate = useNavigate()
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) {
-      console.log('Dropped file:', file);
-      setVideoData({ file });
+      setFormData((prev) => ({ ...prev, video: file }));
     }
   };
 
-  const ChangeHandler = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
+    const name = e.target.name;
     if (file) {
-      console.log('Selected file:', file);
-      setVideoData({ ...VideoData, Video: file });
+      setFormData((prev) => ({ ...prev, [name]: file }));
     }
   };
 
-  const ThumbnailHandler = (e) => {
-    const thumbnail = e.target.files[0];
-    if (thumbnail) {
-      console.log("Thumbnail:", thumbnail);
-      setVideoData({ ...VideoData, thumbnail });
-    }
-  }
-  const fileToBase64 = file => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); });
+  const handleTextChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
 
-  useEffect(() => {
-    if (VideoData.thumbnail && VideoData.Video) {
-      setIsDataGet(true);
-    }
-  }, [VideoData]);
+    const data = new FormData();
+    data.append('video_Url', formData.video);
+    data.append('thumbnail', formData.thumbnail);
+    data.append('title', formData.title);
+    data.append('description', formData.description);
 
-  useEffect(() => {
-    console.log("Updated VideoData:", VideoData);
-  }, [VideoData]);
-
-
-  const SubmitHandler = async (e) => {
-    e.preventDefault()
-    const formData = new FormData();
-    formData.append('video_Url', VideoData.Video);
-    formData.append('thumbnail', VideoData.thumbnail);
-    formData.append('title', 'Sample Title2'); // Add your title here
-    formData.append('description', 'Sample Description2');
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/video/upload`,
-        formData,
+        data,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
-          onUploadProgress: (progress) => {
-            const percentage = Math.round((progress.loaded / progress.total) * 100);
-            console.log(`Upload Progress: ${percentage}%`);
-            setUploadedPercentage(percentage);
+          onUploadProgress: (e) => {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            setProgress(percent);
           },
         }
       );
-
-      console.log('Video uploaded successfully:', response.data);
-      setIsUploaded(response.data.success)
+      if (res.data.success) setIsUploaded(true);
     } catch (err) {
-      console.error('Error uploading video:', err.message);
-      setIsError(err.response.data)
+      setError(err.response?.data || 'Upload failed.');
     }
-  }
+  };
 
   return (
-    <div className="w-screen h-screen bg-[#181818] flex  items-center justify-center ">
-      {isUploaded ? <div className='text-white'>YOUR VIDEO HAS BEEN UPLOADED</div> : <label
-        htmlFor="file"
+    <div className="w-screen h-screen bg-[#181818] flex items-center justify-center p-6">
+      {isUploaded ? (
+        <div className="relative w-full max-w-2xl h-full flex items-center justify-center">
+          <h1 className="text-white text-2xl text-center">✅ Video uploaded successfully!</h1>
+          <button
+            onClick={() => Navigate('/')}
+            className="absolute bottom-4 right-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Go Home
+          </button>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${isDragging ? 'border-blue-500' : 'border-[#303030]'
+            } flex flex-col gap-4`}
+        >
+          {/* Video input */}
+          {!formData.video && (
+            <div className="flex flex-col items-center justify-center border-2 border-dashed p-10 rounded bg-[#2a2a2a] text-white">
+              <p>📽️ Drag and drop a video here or</p>
+              <input
+                type="file"
+                name="video"
+                accept="video/*"
+                onChange={handleFileChange}
+                className="mt-2 text-white"
+              />
+            </div>
+          )}
 
-        className={`sm:bg-[#212121] xl:w-[50vw] xl:h-[80vh]  relative sm:w-[60vw]   sm:min-w-[600px] rounded-xl h-[80vh] min-h-[500px] flex flex-col gap-6 items-center justify-center p-6 sm:border-2 transition-colors ${isDragging ? 'border-blue-500' : 'border-[#303030]'
-          }`}
+          {/* Thumbnail input */}
+          {formData.video && !formData.thumbnail && (
+            <div className="flex flex-col gap-2">
+              <label className="text-white">Select a thumbnail:</label>
+              <input
+                type="file"
+                name="thumbnail"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="text-white"
+              />
+            </div>
+          )}
 
-        onDragOver={handleDragOver}
+          {/* Title & Description */}
+          {formData.video && formData.thumbnail && (
+            <>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={formData.title}
+                onChange={handleTextChange}
+                className="px-4 py-2 rounded bg-white text-black"
+                required
+              />
+              <textarea
+                name="description"
+                placeholder="Description"
+                value={formData.description}
+                onChange={handleTextChange}
+                className="px-4 py-2 rounded bg-white text-black h-24 resize-none"
+                required
+              />
+            </>
+          )}
 
-        onDragLeave={handleDragLeave}
+          {/* Progress bar */}
+          {progress > 0 && (
+            <div className="w-full h-2 bg-gray-700 rounded">
+              <div
+                className="h-full bg-green-500 rounded"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          )}
 
-        onDrop={handleDrop}
-      >
-        <form action="post" onSubmit={SubmitHandler} >
+          {/* Error */}
+          {error && (
+            <p className="text-red-500 text-sm text-center">
+              {typeof error === 'object' ? JSON.stringify(error) : error}
+            </p>
+          )}
 
-          <input id="file" type="file" hidden onChange={ChangeHandler} />
-
-          <input id="thumbnail" type="file" hidden onChange={ThumbnailHandler} />
-
-          {IsDataGet ? <input type="submit" value={'Upload'} className='bg-emerald-900 absolute bottom-[17vmax] xl:text-[1.3vw] sm:bottom-[5vw] xl:bottom-[1vw] sm:left-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] text-white  px-4 py-2 rounded left-[37%] ' /> : ''}
-
+          {/* Upload Button */}
+          {formData.video &&
+            formData.thumbnail &&
+            formData.title &&
+            formData.description && (
+              <button
+                type="submit"
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
+              >
+                Upload Video
+              </button>
+            )}
         </form>
-
-        <div className="bg-[#2c2c2c] overflow-hidden  sm:w-[12vw] sm:h-[12vw] w-[100px] h-[100px] rounded-full flex items-center  justify-center relative">
-
-          {IsError ? <i className="ri-signal-wifi-error-line xl:text-[6vw] text-gray-400"></i> : <i className="ri-arrow-up-fill text-[3rem] xl:text-[6vw] text-gray-400"></i>}
-
-          <div className="absolute bottom-4 xl:bottom-10    h-[4px] w-[60%] bg-gray-300"><div className={`bg-green-600 ${uploadedPercentage && !IsError ? `w-[${uploadedPercentage}%]` : 'w-0'} h-full`}></div></div>
-
-        </div>
-
-        <div className="font-youtube text-center text-white text-lg cursor-pointer xl:text-[2vw]">
-
-          {IsError ? `${typeof (IsError) == 'object' ? JSON.stringify(IsError) : IsError}` : 'Drag and drop video files to upload'}
-
-          <p className="sm:text-xs xl:top-[2.2vw] xl:relative  text-gray-400 text-center min-w-[80%] xl:text-[2vw]">
-            Drop only Video and for thumbnail click button
-          </p>
-        </div>
-
-
-        {/* Buttons */}
-        {IsDataGet ? '' : <div className="flex xl:text-[1.1vw] gap-4 sm:mt-4 xl:mt-[3vw]">
-          <label
-            htmlFor='thumbnail'
-            className="bg-blue-600 text-white sm:text-[1.4vw] sm:px-4 sm:py-2 px-2 py-2  rounded-md hover:bg-blue-700 transition">
-            Thumbnail
-          </label>
-        </div>}
-      </label>}
+      )}
     </div>
   );
 };
