@@ -39,9 +39,8 @@ const SideVideos = () => {
                             className={`sm:flex sm:leading-[2vw] gap-3  ${index === 0 ? 'pb-5' : 'pb-4'} `}>
                             {/* DIV OF THUMBNAIL  */}
                             <div className='relative' >
-                                <div className='bg-zinc-900 bg-opacity-30 w-[2vw] h-[1vw] absolute bottom-[.9vw] rounded-sm right-[.8vmax]'></div>
                                 <img
-                                    className=' sm:w-[15vw] sm:max-h-[10vw]  border-[1px] border-zinc-900  sm:rounded-md bg-center object-contain'
+                                    className=' sm:w-[15vw] sm:max-h-[10vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
                                     src={`${element.thumbnail_Url.url}`} alt="" />
                             </div>
                             {/* DETAILS OF VIDEO DIV */}

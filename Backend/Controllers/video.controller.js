@@ -52,8 +52,10 @@ module.exports.createVideo = async (req, res) => {
                 url: thumbnail?.url || thumbnail?.response.data.url,
                 secureUrl: thumbnail?.secure_url || thumbnail?.response.data.secure_url,
             },
-            req.user_id
+            req.user
         );
+        console.log(req.user);
+        
 
 
         res.json({ success: true, video });

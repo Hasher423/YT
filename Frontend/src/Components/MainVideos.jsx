@@ -14,16 +14,15 @@ const MainVideos = () => {
 
     const [videos, setvideos] = useState(null)
     const [loading, setloading] = useState(true)
+    const [logos, setlogos] = useState({})
     const [user, setuser] = useState(null)
     const [errMessage, setErrMessage] = useState('');
 
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                console.log(import.meta.env.VITE_BACKEND_URI)
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
                 setvideos(response.data.videos);
-                console.log(response.data.videos);
 
                 setloading(false);
             } catch (err) {
@@ -51,6 +50,34 @@ const MainVideos = () => {
     }, []);
 
 
+    useEffect(() => {
+        const fetchLogoImg = async () => {
+            const logoMap = { ...logos };
+
+            for (const video of videos) {
+                try {
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuserForLogo/${video.userId}`, {
+                        withCredentials: true,
+                    });
+                    logoMap[video.userId] = response.data.user.logoId;
+                } catch (err) {
+                    console.error('Error fetching logo for', video.userId, err);
+                }
+            }
+
+            setlogos(logoMap);
+        };
+
+        if (videos) {
+            fetchLogoImg();
+        }
+    }, [videos]);
+
+
+
+
+
+
     return (
         <div className='w-[86vw] py-2'>
             {/* CATEGORY */}
@@ -74,20 +101,18 @@ const MainVideos = () => {
                         {
                             loading ? <div className='LoaderOfMainVidoes '> </div> : videos.map((video, index) => {
                                 return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className=' sm:m-4'>
-                                    <div className='sm:w-[28vw]   '>
+                                    <div className='sm:w-[28vw]    '>
                                         <div>
                                             <img
-                                                className='w-full sm:max-h-[16vmax] object-cover rounded object-center'
+                                                className='w-full sm:max-h-[16vmax]  object-cover rounded object-center'
                                                 src={video.thumbnail_Url.secureurl}
                                                 alt=""
                                             />
                                         </div>
 
-
-
                                         <div className='flex  px-[.5vw] py-[.2vw] gap-[1vw] justify-between'>
                                             <div className='w-[15%] mt-[1.4vw]'>
-                                                <img className='w-[4vw] h-[4vw] rounded-full' src={`${user?.logoId}`} alt="" />
+                                                <img className='w-[4vw] h-[4vw] rounded-full' src={`${logos[video?.userId]}`} alt="" />
                                             </div>
 
                                             <div className='w-[75%]  h-[100%]'>
@@ -113,7 +138,7 @@ const MainVideos = () => {
 
 
                                             <div className='mt-[1vw]'>
-                                                <i className="ri-more-2-fill"></i> 
+                                                <i className="ri-more-2-fill"></i>
                                             </div>
                                         </div>
 

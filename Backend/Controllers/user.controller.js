@@ -145,6 +145,22 @@ module.exports.getuser = async (req, res) => {
 }
 
 
+
+module.exports.getuserForLogo = async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+    try {
+        const user = await userModel.findOne({ _id: req.params.userId });
+        return res.status(200).json({ user })
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+
+
 module.exports.validateToken = async (req, res) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
