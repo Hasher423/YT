@@ -1,77 +1,73 @@
 const cloudinary = require('cloudinary').v2;
-const { Readable } = require('stream');
-const videoModel = require('../models/video.model');
 const fs = require('fs');
+const videoModel = require('../models/video.model');
 const userModel = require('../models/user.model');
 const { cloudinaryUploadChunked } = require('../Services/videoUpload.service.js');
-const { ToDataBase } = require('../Services/video.service.js')
+const { ToDataBase } = require('../Services/video.service.js');
 
 module.exports.createVideo = async (req, res) => {
     const { title, description } = req.body;
-    console.log(req.files, req.file)
-    // Validate required fields
-    if (!req.files.thumbnail || !req.files.video_Url) {
-        return res.status(400).json({ message: "Video or thumbnail file is required" });
+
+    // Check files exist
+    if (!req.files?.video_Url || !req.files?.thumbnail) {
+        return res.status(400).json({ message: "Video and thumbnail files are required" });
+    }
+
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized - user not found" });
     }
 
     try {
-        console.log(req.files)
-        const response = await cloudinaryUploadChunked(req.files.video_Url[0].path, 'video');
-        if (response.status == 'Error') {
-            return res.status(400).send(response.message)
-        }
-        fs.unlink(req.files.video_Url[0].path, (err) => {
-            if (err) throw err;
-            console.log('video was deleted');
-        });
+        const videoFilePath = req.files.video_Url[0]?.path;
+        const thumbnailFilePath = req.files.thumbnail[0]?.path;
 
-        const thumbnail = await cloudinaryUploadChunked(req.files.thumbnail[0].path, 'image');
-        fs.unlink(req.files.thumbnail[0].path, (err) => {
-            if (err) throw err;
-            console.log('thumbnail was deleted');
-        });
-
-        console.log(thumbnail);
-
-
-
-        if (!thumbnail && !response) {
-            return res.json({ error: 'video or thumnail could not be uploaded' });
+        if (!videoFilePath || !thumbnailFilePath) {
+            return res.status(400).json({ message: "File paths are missing" });
         }
 
+        // Upload video
+        const videoResponse = await cloudinaryUploadChunked(videoFilePath, 'video');
+        console.log(videoResponse)
+        if (videoResponse?.status === 'Error') {
+            return res.status(400).json({ message: videoResponse.message });
+        }
+        fs.unlink(videoFilePath, err => {
+            if (err) console.error('Failed to delete video file:', err);
+        });
 
-        const video = await ToDataBase(
-            title,
-            description,
-            {
-                url: response?.url || response?.response.data.url,
-                secureUrl: response?.secure_url || response?.response.data.secureurl,
-                playback_url: response?.playback_url || response?.response.data.playback_url,
-            },
-            {
-                url: thumbnail?.url || thumbnail?.response.data.url,
-                secureUrl: thumbnail?.secure_url || thumbnail?.response.data.secure_url,
-            },
-            req.user
-        );
-        console.log(req.user);
-        
+        // Upload thumbnail
+        const thumbnailResponse = await cloudinaryUploadChunked(thumbnailFilePath, 'image');
+        if (thumbnailResponse?.status === 'Error') {
+            return res.status(400).json({ message: thumbnailResponse.message });
+        }
+        fs.unlink(thumbnailFilePath, err => {
+            if (err) console.error('Failed to delete thumbnail file:', err);
+        });
 
+        // Prepare URLs
+        const videoData = {
+            url: videoResponse?.url || videoResponse?.secure_url || videoResponse?.response?.data?.url,
+            secureUrl: videoResponse?.secure_url || videoResponse?.response?.data?.secure_url,
+            playback_url: videoResponse?.playback_url || videoResponse?.response?.data?.playback_url
+        };
 
-        res.json({ success: true, video });
+        const thumbnailData = {
+            url: thumbnailResponse?.url || thumbnailResponse?.secure_url || thumbnailResponse?.response?.data?.url,
+            secureUrl: thumbnailResponse?.secure_url || thumbnailResponse?.response?.data?.secure_url
+        };
+
+        // Save to DB
+        const video = await ToDataBase(title, description, videoData, thumbnailData, req.user);
+        return res.json({ success: true, video });
 
     } catch (err) {
-        if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
-            console.error("Network Error:");
-            res.status(500).json({ message: "net Error " });
-        } else {
-            console.error("Upload Error:", err);
+        console.error("Upload Error:", err);
+        if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'].includes(err.code)) {
+            return res.status(500).json({ message: "Network Error" });
         }
-        console.log(err)
-        res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
 
 module.exports.getVideos = async (req, res) => {
     console.log(req.query.page)
