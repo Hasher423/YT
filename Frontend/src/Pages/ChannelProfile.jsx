@@ -18,9 +18,9 @@ const Home = () => {
             <div className='bg-custom-black w-full min-h-    '>
                 <SearchBar />
 
-                <div className='pt-[15vw] md:pt-[6vw] px-[3vw] md:px-[6vmax]'>
+                <div className='pt-[15vw] md:pt-[6vw] 530-780:pt-[10vw]  px-[3vw] md:px-[6vmax]'>
 
-                    <div className='bg-red-900 h-[15vh] md:h-[25vh] rounded-lg md:rounded-2xl w-[95vw] md:w-[90vw] overflow-hidden '>
+                    <div className='bg-red-900 h-[15vh] md:h-[25vh] 530-780:h-[20vh] rounded-lg md:rounded-2xl w-[95vw] md:w-[90vw] overflow-hidden '>
                         <img className='w-full h-full object-cover object-center' src="https://yt3.googleusercontent.com/6ERPyDALiEB_YnLY_4PmzKF9TuumOhC-r9A3QWcDVYayu4zpvpG7oceXD4czyghoeJZbfg-nvA=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="" />
                     </div>
 

@@ -18,6 +18,7 @@ export default {
       },
       screens: {
         'lt-sm': { max: '639px' }, // Custom screen for <640px
+        '530-780': {'raw': '(min-width: 530px) and (max-width: 780px)'},
       },
     },
   },
