@@ -104,40 +104,40 @@ const MainVideos = () => {
                                     <div className='sm:w-[28vw]    '>
                                         <div>
                                             <img
-                                                className='w-full sm:max-h-[16vmax]  object-cover rounded object-center'
-                                                src={video.thumbnail_Url.secureurl}
+                                                className='w-full sm:max-h-[16vmax] object-cover rounded object-center '
+                                                src={video?.thumbnail_Url?.secureurl}
                                                 alt=""
                                             />
                                         </div>
 
-                                        <div className='flex  px-[.5vw] py-[.2vw] gap-[1vw] justify-between'>
-                                            <div className='w-[15%] mt-[1.4vw]'>
-                                                <img className='w-[4vw] h-[4vw] rounded-full' src={`${logos[video?.userId]}`} alt="" />
+                                        <div className='flex  px-[.5vw] py-[.2vw] gap-[vw]  justify-between lt-sm:py-[4vw] lt-sm:px-[1.4vw] '>
+                                            <div className='w-[ ] mt-[1.4vw] place-content-center '>
+                                                <img className='w-[4vw] h-[4vw] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full' src={`${logos[video?.userId]}`} alt="" />
                                             </div>
 
                                             <div className='w-[75%]  h-[100%]'>
                                                 {/* TITLE */}
                                                 <div className='  '>
                                                     <div>
-                                                        <h3 className=' text-custom-white'>
-                                                            {video.title.length > 20 ? video.title.slice(0, 60) + '...' : video.title}
+                                                        <h3 className=' text-custom-white text-[1.4vw] lt-sm:text-[5vw]'>
+                                                            {video.title.length > 40 ? video.title.substring(0, 40) + '...' : video.title}
                                                         </h3>
                                                     </div>
                                                 </div>
 
                                                 {/* CHANNEL NAME */}
                                                 <div >
-                                                    <p className='text-zinc-600'>{user?.channelName}</p>
-                                                    <div className='flex items-center'>
-                                                        <p className='text-zinc-600'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
-                                                        <p className='text-zinc-600'> ------ ago</p>
+                                                    <p className='text-zinc-500 lt-sm:text-[2vh]'>{user?.channelName}</p>
+                                                    <div className='flex items-center leading-none lt-sm:text-[2vh]'>
+                                                        <p className='text-zinc-500'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
+                                                        <p className='text-zinc-500'> ------ ago</p>
                                                     </div>
                                                 </div>
 
                                             </div>
 
 
-                                            <div className='mt-[1vw]'>
+                                            <div className='mt-[1vw] lt-sm:text-[3vh]'>
                                                 <i className="ri-more-2-fill"></i>
                                             </div>
                                         </div>

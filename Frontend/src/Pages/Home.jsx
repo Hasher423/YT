@@ -1,14 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import SearchBar from '../Components/SearchBar'
 import SideBar from '../Components/SideBar'
 import MainVideos from '../Components/MainVideos'
+import { Context } from '../Context/VideosContext'
+
+
+
+
 
 const Home = () => {
+
+  const showSideBar = useContext(Context)[1];
+
   return (
     <div className='bg-custom-black w-full min-h-screen overflow-x-hidden'>
       <SearchBar />
       <div className='flex items w-screen'>
-        <SideBar />
+        <SideBar showSideBar={showSideBar}/>
 
         <MainVideos />
       </div>

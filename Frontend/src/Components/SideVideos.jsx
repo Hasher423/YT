@@ -29,33 +29,33 @@ const SideVideos = () => {
             {/* SIDE VIDEO CONTAINER */}
 
 
-            {data?.videos?.length > 0 ? <div className='sm:bg-red-90 flex-1  p py-10'>
+            {data?.videos?.length > 0 ? <div className='sm:bg-red-90 flex-1     '>
 
                 {data.videos.map((element, index) => {
                     return (<Link to={`?v=${element._id}`}>
                         {/* SINGLE VIDEO */}
                         <div
                             key={index}
-                            className={`sm:flex sm:leading-[2vw] gap-3  ${index === 0 ? 'pb-5' : 'pb-4'} `}>
+                            className={`sm:flex sm:leading-[2vw] gap-3 max  ${index === 0 ? 'pb-3' : 'pb-[.3vmax]'} `}>
                             {/* DIV OF THUMBNAIL  */}
                             <div className='relative' >
                                 <img
-                                    className=' sm:w-[15vw] sm:max-h-[10vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
-                                    src={`${element.thumbnail_Url.url}`} alt="" />
+                                    className=' sm:w-[20vw]  lt-sm:w-[100vw]  sm:max-h-[8vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                    src={`${element?.thumbnail_Url?.url}`} alt="" />
                             </div>
                             {/* DETAILS OF VIDEO DIV */}
-                            <div className='bg--900 w-[60%] text-white font-medium px-3 sm:px-0'>
-                                <h1 className='overflow-hidden  text-wrap w-[15vmax] bg--900 '>
+                            <div className='w-[100%] text-white font-medium px-3 sm:px-0'>
+                                <h1 className='overflow-hidden w-[15vw] lt-sm:w-[80%]  text-wrap '>
 
                                     {
                                         element.title.length > 30
-                                            ? `${element.title.slice(0, 30)}...`
+                                            ? `${element.title.slice(0, 20)}...`
                                             :
                                             `${element.title} `
                                     }
 
                                 </h1>
-                                <h3><a href={`${element.video_Url.url}`}>@CAHNNEL NAME</a></h3>
+                                <h3><a href={`${element?.video_Url?.url}`}>@CAHNNEL NAME</a></h3>
                                 <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-thin'>
                                     <h3>VIEWS</h3>
                                     <h3>MONTHS AGO</h3>

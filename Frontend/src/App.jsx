@@ -8,12 +8,14 @@ import UploadVideo from './Pages/UploadVideo';
 import Signup from './Pages/Signup';
 import IsLoggedIn from './Pages/IsLoggedIn';
 import Login from './Pages/Login';
+import ChannelProfile from './Pages/ChannelProfile';
 
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
+        <Route path="/@channel_Profile" element={<ChannelProfile />} />
         <Route path='/signup' element={<Signup />} ></Route>
         <Route path='/login' element={<Login />} ></Route>
         <Route path="/video" element={<Videoplay />} />

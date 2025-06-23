@@ -13,7 +13,6 @@ const IsLoggedIn = () => {
         const response = await axios('http://localhost:3000/user/validateToken', {
           withCredentials: true,
         });
-        console.log(response)
         if (response.data.valid) {
           setIsLoggedIn(true);
         } else {

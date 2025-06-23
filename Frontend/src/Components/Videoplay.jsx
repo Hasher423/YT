@@ -64,13 +64,13 @@ const Videoplay = () => {
 
 
   return (
-    <div className="video-container flex-1 bg-red-90 sm:h-[70%]  ">
+    <div className="video-container flex-1 bg-red-90 sm:h-[70%]   ">
 
       <div className="relative w-full h-full">
-        <div className="video w-full sm:h-full h-[50vh] ">
+        <div className="video w-[60vw] sm:h-full h-[50vh] ">
           <video
             ref={videoRef}
-            className=" w-[100%] h-[100vh%] "
+            className=" w-[100%] h-[100%] rounded-xl"
             src={`${video?.data?.video?.video_Url?.url}`}
             height={'100%'}
 
@@ -107,22 +107,32 @@ const Videoplay = () => {
 
       </div>
 
-      <div className=' w-full px-[1.5vw] py-[.7vw]'>
-        <div><p className='font-bold text-white text-[1.6vw]'>{video?.data?.video?.title}</p></div></div>
+      <div className=' w-full px-[1.5vw] py-[.7vw] '>
+        <div><p className='font-[700] text-white sm:text-[1.4vw] 2xl:text-[1.7vw]'>{video?.data?.video?.title}</p></div></div>
 
-      <div className='flex items-center justify-between'>
+      <div className='cursor-pointer flex items-center md:flex md:flex-col 2xl:flex-row 2xl:items-center md:items-start md:gap-[2vw]  justify-between lt-sm:flex-col lt-sm:items-start lt-sm:gap-[4vw] lt-sm:mt-[2vh] lt-sm:px-[3vw]'>
         {/* CHANNEL PIC NAME AND SUBSCRIBE */}
-        <div className='flex items-center gap-[2vw] px-[1vw] '>
-          <div><img className='w-[3.5vw] h-[3.5vw] rounded-full object-cover' src={`${user?.logoId}`} alt="no" /></div>
+        <div className='flex items-center gap-[2vw] px-[1vw] lt-sm:gap-[3vw] 2xl:text-[1.7vw]'>
+          <div><img className='w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]' src={`${user?.logoId}`} alt="no" /></div>
           <div className='text-custom-white font-bold'>{user?.channelName}</div>
-          <div className='bg-custom-white px-[1vw] py-[.5vw] rounded-3xl text-sm'><button>SUBSCRIBE</button></div>
+          <div className='bg-custom-white px-[1vw] py-[.5vw] sm:rounded-3xl font-[500] text-sm lt-sm:rounded lt-sm:py-[.5vh] lt-sm:ml-[9vh] lt-sm:px-[3vw] 2xl:text-[1.7vw] 2xl:px-[1.2vw] 2xl:py-[1vw]'><button>SUBSCRIBE</button></div>
         </div>
+
         {/* LIKE AND OTHER BUTTONS */}
-        <div className='text-custom-white flex items-center gap-[1vw] '>
-            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm'>781K</div>
-            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >Share</div>
-            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >Download</div>
-            <div className='rounded-3xl bg-zinc-800 px-[2vw] py-[.4vw] font-bold text-sm' >....</div>
+        <div className='text-custom-white flex items-center gap-[.6vw] lt-sm:mt-[2vh] lt-sm:flex-wrap lt-sm:gap-[vw] '>
+          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw]  py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[600] text-sm'>
+            <i class="ri-thumb-up-line font-[100]"></i> &nbsp;
+            781K | &nbsp;
+            <i class="ri-thumb-down-line font-[100]"></i>
+          </div>
+          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw] py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[700] text-sm' >
+            <i class="ri-share-forward-line font-extralight text-[1.2vw] lt-sm:text-[3vh]"></i> &nbsp; Share
+          </div>
+          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw] py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[400] text-sm' >
+            <i class="ri-download-line text-[1vw] lt-sm:text-[3vh]"></i> &nbsp;
+            <a href={`${video?.data?.video?.video_Url?.url}`} download>Download</a>
+          </div>
+          <div className='rounded-full 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[.7vw] py-[.5vw] lt-sm:w-[6vh] lt-sm:h-[5.5vh] flex items-center justify-center font-bold text-sm lt-sm:text-md' ><i class="ri-more-fill"></i></div>
         </div>
       </div>
     </div>

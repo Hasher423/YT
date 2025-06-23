@@ -16,6 +16,9 @@ export default {
       fontFamily: {
         'youtube': ['Roboto', 'Arial', 'sans-serif'],
       },
+      screens: {
+        'lt-sm': { max: '639px' }, // Custom screen for <640px
+      },
     },
   },
   plugins: [],
