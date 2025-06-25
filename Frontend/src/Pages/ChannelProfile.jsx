@@ -21,7 +21,7 @@ const Home = () => {
                 <div className='pt-[15vw] md:pt-[6vw] 530-780:pt-[10vw]  px-[3vw] md:px-[6vmax]'>
 
                     <div className='bg-red-900 h-[15vh] md:h-[25vh] 530-780:h-[20vh] rounded-lg md:rounded-2xl w-[95vw] md:w-[90vw] overflow-hidden '>
-                        <img className='w-full h-full object-cover object-center' src="https://yt3.googleusercontent.com/6ERPyDALiEB_YnLY_4PmzKF9TuumOhC-r9A3QWcDVYayu4zpvpG7oceXD4czyghoeJZbfg-nvA=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="" />
+                        <img className='w-full h-full object-cover object-center' src="https://yt3.googleusercontent.com/z4oJSx2HdQcslZPNMWOp5BT9KVeyhvgdZfUfM1Hzt4lSpCbVb_xB_w00X3NgoNADkLajyHfNag=w1138-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="" />
                     </div>
 
 
@@ -33,7 +33,7 @@ const Home = () => {
                         <div className='h-full flex items-center justify-center'>
                             <img
                                 className='w-[20vw] md:w-[12vw] aspect-square rounded-full object-cover'
-                                src="https://yt3.googleusercontent.com/14Nf520-HXNdCmvBnCJMZm2NxCgmD-skHJvutlO3Zd6FjyNf8rXHzz9RHf7A44pLDY7z63s8=s160-c-k-c0x00ffffff-no-rj"
+                                src="https://yt3.googleusercontent.com/-H3tmmMAL0EjlW0kJRZnsBh1MbLA8D8JfkPEY0ov0P7-M3zUJiJie0425D6hCwMwlGPxaWbQapI=s120-c-k-c0x00ffffff-no-rj"
                                 alt=""
                             />
                         </div>
