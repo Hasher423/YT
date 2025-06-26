@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Context } from '../Context/VideosContext'
 
 const SearchBar = () => {
-    const setshowSideBar = useContext(Context)[2]
+    const setshowSideBar = useContext(Context)[1]
     const searchBar = useRef(null)
     const [showPanel, setshowPanel] = useState(false)
     const [showChannel, setshowChannel] = useState(false)
@@ -144,7 +144,7 @@ const SearchBar = () => {
                 className='bg-red-900 w-[7vw] h-[7vw] sm:w-8 sm:h-8 rounded-full overflow-hidden'>
                    {showChannel? <div className='lt-sm:right-[5vh] lt-sm:text-[2vh] lt-sm:-bottom-[8vh] absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
                         <div className='py-1'>
-                            Channel
+                            <Link to={`/channel/@${user?.user?.channelName}`}>Channel</Link>
                         </div>
                         <div 
                         onClick={() =>{

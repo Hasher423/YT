@@ -9,67 +9,85 @@ module.exports.registerUser = async (req, res) => {
     try {
         const { name, email, password, channelName } = req.body;
 
+        const logoFile = req.files?.logo?.[0];
+        const bgBannerFile = req.files?.bgBanner?.[0];
 
-        const logoUploaded = await cloudinaryUploadChunked(req.file.path, 'image');
+        if (!logoFile || !bgBannerFile) {
+            return res.status(400).json({ error: 'Logo or background banner missing' });
+        }
+
+        // Upload logo to cloudinary
+        const logoUploaded = await cloudinaryUploadChunked(logoFile.path, 'image');
         if (!logoUploaded) {
             return res.status(400).json({ message: "Failed to upload logo" });
         }
-        console.log(logoUploaded)
-        fs.unlink(req.file.path, (err) => {
+
+        // Clean local logo file
+        fs.unlink(logoFile.path, (err) => {
             if (err) throw err;
-            console.log('logo in local folder has been  deleted');
+            console.log('logo in local folder has been deleted');
         });
 
-
-        if (!logoUploaded) {
-            console.log('logo could not be uploaded');
+        // upload Banner to cloudinary 
+        const bannerUploaded = await cloudinaryUploadChunked(bgBannerFile.path , 'image');
+        if(!bannerUploaded)
+        {
+            return res.status(400).json({ message: "Failed to upload logo" });
         }
 
+        // Clean local logo file
+        fs.unlink(bgBannerFile.path, (err) => {
+            if (err) throw err;
+            console.log('Banner in local folder has been deleted');
+        });
+
+        // Validate fields
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        // Hash password and check user
         const hashedPassword = await userModel.hashpassword(password);
-
         const alreadyExists = await userModel.findOne({ email });
         if (alreadyExists) {
-            return res.status(409).send("User Already exists LOGIN")
+            return res.status(409).send("User Already exists. LOGIN");
         }
 
-        const logoId = logoUploaded.response.status === 200 ? logoUploaded.response.data.url : null;
+        const logoId = logoUploaded?.status === 'Success' ? logoUploaded?.response?.url : null;        
+        const bgBanner = bannerUploaded?.status === 'Success' ? bannerUploaded?.response?.url : null;
 
+        // Create user
         const newUser = await userService.createUser(
             name,
             email,
             hashedPassword,
             channelName,
             logoId,
+            bgBanner, 
         );
+
+        // Generate token and set cookie
         const token = await newUser.generateToken();
-        console.log('token on generating ' + token);
         res.cookie('token', token, {
             httpOnly: false,
-            secure: false,          // local dev = HTTP → must be false
-            sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
-            maxAge: 30 * 60 * 60 * 24 * 1000,// 30 days
+            secure: false,
+            sameSite: 'Lax',
+            maxAge: 30 * 60 * 60 * 24 * 1000,
             path: '/',
         });
 
-
-
-
         return res.status(201).json({ user: newUser, token });
-    } catch (err) {
-        console.error('Error in registerUser:', err);
-        return res.status(500).json({ error: err.message, stack: err.stack });
+    } catch (error) {
+        console.error('Error in registerUser:', error);
+        return res.status(500).json({ error: error.message, stack: error.stack });
     }
-}
+};
 
 
 
 module.exports.login = async (req, res) => {
     console.log(req.body);
-    
+
     try {
         const { email, password } = req.body;
         if (!email || !password) {

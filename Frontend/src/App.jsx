@@ -15,11 +15,11 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
-        <Route path="/@channel_Profile" element={<ChannelProfile />} />
+        <Route path="/channel/:channel_Profile" element={<ChannelProfile />} />
         <Route path='/signup' element={<Signup />} ></Route>
         <Route path='/login' element={<Login />} ></Route>
         <Route path="/video" element={<Videoplay />} />
-        <Route path="/:videoPlayer" element={<VideoPlayer />} />
+        <Route path="/video/:videoPlayer" element={<VideoPlayer />} />
         <Route path="/UploadVideo" element={<UploadVideo />} />
       </Routes>
     </div>

@@ -20,8 +20,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: [8, 'Password must be at least 8 characters long']
     },
-    
+
     logoId: {
+        type: Object,
+    },
+    bgBanner: {
         type: Object,
     },
     subscribers: {
@@ -37,7 +40,7 @@ const userSchema = new mongoose.Schema({
             ref: 'videos'
         }
     ],
-    category:[]
+    category: []
 }, { timestamps: true })
 
 

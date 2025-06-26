@@ -1,10 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
+import {UserContext} from '../Context/GetUserContext';
+
+
+
 const ChannelVideos = () => {
+    const data= useContext(UserContext)
     const prevRef1 = useRef(null);
     const nextRef1 = useRef(null);
     const prevRef2 = useRef(null);
@@ -55,7 +60,7 @@ const ChannelVideos = () => {
                                     <div className='w-[35vw] bg-red-900 h-[20vw] md:w-[35vw] md:h md:rounded-md overflow-hidden'>
                                         <img
                                             className='w-full h-full object-cover object-center'
-                                            src="https://i.ytimg.com/vi/a0vBHHMtAms/hqdefault.jpg?sqp=-oaymwEnCPYBEIoBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAkGJpylLQ5d28FRQ-VioZ0locE_g"
+                                            src="   https://i.ytimg.com/vi/a0vBHHMtAms/hqdefault.jpg?sqp=-oaymwEnCPYBEIoBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAkGJpylLQ5d28FRQ-VioZ0locE_g"
                                             alt=""
                                         />
                                     </div>

@@ -9,7 +9,7 @@ const signup = () => {
     const [password, setpassword] = useState('')
     const [channelName, setchannelName] = useState('')
     const [logo, setlogo] = useState([])
-
+    const [bgBanner, setbgBanner] = useState([])
 
     const navigate = useNavigate();
 
@@ -23,6 +23,7 @@ const signup = () => {
             formData.append('password', password);
             formData.append('channelName', channelName);
             formData.append('logo', logo);
+            formData.append('bgBanner', bgBanner);
 
             const response = await axios.post('http://localhost:3000/user/signup', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -94,6 +95,20 @@ const signup = () => {
                         className="flex items-center justify-center w-full border-2 border-zinc-800 py-[.4vw] cursor-pointer hover:bg-zinc-800 transition-colors"
                     >
                         📁 Choose Logo
+                    </label>
+                    <input
+                        onChange={(e) => setbgBanner(e.target.files[0])}
+                        id="bgBanner"
+                        className="hidden"
+                        type="file"
+                        name="bgBanner"
+                    />
+                    {/* Custom label */}
+                    <label
+                        htmlFor="bgBanner"
+                        className="flex items-center justify-center w-full border-2 border-zinc-800 py-[.4vw] cursor-pointer hover:bg-zinc-800 transition-colors"
+                    >
+                        📁 Choose bgBanner
                     </label>
 
                     <input
