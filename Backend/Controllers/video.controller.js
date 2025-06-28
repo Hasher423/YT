@@ -2,14 +2,17 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const videoModel = require('../models/video.model');
 const userModel = require('../models/user.model');
-const { cloudinaryUploadChunked } = require('../Services/videoUpload.service.js');
+const { cloudinaryUploadChunkedBuffer } = require('../Services/videoUpload.service.js');
 const { ToDataBase } = require('../Services/video.service.js');
 
 module.exports.createVideo = async (req, res) => {
     const { title, description } = req.body;
 
-    // Check files exist
-    if (!req.files?.video_Url || !req.files?.thumbnail) {
+    // Validate file presence
+    const videoFile = req.files?.video_Url?.[0];
+    const thumbnailFile = req.files?.thumbnail?.[0];
+
+    if (!videoFile || !thumbnailFile) {
         return res.status(400).json({ message: "Video and thumbnail files are required" });
     }
 
@@ -18,42 +21,38 @@ module.exports.createVideo = async (req, res) => {
     }
 
     try {
-        const videoFilePath = req.files.video_Url[0]?.path;
-        const thumbnailFilePath = req.files.thumbnail[0]?.path;
+        // Upload video from buffer
+        const videoResponse = await cloudinaryUploadChunkedBuffer(
+            videoFile.buffer,
+            videoFile.mimetype,
+            'video'
+        );
 
-        if (!videoFilePath || !thumbnailFilePath) {
-            return res.status(400).json({ message: "File paths are missing" });
-        }
-
-        // Upload video
-        const videoResponse = await cloudinaryUploadChunked(videoFilePath, 'video');
-        console.log(videoResponse)
         if (videoResponse?.status === 'Error') {
             return res.status(400).json({ message: videoResponse.message });
         }
-        fs.unlink(videoFilePath, err => {
-            if (err) console.error('Failed to delete video file:', err);
-        });
 
-        // Upload thumbnail
-        const thumbnailResponse = await cloudinaryUploadChunked(thumbnailFilePath, 'image');
+        // Upload thumbnail from buffer
+        const thumbnailResponse = await cloudinaryUploadChunkedBuffer(
+            thumbnailFile.buffer,
+            thumbnailFile.mimetype,
+            'image'
+        );
+
         if (thumbnailResponse?.status === 'Error') {
             return res.status(400).json({ message: thumbnailResponse.message });
         }
-        fs.unlink(thumbnailFilePath, err => {
-            if (err) console.error('Failed to delete thumbnail file:', err);
-        });
 
-        // Prepare URLs
+        // Extract URLs
         const videoData = {
-            url: videoResponse?.url || videoResponse?.secure_url || videoResponse?.response?.data?.url,
-            secureUrl: videoResponse?.secure_url || videoResponse?.response?.data?.secure_url,
-            playback_url: videoResponse?.playback_url || videoResponse?.response?.data?.playback_url
+            url: videoResponse?.response?.url || videoResponse?.url,
+            secureUrl: videoResponse?.response?.secure_url || videoResponse?.secure_url,
+            playback_url: videoResponse?.response?.playback_url || videoResponse?.playback_url,
         };
 
         const thumbnailData = {
-            url: thumbnailResponse?.url || thumbnailResponse?.secure_url || thumbnailResponse?.response?.data?.url,
-            secureUrl: thumbnailResponse?.secure_url || thumbnailResponse?.response?.data?.secure_url
+            url: thumbnailResponse?.response?.url || thumbnailResponse?.url,
+            secureUrl: thumbnailResponse?.response?.secure_url || thumbnailResponse?.secure_url,
         };
 
         // Save to DB
@@ -62,12 +61,13 @@ module.exports.createVideo = async (req, res) => {
 
     } catch (err) {
         console.error("Upload Error:", err);
-        if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'].includes(err.code)) {
-            return res.status(500).json({ message: "Network Error" });
-        }
-        return res.status(500).json({ message: "Internal Server Error" });
+        const networkErrors = ['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'];
+        return res.status(500).json({
+            message: networkErrors.includes(err.code) ? "Network Error" : "Internal Server Error"
+        });
     }
 };
+
 
 module.exports.getVideos = async (req, res) => {
     console.log(req.query.page)

@@ -96,7 +96,7 @@ const videoModel = require("../models/video.model.js");
 module.exports.ToDataBase = async (
     title,
     description,
-     {
+    {
         url,
         secureUrl,
         playback_url,
@@ -120,6 +120,6 @@ module.exports.ToDataBase = async (
 
     })
 
-    return  video ;
+    return video;
 
 }

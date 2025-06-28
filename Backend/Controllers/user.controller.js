@@ -2,7 +2,7 @@ const userService = require('../Services/user.service')
 const userModel = require('../models/user.model')
 const mongoose = require('mongoose')
 const blackListTokensModel = require('../models/blackListTokens');
-const { cloudinaryUploadChunked } = require('../Services/videoUpload.service.js');
+const { cloudinaryUploadChunkedBuffer } = require('../Services/videoUpload.service.js');
 const fs = require('fs');
 
 module.exports.registerUser = async (req, res) => {
@@ -16,45 +16,44 @@ module.exports.registerUser = async (req, res) => {
             return res.status(400).json({ error: 'Logo or background banner missing' });
         }
 
-        // Upload logo to cloudinary
-        const logoUploaded = await cloudinaryUploadChunked(logoFile.path, 'image');
-        if (!logoUploaded) {
-            return res.status(400).json({ message: "Failed to upload logo" });
+        // Upload logo (from buffer)
+        const logoUploaded = await cloudinaryUploadChunkedBuffer(
+            logoFile.buffer,
+            logoFile.mimetype,
+            'image'
+        );
+
+        if (logoUploaded?.status === 'Error') {
+            return res.status(400).json({ message: logoUploaded.message || 'Failed to upload logo' });
         }
 
-        // Clean local logo file
-        fs.unlink(logoFile.path, (err) => {
-            if (err) throw err;
-            console.log('logo in local folder has been deleted');
-        });
+        // Upload background banner (from buffer)
+        const bannerUploaded = await cloudinaryUploadChunkedBuffer(
+            bgBannerFile.buffer,
+            bgBannerFile.mimetype,
+            'image'
+        );
 
-        // upload Banner to cloudinary 
-        const bannerUploaded = await cloudinaryUploadChunked(bgBannerFile.path , 'image');
-        if(!bannerUploaded)
-        {
-            return res.status(400).json({ message: "Failed to upload logo" });
+        if (bannerUploaded?.status === 'Error') {
+            return res.status(400).json({ message: bannerUploaded.message || 'Failed to upload banner' });
         }
-
-        // Clean local logo file
-        fs.unlink(bgBannerFile.path, (err) => {
-            if (err) throw err;
-            console.log('Banner in local folder has been deleted');
-        });
 
         // Validate fields
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Hash password and check user
-        const hashedPassword = await userModel.hashpassword(password);
+        // Check if user already exists
         const alreadyExists = await userModel.findOne({ email });
         if (alreadyExists) {
-            return res.status(409).send("User Already exists. LOGIN");
+            return res.status(409).json({ message: 'User already exists. Please login.' });
         }
 
-        const logoId = logoUploaded?.status === 'Success' ? logoUploaded?.response?.url : null;        
-        const bgBanner = bannerUploaded?.status === 'Success' ? bannerUploaded?.response?.url : null;
+        // Hash password
+        const hashedPassword = await userModel.hashpassword(password);
+
+        const logoUrl = logoUploaded?.response?.secure_url || logoUploaded?.secure_url;
+        const bannerUrl = bannerUploaded?.response?.secure_url || bannerUploaded?.secure_url;
 
         // Create user
         const newUser = await userService.createUser(
@@ -62,21 +61,24 @@ module.exports.registerUser = async (req, res) => {
             email,
             hashedPassword,
             channelName,
-            logoId,
-            bgBanner, 
+            logoUrl,
+            bannerUrl
         );
 
-        // Generate token and set cookie
+        // Generate token
         const token = await newUser.generateToken();
+
+        // Set cookie
         res.cookie('token', token, {
-            httpOnly: false,
+            httpOnly: true,
             secure: false,
             sameSite: 'Lax',
-            maxAge: 30 * 60 * 60 * 24 * 1000,
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             path: '/',
         });
 
         return res.status(201).json({ user: newUser, token });
+
     } catch (error) {
         console.error('Error in registerUser:', error);
         return res.status(500).json({ error: error.message, stack: error.stack });

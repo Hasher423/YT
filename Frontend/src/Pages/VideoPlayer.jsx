@@ -9,8 +9,8 @@ import { Context } from '../Context/VideosContext'
 
 
 const VideoPlayer = () => {
-    const showSideBar = useContext(Context)[1]
-    const setshowSideBar = useContext(Context)[2]
+    const showSideBar = useContext(Context)[0]
+    const setshowSideBar = useContext(Context)[1]
     return (
         <div className='min-h-screen min-w-screen bg-[#0F0F0F] '>
             <SearchBar showSideBar={showSideBar} setshowSideBar={setshowSideBar} />

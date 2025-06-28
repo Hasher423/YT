@@ -5,6 +5,7 @@ import { Context } from '../Context/VideosContext'
 
 const SearchBar = () => {
     const setshowSideBar = useContext(Context)[1]
+    const SideBar = useContext(Context)[0]
     const searchBar = useRef(null)
     const [showPanel, setshowPanel] = useState(false)
     const [showChannel, setshowChannel] = useState(false)
@@ -42,7 +43,7 @@ const SearchBar = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get('http://localhost:3000/user/getuser', {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
                 withCredentials: true,
             });
             setuser(response.data);
@@ -53,8 +54,8 @@ const SearchBar = () => {
 
     const logOut = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/user/logout'
-                , {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/logout`,
+                {
                     withCredentials: true,
                 }
             );
@@ -77,7 +78,11 @@ const SearchBar = () => {
             <div className=' flex items-center gap-[2vw] sm:gap-[1.8vw]'>
                 <i
                     onClick={() => {
-                        setshowSideBar(prev => !prev)
+                        setshowSideBar((prev) => {
+                            console.log(SideBar);
+                            return !prev;
+                        });
+
                     }}
                     className="ri-menu-line text-custom-white font-[100]  text-[4vw]  sm:text-[2vw]"></i>
                 <div className='flex items-center gap-[.2vw]'>
@@ -145,7 +150,7 @@ const SearchBar = () => {
                     className='bg-red-900 w-[7vw] h-[7vw] sm:w-8 sm:h-8 rounded-full overflow-hidden'>
                     {showChannel ? <div className='lt-sm:right-[5vh] lt-sm:text-[2vh] lt-sm:-bottom-[8vh] absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
                         <div className='py-1'>
-                            {/* <Link to={`/channel/@${user?.user?.channelName}`}>Channel</Link> */}
+                            <Link to={`/channel/@${user?.user?.channelName}`}>Channel</Link>
                         </div>
                         <div
                             onClick={() => {

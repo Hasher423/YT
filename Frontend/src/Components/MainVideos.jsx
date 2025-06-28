@@ -38,7 +38,7 @@ const MainVideos = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get('http://localhost:3000/user/getuser', {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
                 withCredentials: true,
             });
             setuser(response.data.user);
@@ -99,8 +99,12 @@ const MainVideos = () => {
                 <div className='text-white bg-green- w-[100vw] flex justify-center py-2   '>
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
-                            loading ? <div className='LoaderOfMainVidoes '> </div> : videos.map((video, index) => {
-                                return (<Link key={index} to={`/videoPlayer?v=${video._id}`} className=' sm:m-4'>
+                            loading ? (
+                                <div className="w-full flex justify-center items-center py-20">
+                                    <div className="w-12 h-12 border-2 border-b-transparent border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            ) : videos.map((video, index) => {
+                                return (<Link key={index} to={`/video/videoPlayer?v=${video._id}`} className=' sm:m-4'>
                                     <div className='sm:w-[28vw]    '>
                                         <div>
                                             <img

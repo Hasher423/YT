@@ -11,8 +11,9 @@ import { UserContext } from '../Context/GetUserContext'
 
 const Home = () => {
 
-    const showSideBar = useContext(Context)[1];
+    const showSideBar = useContext(Context)[0];
     const user = useContext(UserContext)
+    
 
     return (
         <div>

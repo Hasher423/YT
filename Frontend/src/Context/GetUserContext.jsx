@@ -8,7 +8,7 @@ const GetUserContext = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get('http://localhost:3000/user/getuser', {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
         withCredentials: true,
       });
       setuser(response.data.user);

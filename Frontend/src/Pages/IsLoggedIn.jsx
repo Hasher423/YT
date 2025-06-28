@@ -10,7 +10,7 @@ const IsLoggedIn = () => {
   useEffect(() => {
     const checkToken = async () => {
       try {
-        const response = await axios('http://localhost:3000/user/validateToken', {
+        const response = await axios(`${import.meta.env.VITE_BACKEND_URI}/user/validateToken`, {
           withCredentials: true,
         });
         if (response.data.valid) {

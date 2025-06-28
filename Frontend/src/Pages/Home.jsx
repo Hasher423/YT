@@ -10,7 +10,7 @@ import { Context } from '../Context/VideosContext'
 
 const Home = () => {
 
-  const showSideBar = useContext(Context)[1];
+  const showSideBar = useContext(Context)[0];
 
   return (
     <div className='bg-custom-black w-full min-h-screen overflow-x-hidden'>
