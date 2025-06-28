@@ -8,6 +8,7 @@ import ChannelVideos from '../Components/ChannelVideos'
 import { UserContext } from '../Context/GetUserContext'
 
 
+
 const Home = () => {
 
     const showSideBar = useContext(Context)[1];
@@ -44,7 +45,7 @@ const Home = () => {
                                 <p className='sm:text-[3.6vw]'>Sheryians Coding School</p>
                             </div>
                             <div className='md:text-[2vw] font-[400]'>
-                                <span>@channelName</span>
+                                <span>@{user?.user?.channelName}{((Number(Date().length))*(Math.random())).toFixed(0)}</span>
                             </div>
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>15.5k Subscribers</div>

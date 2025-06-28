@@ -8,6 +8,7 @@ const SearchBar = () => {
     const searchBar = useRef(null)
     const [showPanel, setshowPanel] = useState(false)
     const [showChannel, setshowChannel] = useState(false)
+    const [ShowSearchPannel, setShowSearchPannel] = useState(false)
     const [sticky, setsticky] = useState(false)
     const [theme, settheme] = useState('dark')
     const [user, setuser] = useState('')
@@ -50,17 +51,17 @@ const SearchBar = () => {
     }, []);
 
 
-    const logOut = async () =>{
+    const logOut = async () => {
         try {
             const response = await axios.get('http://localhost:3000/user/logout'
-                ,{
+                , {
                     withCredentials: true,
                 }
             );
-            if(response?.data?.message){
+            if (response?.data?.message) {
                 window.location.href = '/'
             }
-        }catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
@@ -71,7 +72,7 @@ const SearchBar = () => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
+            ref={searchBar} className={`w-full fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[2vw] sm:gap-[1.8vw]'>
                 <i
@@ -136,24 +137,24 @@ const SearchBar = () => {
                     </div>
                 </div>
                 <div className='text-[5vw] sm:text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
-                
-                <div 
-                onClick={() =>{
-                    setshowChannel(!showChannel)
-                }}
-                className='bg-red-900 w-[7vw] h-[7vw] sm:w-8 sm:h-8 rounded-full overflow-hidden'>
-                   {showChannel? <div className='lt-sm:right-[5vh] lt-sm:text-[2vh] lt-sm:-bottom-[8vh] absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
+
+                <div
+                    onClick={() => {
+                        setshowChannel(!showChannel)
+                    }}
+                    className='bg-red-900 w-[7vw] h-[7vw] sm:w-8 sm:h-8 rounded-full overflow-hidden'>
+                    {showChannel ? <div className='lt-sm:right-[5vh] lt-sm:text-[2vh] lt-sm:-bottom-[8vh] absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
                         <div className='py-1'>
-                            <Link to={`/channel/@${user?.user?.channelName}`}>Channel</Link>
+                            {/* <Link to={`/channel/@${user?.user?.channelName}`}>Channel</Link> */}
                         </div>
-                        <div 
-                        onClick={() =>{
-                            logOut();
-                        }}
-                        className='pb-2'>
+                        <div
+                            onClick={() => {
+                                logOut();
+                            }}
+                            className='pb-2'>
                             Logout
                         </div>
-                    </div>: ''}
+                    </div> : ''}
                     <img
                         className='w-full h-full object-cover'
                         src={`${user?.user?.logoId}`}
@@ -162,10 +163,53 @@ const SearchBar = () => {
 
 
                 </div>
-
-                <div className='bg-zinc-700 sm:hidden flex items-center justify-center w-[7vw] h-[7vw] text-[3.5vw] rounded-full'>
+                {/* SEarch Icon */}
+                <div
+                    onClick={() => {
+                        setShowSearchPannel((prev) => !prev)
+                    }}
+                    className='bg-zinc-700 sm:hidden flex items-center justify-center w-[7vw] h-[7vw] text-[3.5vw] rounded-full'>
                     <i className="ri-search-line cursor-pointer  font-light text-custom-white"></i>
                 </div>
+                <div className={`hidden w-[100vw] h-screen bg-custom-black absolute top-0 left-0 ${ShowSearchPannel ? 'lt-sm:grid' : 'lt-sm:hidden'} grid-rows-[1fr_9fr]`}>
+                    <div className='w-full   grid grid-cols-[20%_60%_20%]'>
+                        <div
+                            onClick={() => {
+                                setShowSearchPannel((prev) => !prev)
+                            }}
+                            className=' flex items-center justify-center'>
+                            <i className="ri-arrow-left-long-line text-white text-[5vh]"></i>
+                        </div>
+                        <div className=' flex items-center justify-center '>
+                            <div className='border-[1px] flex w-[%] border-zinc-400 bg-zinc-700 rounded-3xl  '>
+                                <input
+                                    placeholder='Search '
+                                    className='w-[90%] text-[4vw]  font-light bg-[#0F0F0F] px-3 text-white outline-blue-900 ml-[.2vw] rounded-l-3xl'
+                                    type="text" />
+
+                                <i className="ri-search-line cursor-pointer px-1  font-light text-custom-white ml-[vw] mt-[.6vw] text-[4vw]"></i>
+                            </div>
+                        </div>
+                        <div className=' flex items-center justify-center'>
+                            <div className='bg-zinc-700 p-[2vw] rounded-full flex items-center justify-center cursor-pointer '>
+                                <i className="ri-mic-fill rounded-full text-[4vw] text-white "></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div className=''>
+                        {['Search query 1 ', 'Search query 2', 'Search query 3 ', 'Search Query 4']
+                            .map((query) => {
+                                return <div>
+                                    <div className='border-b-[1px] border-zinc-700 px-[3vw]'>
+                                        <p className='text-blue-600 text-[5vw]'>{query}</p>
+                                    </div>
+                                </div>
+                            })
+                        }
+                    </div>
+                </div>
+
+
             </div>
         </div>
     )
