@@ -3,18 +3,15 @@
   "version": "1.0.0",
   "description": "Youtube(HASHER)",
   "license": "ISC",
-  "author": "",
   "type": "commonjs",
-  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node api/server.js"
   },
   "dependencies": {
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
-    "cloudinary": "^1.21.0B",
+    "cloudinary": "^1.21.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -26,8 +23,6 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
-    "react-router-dom": "^7.5.0",
-    "serverless-http": "^3.2.0",
     "streamifier": "^0.1.1"
   }
 }
