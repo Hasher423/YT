@@ -7,7 +7,7 @@ const fs = require('fs');
 
 module.exports.registerUser = async (req, res) => {
     try {
-        const { name, email, password, channelName } = req.body;
+        const { name, email, password, channelName, socketId } = req.body;
 
         const logoFile = req.files?.logo?.[0];
         const bgBannerFile = req.files?.bgBanner?.[0];
@@ -16,11 +16,15 @@ module.exports.registerUser = async (req, res) => {
             return res.status(400).json({ error: 'Logo or background banner missing' });
         }
 
+        const io = req.app.get('io');
+
         // Upload logo (from buffer)
         const logoUploaded = await cloudinaryUploadChunkedBuffer(
             logoFile.buffer,
             logoFile.mimetype,
-            'image'
+            'image',
+            io,
+            socketId
         );
 
         if (logoUploaded?.status === 'Error') {
@@ -31,7 +35,9 @@ module.exports.registerUser = async (req, res) => {
         const bannerUploaded = await cloudinaryUploadChunkedBuffer(
             bgBannerFile.buffer,
             bgBannerFile.mimetype,
-            'image'
+            'image',
+            io,
+            socketId
         );
 
         if (bannerUploaded?.status === 'Error') {

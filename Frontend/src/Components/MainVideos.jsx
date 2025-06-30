@@ -53,13 +53,12 @@ const MainVideos = () => {
     useEffect(() => {
         const fetchLogoImg = async () => {
             const logoMap = { ...logos };
-
             for (const video of videos) {
                 try {
                     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuserForLogo/${video.userId}`, {
                         withCredentials: true,
                     });
-                    logoMap[video.userId] = response.data.user.logoId;
+                    logoMap[video.userId] = {userId : response.data.user.logoId, channelName: response.data.user.channelName};
                 } catch (err) {
                     console.error('Error fetching logo for', video.userId, err);
                 }
@@ -67,6 +66,7 @@ const MainVideos = () => {
 
             setlogos(logoMap);
         };
+        
 
         if (videos) {
             fetchLogoImg();
@@ -116,7 +116,7 @@ const MainVideos = () => {
 
                                         <div className='flex  px-[.5vw] py-[.2vw] gap-[vw]  justify-between lt-sm:py-[4vw] lt-sm:px-[1.4vw] '>
                                             <div className='w-[ ] mt-[1.4vw] place-content-center '>
-                                                <img className='w-[4vw] h-[4vw] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full' src={`${logos[video?.userId]}`} alt="" />
+                                                <img className='w-[4vw] h-[4vw] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full' src={`${logos[video?.userId]?.userId}`} alt="" />
                                             </div>
 
                                             <div className='w-[75%]  h-[100%]'>
@@ -131,7 +131,7 @@ const MainVideos = () => {
 
                                                 {/* CHANNEL NAME */}
                                                 <div >
-                                                    <p className='text-zinc-500 lt-sm:text-[2vh]'>{user?.channelName}</p>
+                                                    <p className='text-zinc-500 lt-sm:text-[2vh]'>{logos[video?.userId]?.channelName}</p>
                                                     <div className='flex items-center leading-none lt-sm:text-[2vh]'>
                                                         <p className='text-zinc-500'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
                                                         <p className='text-zinc-500'> ------ ago</p>

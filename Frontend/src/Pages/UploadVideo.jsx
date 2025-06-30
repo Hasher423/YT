@@ -1,6 +1,11 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
+
+const socket = io(import.meta.env.VITE_BACKEND_URI, {
+  withCredentials: true,
+});
 
 const initialState = {
   video: null,
@@ -36,6 +41,16 @@ const UploadVideo = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    socket.on('upload-progress-video', (percent) => {
+      dispatch({ type: 'SET_PROGRESS', progress: percent });
+    });
+
+    return () => {
+      socket.off('upload-progress-video');
+    };
+  }, []);
+
   const handleDrop = (e) => {
     e.preventDefault();
     dispatch({ type: 'SET_DRAGGING', isDragging: false });
@@ -67,6 +82,7 @@ const UploadVideo = () => {
     data.append('thumbnail', state.thumbnail);
     data.append('title', state.title);
     data.append('description', state.description);
+    data.append('socketId', socket.id); // send socket ID to backend
 
     try {
       const res = await axios.post(
@@ -75,10 +91,6 @@ const UploadVideo = () => {
         {
           headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
-          onUploadProgress: (e) => {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            dispatch({ type: 'SET_PROGRESS', progress: percent });
-          },
         }
       );
       if (res.data.success) dispatch({ type: 'UPLOAD_SUCCESS' });
@@ -111,7 +123,9 @@ const UploadVideo = () => {
           }}
           onDragLeave={() => dispatch({ type: 'SET_DRAGGING', isDragging: false })}
           onDrop={handleDrop}
-          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${state.isDragging ? 'border-blue-500' : 'border-[#303030]'} flex flex-col gap-4`}
+          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${
+            state.isDragging ? 'border-blue-500' : 'border-[#303030]'
+          } flex flex-col gap-4`}
         >
           {!state.video && (
             <div className="flex flex-col items-center justify-center border-2 border-dashed p-10 rounded bg-[#2a2a2a] text-white">
@@ -176,14 +190,17 @@ const UploadVideo = () => {
             </p>
           )}
 
-          {state.video && state.thumbnail && state.title && state.description && (
-            <button
-              type="submit"
-              className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
-            >
-              Upload Video
-            </button>
-          )}
+          {state.video &&
+            state.thumbnail &&
+            state.title &&
+            state.description && (
+              <button
+                type="submit"
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
+              >
+                Upload Video
+              </button>
+            )}
         </form>
       )}
     </div>

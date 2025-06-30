@@ -56,7 +56,7 @@ const Videoplay = () => {
   };
 
   return (
-    <div className="video-container flex-1 bg-red-90 sm:h-[70%]">
+    <div className="video-container flex-1 bg-red-90 sm:h-[70%] lt-sm:py-10">
       <div className="relative w-full h-full">
         {/* Loader */}
         {loading &&  (
@@ -65,7 +65,7 @@ const Videoplay = () => {
           </div>
         )}
 
-        <div className="video w-[60vw] sm:h-full h-[50vh]">
+        <div className="video w-[] sm:h-full h-[] ">
           <video
             ref={videoRef}
             className="w-full h-full rounded-xl"

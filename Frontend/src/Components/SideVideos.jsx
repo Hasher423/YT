@@ -40,7 +40,7 @@ const SideVideos = () => {
                             {/* DIV OF THUMBNAIL  */}
                             <div className='relative' >
                                 <img
-                                    className=' sm:w-[20vw]  lt-sm:w-[100vw]  sm:max-h-[8vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                    className=' sm:w-[20vw]   lt-sm:w-[100vw]  sm:max-h-[8vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
                                     src={`${element?.thumbnail_Url?.url}`} alt="" />
                             </div>
                             {/* DETAILS OF VIDEO DIV */}

@@ -2,70 +2,77 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const videoModel = require('../models/video.model');
 const userModel = require('../models/user.model');
-const { cloudinaryUploadChunkedBuffer } = require('../Services/videoUpload.service.js');
+const cloudinaryUploadChunkedBuffer  = require('../Services/videoUpload.service.js');
 const { ToDataBase } = require('../Services/video.service.js');
 
 module.exports.createVideo = async (req, res) => {
-    const { title, description } = req.body;
+  const { title, description, socketId } = req.body;
 
-    // Validate file presence
-    const videoFile = req.files?.video_Url?.[0];
-    const thumbnailFile = req.files?.thumbnail?.[0];
+  const videoFile = req.files?.video_Url?.[0];
+  const thumbnailFile = req.files?.thumbnail?.[0];
 
-    if (!videoFile || !thumbnailFile) {
-        return res.status(400).json({ message: "Video and thumbnail files are required" });
+  if (!videoFile || !thumbnailFile) {
+    return res.status(400).json({ message: "Video and thumbnail files are required" });
+  }
+
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized - user not found" });
+  }
+
+  const io = req.app.get('io'); // get socket.io instance
+
+  try {
+    // Upload video
+    const videoResponse = await cloudinaryUploadChunkedBuffer(
+      videoFile.buffer,
+      videoFile.mimetype,
+      'video',
+      io,
+      socketId,
+      'upload-progress-video' // custom event name
+    );
+
+    if (videoResponse?.status === 'Error') {
+      return res.status(400).json({ message: videoResponse.message });
     }
 
-    if (!req.user) {
-        return res.status(401).json({ message: "Unauthorized - user not found" });
+    // Upload thumbnail
+    const thumbnailResponse = await cloudinaryUploadChunkedBuffer(
+      thumbnailFile.buffer,
+      thumbnailFile.mimetype,
+      'image',
+      io,
+      socketId,
+      'upload-progress-thumbnail' // custom event name
+    );
+
+    if (thumbnailResponse?.status === 'Error') {
+      return res.status(400).json({ message: thumbnailResponse.message });
     }
 
-    try {
-        // Upload video from buffer
-        const videoResponse = await cloudinaryUploadChunkedBuffer(
-            videoFile.buffer,
-            videoFile.mimetype,
-            'video'
-        );
+    // Extract URLs
+    const videoData = {
+      url: videoResponse?.response?.url || videoResponse?.url,
+      secureUrl: videoResponse?.response?.secure_url || videoResponse?.secure_url,
+      playback_url: videoResponse?.response?.playback_url || videoResponse?.playback_url,
+    };
 
-        if (videoResponse?.status === 'Error') {
-            return res.status(400).json({ message: videoResponse.message });
-        }
+    const thumbnailData = {
+      url: thumbnailResponse?.response?.url || thumbnailResponse?.url,
+      secureUrl: thumbnailResponse?.response?.secure_url || thumbnailResponse?.secure_url,
+    };
 
-        // Upload thumbnail from buffer
-        const thumbnailResponse = await cloudinaryUploadChunkedBuffer(
-            thumbnailFile.buffer,
-            thumbnailFile.mimetype,
-            'image'
-        );
+    // Save video info in DB
+    const video = await ToDataBase(title, description, videoData, thumbnailData, req.user);
+    return res.json({ success: true, video });
 
-        if (thumbnailResponse?.status === 'Error') {
-            return res.status(400).json({ message: thumbnailResponse.message });
-        }
-
-        // Extract URLs
-        const videoData = {
-            url: videoResponse?.response?.url || videoResponse?.url,
-            secureUrl: videoResponse?.response?.secure_url || videoResponse?.secure_url,
-            playback_url: videoResponse?.response?.playback_url || videoResponse?.playback_url,
-        };
-
-        const thumbnailData = {
-            url: thumbnailResponse?.response?.url || thumbnailResponse?.url,
-            secureUrl: thumbnailResponse?.response?.secure_url || thumbnailResponse?.secure_url,
-        };
-
-        // Save to DB
-        const video = await ToDataBase(title, description, videoData, thumbnailData, req.user);
-        return res.json({ success: true, video });
-
-    } catch (err) {
-        console.error("Upload Error:", err);
-        const networkErrors = ['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'];
-        return res.status(500).json({
-            message: networkErrors.includes(err.code) ? "Network Error" : "Internal Server Error"
-        });
-    }
+  } catch (err) {
+    console.error("Upload Error:", err);
+    const networkErrors = ['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'];
+    return res.status(500).json({
+      message: networkErrors.includes(err.code) ? "Network Error" : "Internal Server Error"
+    });
+  }
 };
 
 

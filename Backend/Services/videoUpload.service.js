@@ -1,5 +1,6 @@
 const { Readable } = require('stream');
 const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 
 /**
  * Upload large video/image buffer using stream (avoids timeouts)
@@ -8,48 +9,65 @@ const cloudinary = require('cloudinary').v2;
  * @param {string} resourceType - "video" or "image"
  * @returns {Promise<{ response: any, status: string }>}
  */
-module.exports.cloudinaryUploadChunkedBuffer = async (buffer, mimetype, resourceType = 'video') => {
+module.exports = async function cloudinaryUploadChunkedBuffer(
+  buffer,
+  mimetype,
+  resourceType = 'video',
+  io,
+  socketId,
+  eventName = 'upload-progress-video'
+) {
   if (!buffer || !mimetype) {
     throw new Error('Buffer or mimetype is missing.');
   }
 
-  const fileSize = buffer.length;
-  const fileInMB = Math.floor(fileSize / 1024 / 1024);
-  if (fileInMB > 101) {
-    return {
-      message: `File size ${fileInMB}MB exceeded the limit of Cloudinary`,
-      status: 'Error',
-    };
-  }
-
-  const streamUpload = () =>
-    new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: resourceType,
-          folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
-          public_id: `${resourceType === 'video' ? 'my_videos' : 'my_thumbnail'}/video_${Date.now()}`,
-          chunk_size: 6 * 1024 * 1024,
-        },
-        (error, result) => {
-          if (error) {
-            return reject(error);
-          }
-          resolve(result);
-        }
-      );
-
-      Readable.from(buffer).pipe(uploadStream);
-    });
-
   try {
+    const fileSize = buffer.length;
+    let lastEmittedPercent = 0;
+
+    const streamUpload = () =>
+      new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: resourceType,
+            folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
+            public_id: `${resourceType === 'video' ? 'video_' : 'thumb_'}${Date.now()}`,
+            chunk_size: 6 * 1024 * 1024,
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+
+        const readStream = streamifier.createReadStream(buffer);
+        let uploadedBytes = 0;
+
+        readStream.on('data', (chunk) => {
+          uploadedBytes += chunk.length;
+          const percent = Math.round((uploadedBytes / fileSize) * 100);
+
+          if (percent !== lastEmittedPercent) {
+            lastEmittedPercent = percent;
+            console.log(`📤 Upload progress: ${percent}%`);
+
+            if (io && socketId) {
+              io.to(socketId).emit(eventName, percent);
+            }
+          }
+        });
+
+        readStream.pipe(uploadStream);
+      });
+
     const result = await streamUpload();
-    return { response: result, status: 'Success' };
+    return { status: 'Success', response: result };
+
   } catch (err) {
-    console.error('Cloudinary upload failed:', err.message || err);
+    console.error('❌ Cloudinary chunked upload error:', err.message);
     return {
-      message: err.code === 'ENOTFOUND' ? 'Internet not available' : err.message,
       status: 'Error',
+      message: err.message || 'Upload failed',
     };
   }
 };
