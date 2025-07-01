@@ -2,7 +2,7 @@ const userService = require('../Services/user.service')
 const userModel = require('../models/user.model')
 const mongoose = require('mongoose')
 const blackListTokensModel = require('../models/blackListTokens');
-const { cloudinaryUploadChunkedBuffer } = require('../Services/videoUpload.service.js');
+const  cloudinaryUploadChunkedBuffer  = require('../Services/videoUpload.service.js');
 const fs = require('fs');
 
 module.exports.registerUser = async (req, res) => {

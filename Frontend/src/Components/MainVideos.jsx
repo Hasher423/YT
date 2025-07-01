@@ -58,7 +58,7 @@ const MainVideos = () => {
                     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuserForLogo/${video.userId}`, {
                         withCredentials: true,
                     });
-                    logoMap[video.userId] = {userId : response.data.user.logoId, channelName: response.data.user.channelName};
+                    logoMap[video.userId] = {userId : response?.data?.user?.logoId, channelName: response?.data?.user?.channelName};
                 } catch (err) {
                     console.error('Error fetching logo for', video.userId, err);
                 }

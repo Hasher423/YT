@@ -13,9 +13,34 @@ const Videoplay = () => {
   const [video, setVideo] = useState(null);
   const [user, setuser] = useState(null);
   const [loading, setLoading] = useState(true); // 👈 Loader state
+  const [viewTimerStarted, setViewTimerStarted] = useState(false);
   const videoRef = useRef(null);
   const location = useLocation();
   const videoId = new URLSearchParams(location.search).get('v');
+
+  useEffect(() => {
+    let timer;
+
+    if (viewTimerStarted) {
+      timer = setTimeout(async () => {
+        try {
+          await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-view/${videoId}`, {}, {
+            withCredentials: true,
+          });
+        } catch (err) {
+          console.error('Failed to increase view:', err.message);
+        }
+      }, 30000); // 30 seconds of play
+
+      return () => clearTimeout(timer); // clean up
+    }
+  }, [viewTimerStarted]);
+
+
+  const handlePlay = () => {
+    if (!viewTimerStarted) setViewTimerStarted(true);
+  };
+
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -59,7 +84,7 @@ const Videoplay = () => {
     <div className="video-container flex-1 bg-red-90 sm:h-[70%] lt-sm:py-10">
       <div className="relative w-full h-full">
         {/* Loader */}
-        {loading &&  (
+        {loading && (
           <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
             <div className="w-12 h-12 border-4 border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
           </div>
@@ -68,6 +93,7 @@ const Videoplay = () => {
         <div className="video w-[] sm:h-full h-[] ">
           <video
             ref={videoRef}
+            onPlay={handlePlay}
             className="w-full h-full rounded-xl"
             src={`${video?.data?.video?.video_Url?.url}`}
             height="100%"

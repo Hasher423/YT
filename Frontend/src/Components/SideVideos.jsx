@@ -57,7 +57,7 @@ const SideVideos = () => {
                                 </h1>
                                 <h3><a href={`${element?.video_Url?.url}`}>@CAHNNEL NAME</a></h3>
                                 <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-thin'>
-                                    <h3>VIEWS</h3>
+                                    <h3>{element?.views} views</h3>
                                     <h3>MONTHS AGO</h3>
                                 </div>
                             </div>

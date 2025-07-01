@@ -14,6 +14,8 @@ Router.post('/upload', uploadFields([
 
 Router.get('/getVideos' , videoController.getVideos)
 Router.get('/getVideo' , videoController.getVideo)
+Router.post('/increase-view/:videoId', auth, videoController.increaseView);
+
 
 
 

@@ -2,8 +2,11 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const videoModel = require('../models/video.model');
 const userModel = require('../models/user.model');
-const cloudinaryUploadChunkedBuffer  = require('../Services/videoUpload.service.js');
+const Video = require('../models/video.model.js');
+const videoView = require('../models/videoView.js');
+const cloudinaryUploadChunkedBuffer = require('../Services/videoUpload.service.js');
 const { ToDataBase } = require('../Services/video.service.js');
+
 
 module.exports.createVideo = async (req, res) => {
   const { title, description, socketId } = req.body;
@@ -77,38 +80,62 @@ module.exports.createVideo = async (req, res) => {
 
 
 module.exports.getVideos = async (req, res) => {
-    console.log(req.query.page)
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
+  console.log(req.query.page)
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-        const videos = await videoModel.find().skip(skip).limit(limit);
-        const totalVideos = await videoModel.countDocuments();
-        const totalPages = Math.ceil(totalVideos / limit);
+    const videos = await videoModel.find().skip(skip).limit(limit);
+    const totalVideos = await videoModel.countDocuments();
+    const totalPages = Math.ceil(totalVideos / limit);
 
-        return res.status(200).json({
-            videos,
-            currentPage: page,
-            totalPages,
-            totalVideos
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Error fetching videos',
-            error: error.message
-        });
-    }
+    return res.status(200).json({
+      videos,
+      currentPage: page,
+      totalPages,
+      totalVideos
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Error fetching videos',
+      error: error.message
+    });
+  }
 };
 
 module.exports.getVideo = async (req, res) => {
-    try {
-        const video = await videoModel.findById(req.query.v);
-        if (!video) {
-            return res.status(404).json({ message: 'Video not found' });
-        }
-        return res.json({ success: true, video });
-    } catch (error) {
-        return res.status(500).json({ message: 'Error fetching video', error: error.message });
+  try {
+    const video = await videoModel.findById(req.query.v);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
     }
+    return res.json({ success: true, video });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching video', error: error.message });
+  }
 }
+
+
+module.exports.increaseView = async (req, res) => {
+  try {
+    
+    const { videoId } = req.params;
+    const userId = req.user;
+
+    // Check if already viewed
+    const existing = await videoView.findOne({ videoId, userId });
+    if (existing) return res.status(200).json({ message: 'Already viewed' });
+
+    // Add to views collection
+    await videoView.create({ videoId, userId });
+
+    // Increment views on the video itself
+    await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+
+    res.status(200).json({ message: 'View counted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to record view' });
+  }
+};
