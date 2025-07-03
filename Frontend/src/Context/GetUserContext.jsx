@@ -11,7 +11,7 @@ const GetUserContext = ({ children }) => {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
         withCredentials: true,
       });
-      setuser(response.data.user);
+      setuser(response?.data?.user);
     };
     fetchData();
   }, []);

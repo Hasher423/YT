@@ -43,7 +43,7 @@ const Home = () => {
                         {/* TEXT */}
                         <div className='text-white h-full'>
                             <div className='text-[7vw] md:text-[3vw] font-[700] lg:text-[3.5vw]'>
-                                <p className='sm:text-[3.6vw]'>Sheryians Coding School</p>
+                                <p className='sm:text-[3.6vw]'>{user?.user?.channelName}</p>
                             </div>
                             <div className='md:text-[2vw] font-[400]'>
                                 <span>@{user?.user?.channelName}{((Number(Date().length))*(Math.random())).toFixed(0)}</span>

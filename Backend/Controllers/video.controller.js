@@ -2,6 +2,7 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const videoModel = require('../models/video.model');
 const userModel = require('../models/user.model');
+const commentModel = require('../models/comment.model.js')
 const Video = require('../models/video.model.js');
 const videoView = require('../models/videoView.js');
 const cloudinaryUploadChunkedBuffer = require('../Services/videoUpload.service.js');
@@ -66,7 +67,7 @@ module.exports.createVideo = async (req, res) => {
     };
 
     // Save video info in DB
-    const video = await ToDataBase(title, description, videoData, thumbnailData, req.user);
+    const video = await ToDataBase(title, description, videoData, thumbnailData, req.user._id);
     return res.json({ success: true, video });
 
   } catch (err) {
@@ -119,9 +120,9 @@ module.exports.getVideo = async (req, res) => {
 
 module.exports.increaseView = async (req, res) => {
   try {
-    
+
     const { videoId } = req.params;
-    const userId = req.user;
+    const userId = req.user._id;
 
     // Check if already viewed
     const existing = await videoView.findOne({ videoId, userId });
@@ -139,3 +140,6 @@ module.exports.increaseView = async (req, res) => {
     res.status(500).json({ error: 'Failed to record view' });
   }
 };
+
+
+

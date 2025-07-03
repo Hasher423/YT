@@ -14,6 +14,7 @@ configOfCloudinary();
 const fileUpload = require('express-fileupload');
 const userRouter = require('./Routes/user.routes');
 const videoRouter = require('./Routes/video.routes');
+const commentRouter = require('./Routes/comment.routes')
 
 
 
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
 });
 app.use('/user', userRouter);
 app.use('/video', videoRouter);
+app.use('/comment', commentRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {

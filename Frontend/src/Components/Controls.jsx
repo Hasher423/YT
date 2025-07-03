@@ -45,6 +45,8 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
     const handlePlay = () => {
         if (video.current) {
             setPlay(!play);
+            console.log(play);
+            
             play ? video.current.pause() : video.current.play();
         }
     };

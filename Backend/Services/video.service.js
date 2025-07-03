@@ -117,7 +117,6 @@ module.exports.ToDataBase = async (
             secureurl: thumbnailObject.secureUrl,
         },
         userId,
-
     })
 
     return video;

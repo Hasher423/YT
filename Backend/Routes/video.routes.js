@@ -17,6 +17,4 @@ Router.get('/getVideo' , videoController.getVideo)
 Router.post('/increase-view/:videoId', auth, videoController.increaseView);
 
 
-
-
 module.exports = Router;

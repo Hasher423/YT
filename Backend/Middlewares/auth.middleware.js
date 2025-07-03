@@ -2,6 +2,7 @@
 
 const blackListTokensModel = require('../models/blackListTokens');
 const jwt = require('jsonwebtoken');
+const userModel = require('../models/user.model'); // Make sure this path is correct
 
 module.exports.auth = async (req, res, next) => {
   const token = req.cookies.token;
@@ -22,9 +23,14 @@ module.exports.auth = async (req, res, next) => {
     }
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    
-    req.user = decodedToken.id;
-    
+
+    const user = await userModel.findById(decodedToken.id).select('-password'); // Exclude password
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized: User not found' });
+    }
+
+    req.user = user; // Set the full user object
+
     return next();
 
   } catch (err) {

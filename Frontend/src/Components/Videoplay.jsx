@@ -1,159 +1,232 @@
-import React, { useEffect, useRef, useState } from 'react';
+// Scalable & optimized VideoPlay component with useReducer
+
+import React, { useEffect, useRef, useReducer, useCallback, useState, useContext } from 'react';
 import 'remixicon/fonts/remixicon.css';
 import Controls from './Controls';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import Comments from './Comments';
+import { UserContext } from '../Context/GetUserContext';
+
+const initialState = {
+  play: false,
+  duration: 0,
+  currentTime: 0,
+  comments: [],
+  volume: 1.0,
+  mute: false,
+  video: null,
+  ago: '',
+  description: '',
+  user: null,
+  loading: true,
+  viewTimerStarted: false,
+  showDescription: false,
+};
+
+function reducer(state, action) {
+
+  switch (action.type) {
+    case 'SET_VIDEO': return { ...state, video: action.payload, description: action.payload?.description };
+    case 'SET_USER': return { ...state, user: action.payload };
+    case 'SET_COMMENTS': return { ...state, comments: action.payload };
+    case 'SET_AGO': return { ...state, ago: action.payload };
+    case 'SET_LOADING': return { ...state, loading: action.payload };
+    case 'SET_DURATION': return { ...state, duration: action.payload };
+    case 'SET_CURRENT_TIME': return { ...state, currentTime: action.payload };
+    case 'TOGGLE_PLAY': return { ...state, play: !state.play };
+    case 'TOGGLE_MUTE': return { ...state, mute: !state.mute };
+    case 'TOGGLE_DESCRIPTION': return { ...state, showDescription: !state.showDescription };
+    case 'START_TIMER': return { ...state, viewTimerStarted: true };
+    default: return state;
+  }
+}
 
 const Videoplay = () => {
-  const [play, setPlay] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(1.0);
-  const [mute, setMute] = useState(false);
-  const [video, setVideo] = useState(null);
-  const [user, setuser] = useState(null);
-  const [loading, setLoading] = useState(true); // 👈 Loader state
-  const [viewTimerStarted, setViewTimerStarted] = useState(false);
+  const [comments, setcomments] = useState(null)
+  const [user, setuser] = useState(null)
+  const [state, dispatch] = useReducer(reducer, initialState);
   const videoRef = useRef(null);
   const location = useLocation();
   const videoId = new URLSearchParams(location.search).get('v');
 
-  useEffect(() => {
-    let timer;
-
-    if (viewTimerStarted) {
-      timer = setTimeout(async () => {
-        try {
-          await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-view/${videoId}`, {}, {
-            withCredentials: true,
-          });
-        } catch (err) {
-          console.error('Failed to increase view:', err.message);
-        }
-      }, 30000); // 30 seconds of play
-
-      return () => clearTimeout(timer); // clean up
-    }
-  }, [viewTimerStarted]);
-
-
-  const handlePlay = () => {
-    if (!viewTimerStarted) setViewTimerStarted(true);
+  const calculateAgo = (createdAt) => {
+    const diff = Date.now() - new Date(createdAt).getTime();
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    if (days > 0) return `${days} days`;
+    if (hours > 0) return `${hours} hours`;
+    if (minutes > 0) return `${minutes} minutes`;
+    return `${seconds} seconds`;
   };
 
+  const fetchVideoAndUser = useCallback(async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const [resVideo, resUser] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, { withCredentials: true }),
+      ]);
+      dispatch({ type: 'SET_VIDEO', payload: resVideo?.data?.video });
+      dispatch({ type: 'SET_AGO', payload: calculateAgo(resVideo?.data?.video?.createdAt) });
+      dispatch({ type: 'SET_USER', payload: resUser.data.user });
+      setuser(resUser?.data?.user)
+    } catch (err) {
+      console.error('Error fetching video or user:', err);
+    }
+  }, [videoId]);
+
+  useEffect(() => {
+    fetchVideoAndUser();
+  }, [fetchVideoAndUser]);
+
+  useEffect(() => {
+    let timer;
+    if (state.viewTimerStarted) {
+      timer = setTimeout(() => {
+        axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-view/${videoId}`, {}, { withCredentials: true })
+          .catch(err => console.error('View increment failed:', err));
+      }, 30000);
+    }
+    return () => clearTimeout(timer);
+  }, [state.viewTimerStarted, videoId]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (videoRef.current) {
-        videoRef.current.removeAttribute('controls');
-      }
+      videoRef.current?.removeAttribute('controls');
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  useEffect(() => {
-    const fetchVideo = async () => {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`);
-      setVideo(res);
-    };
-    fetchVideo();
-  }, [videoId]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
-        withCredentials: true,
-      });
-      setuser(response.data.user);
-    };
-    fetchData();
-  }, []);
+  const getComments = async () => {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/comment/getComments`, {
+
+    },
+      {
+        withCredentials: true
+      }
+    );
+
+
+
+
+    const filteredComments = response?.data?.allComments.filter(
+      (comment) => comment.videoId === videoId
+    )
+
+    dispatch({ type: 'SET_COMMENTS', payload: filteredComments });
+
+  }
+
+
+  
+
+    useEffect(() => {
+      getComments()
+    }, [videoId])
+
+
+
+  const handlePlay = () => {
+    if (!state.viewTimerStarted) dispatch({ type: 'START_TIMER' });
+  };
 
   const toggleFullScreen = () => {
-    if (videoRef.current) {
-      if (!document.fullscreenElement) {
-        videoRef.current.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+    if (!document.fullscreenElement) {
+      videoRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
     }
   };
 
   return (
     <div className="video-container flex-1 bg-red-90 sm:h-[70%] lt-sm:py-10">
       <div className="relative w-full h-full">
-        {/* Loader */}
-        {loading && (
+        {state.loading && (
           <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
             <div className="w-12 h-12 border-4 border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
           </div>
         )}
 
-        <div className="video w-[] sm:h-full h-[] ">
+        <div className="video w-full sm:h-full">
           <video
             ref={videoRef}
             onPlay={handlePlay}
-            className="w-full h-full rounded-xl"
-            src={`${video?.data?.video?.video_Url?.url}`}
-            height="100%"
             onLoadedMetadata={() => {
-              if (videoRef.current) {
-                videoRef.current.removeAttribute('controls');
-                setDuration(videoRef.current.duration);
-              }
+              videoRef.current?.removeAttribute('controls');
+              dispatch({ type: 'SET_DURATION', payload: videoRef.current?.duration });
             }}
-            onCanPlay={() => setLoading(false)} // 👈 Hide loader when ready
-            onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
+            onCanPlay={() => dispatch({ type: 'SET_LOADING', payload: false })}
+            onTimeUpdate={() => dispatch({ type: 'SET_CURRENT_TIME', payload: videoRef.current.currentTime })}
             onDoubleClick={toggleFullScreen}
+            className="w-full h-full rounded-xl"
+            src={state.video?.video_Url?.url}
+            height="100%"
           />
         </div>
 
         <Controls
           video={videoRef}
-          duration={duration}
-          currentTime={currentTime}
-          play={play}
-          mute={mute}
-          setMute={setMute}
-          setCurrentTime={setCurrentTime}
-          setPlay={setPlay}
+          duration={state.duration}
+          currentTime={state.currentTime}
+          play={state.play}
+          mute={state.mute}
+          setMute={() => dispatch({ type: 'TOGGLE_MUTE' })}
+          setCurrentTime={(t) => dispatch({ type: 'SET_CURRENT_TIME', payload: t })}
+          setPlay={() => dispatch({ type: 'TOGGLE_PLAY' })}
         />
       </div>
 
-      {/* Video title and info */}
       <div className='w-full px-[1.5vw] py-[.7vw]'>
         <p className='font-[700] text-white sm:text-[1.4vw] 2xl:text-[1.7vw]'>
-          {video?.data?.video?.title}
+          {state.video?.title}
         </p>
       </div>
 
-      {/* Channel info + buttons */}
-      <div className='cursor-pointer flex items-center md:flex md:flex-col 2xl:flex-row 2xl:items-center md:items-start md:gap-[2vw] justify-between lt-sm:flex-col lt-sm:items-start lt-sm:gap-[4vw] lt-sm:mt-[2vh] lt-sm:px-[3vw]'>
-        <div className='flex items-center gap-[2vw] px-[1vw] lt-sm:gap-[3vw] 2xl:text-[1.7vw]'>
-          <img className='w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]' src={`${user?.logoId}`} alt="no" />
-          <div className='text-custom-white font-bold'>{user?.channelName}</div>
-          <button className='bg-custom-white px-[1vw] py-[.5vw] sm:rounded-3xl font-[500] text-sm lt-sm:rounded lt-sm:py-[.5vh] lt-sm:ml-[9vh] lt-sm:px-[3vw] 2xl:text-[1.7vw] 2xl:px-[1.2vw] 2xl:py-[1vw]'>SUBSCRIBE</button>
+      <div className='cursor-pointer flex flex-col gap-[2vh] lt-sm:gap-[4vw] lt-sm:mt-[2vh] lt-sm:px-[3vw]'>
+        <div className='flex items-center gap-[2vw] px-[1vw]'>
+          <img className='w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]' src={state.user?.logoId} alt="user" />
+          <div className='text-custom-white font-bold'>{state.user?.channelName}</div>
+          <button className='bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm'>SUBSCRIBE</button>
         </div>
 
-        <div className='text-custom-white flex items-center gap-[.6vw] lt-sm:mt-[2vh] lt-sm:flex-wrap lt-sm:gap-[vw]'>
-          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw] py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[600] text-sm'>
-            <i className="ri-thumb-up-line font-[100]"></i> &nbsp;
-            781K | &nbsp;
-            <i className="ri-thumb-down-line font-[100]"></i>
+        <div className='text-custom-white flex items-center gap-[.6vw] flex-wrap'>
+          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl'>
+            <i className="ri-thumb-up-line"></i> &nbsp; 781K &nbsp;
+            <i className="ri-thumb-down-line"></i>
           </div>
-          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw] py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[700] text-sm'>
-            <i className="ri-share-forward-line font-extralight text-[1.2vw] lt-sm:text-[3vh]"></i> &nbsp; Share
+          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[700] text-sm rounded-3xl'>
+            <i className="ri-share-forward-line"></i> &nbsp; Share
           </div>
-          <div className='rounded-3xl 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[2vw] py-[.4vw] lt-sm:px-[2vh] md:px-[2.7vw] lt-sm:py-[1.2vh] font-[400] text-sm'>
-            <i className="ri-download-line text-[1vw] lt-sm:text-[3vh]"></i> &nbsp;
-            <a href={`${video?.data?.video?.video_Url?.url}`} download>Download</a>
+          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl'>
+            <i className="ri-download-line"></i> &nbsp;
+            <a href={state.video?.video_Url?.url} download>Download</a>
           </div>
-          <div className='rounded-full 2xl:px-[1.2vw] 2xl:py-[1vw] 2xl:text-[1.2vw] bg-zinc-800 px-[.7vw] py-[.5vw] lt-sm:w-[6vh] lt-sm:h-[5.5vh] flex items-center justify-center font-bold text-sm lt-sm:text-md'>
+          <div className='bg-zinc-800 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm'>
             <i className="ri-more-fill"></i>
           </div>
         </div>
+
+        <div className='text-white bg-custom-black rounded p-2 w-full'>
+          <div className='font-[700] flex items-center gap-[.6vw]'>
+            <p>{state.video?.views} views</p>
+            <p>{state.ago} ago</p>
+          </div>
+          <div className='text-wrap'>
+            {state.showDescription ? state.description : `${state.description?.slice(0, 80)}...`}
+          </div>
+          <p onClick={() => dispatch({ type: 'TOGGLE_DESCRIPTION' })}>
+            {state.showDescription ? 'less...' : 'more...'}
+          </p>
+        </div>
       </div>
+
+
+      <Comments videoId={videoId} comments={state?.comments} channel={user?.channelName}/>
     </div>
   );
 };

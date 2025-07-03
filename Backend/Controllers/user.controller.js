@@ -162,7 +162,7 @@ module.exports.getuser = async (req, res) => {
     res.set('Expires', '0');
     res.set('Surrogate-Control', 'no-store');
     try {
-        const user = await userModel.findOne({ _id: req.user });
+        const user = await userModel.findOne({ _id: req.user._id });
         return res.status(200).json({ user })
     }
     catch (err) {
