@@ -238,7 +238,10 @@ const SearchBar = () => {
                                 <input
                                     placeholder='Search '
                                     className='w-[90%] text-[4vw]  font-light bg-[#0F0F0F] px-3 text-white outline-blue-900 ml-[.2vw] rounded-l-3xl'
-                                    type="text" />
+                                    type="text"
+                                    value={searchInput}
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                />
 
                                 <i className="ri-search-line cursor-pointer px-1  font-light text-custom-white ml-[vw] mt-[.6vw] text-[4vw]"></i>
                             </div>
