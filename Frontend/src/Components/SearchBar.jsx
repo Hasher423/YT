@@ -21,7 +21,7 @@ const SearchBar = () => {
         if ('webkitSpeechRecognition' in window) {
             const recognition = new window.webkitSpeechRecognition();
             recognition.continuous = false;
-            recognition.lang = 'en-US';
+            recognition.lang = 'ur-PK';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
