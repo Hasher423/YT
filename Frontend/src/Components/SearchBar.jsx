@@ -4,15 +4,54 @@ import { Link } from 'react-router-dom'
 import { Context } from '../Context/VideosContext'
 
 const SearchBar = () => {
+    const isVoiceSupported = 'webkitSpeechRecognition' in window;
     const setshowSideBar = useContext(Context)[1]
     const SideBar = useContext(Context)[0]
     const searchBar = useRef(null)
+    const [searchInput, setSearchInput] = useState('');
     const [showPanel, setshowPanel] = useState(false)
     const [showChannel, setshowChannel] = useState(false)
     const [ShowSearchPannel, setShowSearchPannel] = useState(false)
     const [sticky, setsticky] = useState(false)
     const [theme, settheme] = useState('dark')
     const [user, setuser] = useState('')
+
+
+    useEffect(() => {
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new window.webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            let silenceTimer;
+
+            recognition.onstart = () => {
+                console.log('🎤 Voice recognition started');
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                setSearchInput(transcript);
+
+                // Stop after 2 seconds of silence
+                if (silenceTimer) clearTimeout(silenceTimer);
+                silenceTimer = setTimeout(() => {
+                    recognition.stop();
+                }, 2000);
+            };
+
+            window.startVoiceRecognition = () => {
+                recognition.start();
+            };
+        }
+    }, []);
+
+
+
+
+
 
     const handleShowPanel = () => {
         setshowPanel(!showPanel)
@@ -100,15 +139,24 @@ const SearchBar = () => {
             <div className='bg-green-90 hidden  sm:flex items-center gap-3 '>
                 <div className='border-[1px] flex w-[38vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
                     <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                         placeholder='Search '
                         className='w-[90%] text-[1.1vw] font- py-[.4vw] font-light bg-[#0F0F0F] px-3 text-white outline-blue-900 ml-[.2vw] rounded-l-3xl'
-                        type="text" />
+                    />
 
-                    <i className="ri-search-line cursor-pointer  font-light text-custom-white ml-[1vw] mt-[.2vw]"></i>
+                    {isVoiceSupported && <i
+                        className="ri-search-line cursor-pointer  font-light text-custom-white ml-[1vw] mt-[.2vw]"></i>}
                 </div>
 
                 <div className='bg-zinc-700 rounded-full px-3 cursor-pointer '>
-                    <i className="ri-mic-fill rounded-full text-[2vw] text-white "></i>
+                    <i
+                        onClick={() => {
+                            if (isVoiceSupported) window.startVoiceRecognition?.();
+                            else alert('Voice recognition not supported in this browser.');
+                        }}
+                        className="ri-mic-fill rounded-full text-[2vw] text-white "></i>
                 </div>
 
             </div>
