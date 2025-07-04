@@ -245,7 +245,12 @@ const SearchBar = () => {
                         </div>
                         <div className=' flex items-center justify-center'>
                             <div className='bg-zinc-700 p-[2vw] rounded-full flex items-center justify-center cursor-pointer '>
-                                <i className="ri-mic-fill rounded-full text-[4vw] text-white "></i>
+                                <i
+                                    onClick={() => {
+                                        if (isVoiceSupported) window.startVoiceRecognition?.();
+                                        else alert('Voice recognition not supported in this browser.');
+                                    }}
+                                    className="ri-mic-fill rounded-full text-[4vw] text-white "></i>
                             </div>
                         </div>
                     </div>
