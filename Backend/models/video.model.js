@@ -1,41 +1,43 @@
 const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
-    userId:{
-        type:String,
+    userId: {
+        type: String,
     },
-    title:{
-        type:String,
-        required:true,
+    title: {
+        type: String,
+        required: true,
     },
-    description:{
-        type:String,
-        required:true,
+    description: {
+        type: String,
+        required: true,
+    }, 
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    likedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    dislikedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    video_Url: {
+        type: Object,
     },
-    comments:[],
-    likedByUsers:[],
-    dislikedByUsers:[],
-    video_Url:{
-        type:Object,
+    thumbnail_Url: {
+        type: Object,
     },
-    commentby:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+    category: {
+        type: String,
     },
-    thumbnail_Url:{
-        type:Object,
+    tags: {
+        type: String
     },
-    category:{
-        type:String,
-    },
-    tags:{
-        type:String
-    },
-    views:{
-        type:Number,
-        default:0
+    views: {
+        type: Number,
+        default: 0
     }
-},{timestamps: true});
+}, { timestamps: true });
+
+
+videoSchema.index(
+  { title: 'text', description: 'text' },
+  { name: 'VideoSearchIndex' } // optional name
+);
 
 
 module.exports = mongoose.model('Video', videoSchema);

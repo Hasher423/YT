@@ -4,7 +4,6 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-
 const connection = require('./DBConnection/db');
 connection();
 

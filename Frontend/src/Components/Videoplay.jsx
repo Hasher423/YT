@@ -44,6 +44,7 @@ function reducer(state, action) {
 
 const Videoplay = () => {
   const [comments, setcomments] = useState(null)
+  const [refreshComments, setrefreshComments] = useState(false)
   const [user, setuser] = useState(null)
   const [state, dispatch] = useReducer(reducer, initialState);
   const videoRef = useRef(null);
@@ -110,24 +111,21 @@ const Videoplay = () => {
         withCredentials: true
       }
     );
-
-
-
-
     const filteredComments = response?.data?.allComments.filter(
       (comment) => comment.videoId === videoId
     )
 
+    
     dispatch({ type: 'SET_COMMENTS', payload: filteredComments });
 
   }
 
 
-  
 
-    useEffect(() => {
-      getComments()
-    }, [videoId])
+
+  useEffect(() => {
+    getComments()
+  }, [videoId, refreshComments])
 
 
 
@@ -216,9 +214,10 @@ const Videoplay = () => {
             <p>{state.video?.views} views</p>
             <p>{state.ago} ago</p>
           </div>
-          <div className='text-wrap'>
+          <div className='whitespace-normal break-words'>
             {state.showDescription ? state.description : `${state.description?.slice(0, 80)}...`}
           </div>
+
           <p onClick={() => dispatch({ type: 'TOGGLE_DESCRIPTION' })}>
             {state.showDescription ? 'less...' : 'more...'}
           </p>
@@ -226,7 +225,7 @@ const Videoplay = () => {
       </div>
 
 
-      <Comments videoId={videoId} comments={state?.comments} channel={user?.channelName}/>
+      <Comments videoId={videoId} comments={state?.comments} setrefreshComments={setrefreshComments} channel={user?.channelName} />
     </div>
   );
 };

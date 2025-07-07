@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 import { UserContext } from '../Context/GetUserContext';
 
 
-const Comments = ({ videoId, comments, channel }) => {
+const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
     const [comment, setComment] = useState('');
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!comment.trim() || !channel ) return; // ensures user is loaded
+        if (!comment.trim() || !channel) return; // ensures user is loaded
 
 
 
@@ -19,12 +19,13 @@ const Comments = ({ videoId, comments, channel }) => {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include', // correct place
-                body: JSON.stringify({ comment, channel}),
+                body: JSON.stringify({ comment, channel }),
             });
             const data = await response.json();
             if (response.ok) {
                 console.log('Comment submitted:', data.message);
                 setComment('');
+                setrefreshComments((prev) => !prev )
             } else {
                 console.error('Error submitting comment:', data.message || data.error);
             }
@@ -52,7 +53,7 @@ const Comments = ({ videoId, comments, channel }) => {
                     />
                 </div>
                 <div className='w-full'>
-                    { <form onSubmit={handleSubmit} className='border-b-[1px]'>
+                    {<form onSubmit={handleSubmit} className='border-b-[1px]'>
                         <input
                             type='text'
                             placeholder='Add a comment'
