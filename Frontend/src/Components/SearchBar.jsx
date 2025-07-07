@@ -14,7 +14,10 @@ const SearchBar = () => {
     const [ShowSearchPannel, setShowSearchPannel] = useState(false)
     const [sticky, setsticky] = useState(false)
     const [theme, settheme] = useState('dark')
+    const [searchSuggestions, setsearchSuggestions] = useState(['Search Anything you want '])
+    const [ShowSearchSuggestions, setShowSearchSueggestions] = useState(false)
     const [user, setuser] = useState('')
+
 
 
     useEffect(() => {
@@ -106,6 +109,19 @@ const SearchBar = () => {
         }
     }
 
+    const getSuggestions = async (query) => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/search/suggestions?q=${query}`, {
+                withCredentials: true,
+            });
+            setsearchSuggestions(response.data);
+            setShowSearchSueggestions(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
 
     return (
         <div
@@ -113,6 +129,16 @@ const SearchBar = () => {
                 transition: 'all 5s ease-in-out',
             }}
             ref={searchBar} className={`w-full fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
+
+
+            <div
+                onClick={() => {
+                    setShowSearchSueggestions(false)
+                }}
+                className={`absolute top-0 left-0  w-[100vw] h-[100vh] ${ShowSearchSuggestions ? ' ' : 'hidden'} `}>
+
+            </div>
+
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[2vw] sm:gap-[1.8vw]'>
                 <i
@@ -136,10 +162,28 @@ const SearchBar = () => {
 
 
             {/* SEARCHBAR AND MIC  */}
-            <div className='bg-green-90 hidden  sm:flex items-center gap-3 '>
-                <div className='border-[1px] flex w-[38vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
+            <div className=' hidden  sm:flex items-center gap-3 relative '>
+                {/* Search suggestions div */}
+                <div className={`${ShowSearchSuggestions ? 'block' : 'hidden'} absolute bg-custom-black text-white w-[36vw]  rounded-xl top-[6vh] left-0 pb-8`}>
+                    {(searchSuggestions.length > 0 && ShowSearchSuggestions) &&
+                        searchSuggestions.map((suggestion) => (
+                            <div key={suggestion}  className={`py-2 px-4 font-[500] cursor-pointer`}>
+                                {suggestion.length > 45 ? suggestion.slice(0,45)+'...' : suggestion}
+                            </div>
+                        ))
+                    }
+                </div>
+                <div className='border-[1px] flex w-[40vw] border-zinc-400 bg-zinc-700 rounded-3xl  '>
                     <input
                         type="text"
+                        onClick={() => {
+                            setShowSearchSueggestions((prev) => !prev)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter'){
+                                getSuggestions(e.target.value);
+                            }
+                        }}
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         placeholder='Search '

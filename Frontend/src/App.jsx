@@ -10,6 +10,9 @@ import IsLoggedIn from './Pages/IsLoggedIn';
 import Login from './Pages/Login';
 import ChannelProfile from './Pages/ChannelProfile';
 import PageLoader from './Components/PageLoader';
+import SearchResults from './Components/SearchResults';
+
+
 
 const App = () => {
   return (
@@ -23,6 +26,7 @@ const App = () => {
         <Route path="/video" element={<Videoplay />} />
         <Route path="/video/:videoPlayer" element={<VideoPlayer />} />
         <Route path="/UploadVideo" element={<UploadVideo />} />
+        <Route path="/results" element={<SearchResults />} />
       </Routes>
     </div>
   )
