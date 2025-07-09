@@ -2,7 +2,7 @@ const userService = require('../Services/user.service')
 const userModel = require('../models/user.model')
 const mongoose = require('mongoose')
 const blackListTokensModel = require('../models/blackListTokens');
-const  cloudinaryUploadChunkedBuffer  = require('../Services/videoUpload.service.js');
+const cloudinaryUploadChunkedBuffer = require('../Services/videoUpload.service.js');
 const fs = require('fs');
 
 module.exports.registerUser = async (req, res) => {
@@ -171,20 +171,38 @@ module.exports.getuser = async (req, res) => {
 }
 
 
-
-module.exports.getuserForLogo = async (req, res) => {
+module.exports.getUsersForLogos = async (req, res) => {
     res.set('Cache-Control', 'no-store');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
     res.set('Surrogate-Control', 'no-store');
+
     try {
-        const user = await userModel.findOne({ _id: req.params.userId });
-        return res.status(200).json({ user })
+        const idsParam = req.query.ids;
+        if (!idsParam) {
+            return res.status(400).json({ message: 'No user IDs provided' });
+        }
+
+        const userIds = idsParam.split(',').map(id => id.trim());
+
+        const users = await userModel.find({ _id: { $in: userIds } }).select('logoId channelName _id');
+
+        // Convert to an object for easy frontend usage
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user._id] = {
+                logoId: user.logoId,
+                channelName: user.channelName
+            };
+        });
+
+        return res.status(200).json(userMap);
+    } catch (err) {
+        console.error('Error in getUsersForLogos:', err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-    catch (err) {
-        console.error(err)
-    }
-}
+};
+
 
 
 module.exports.validateToken = async (req, res) => {

@@ -6,7 +6,6 @@ import Controls from './Controls';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import Comments from './Comments';
-import { UserContext } from '../Context/GetUserContext';
 
 const initialState = {
   play: false,
@@ -63,21 +62,32 @@ const Videoplay = () => {
     return `${seconds} seconds`;
   };
 
+
   const fetchVideoAndUser = useCallback(async () => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const [resVideo, resUser] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`),
-        axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, { withCredentials: true }),
-      ]);
+
+      // Fetch video
+      const resVideo = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
       dispatch({ type: 'SET_VIDEO', payload: resVideo?.data?.video });
       dispatch({ type: 'SET_AGO', payload: calculateAgo(resVideo?.data?.video?.createdAt) });
-      dispatch({ type: 'SET_USER', payload: resUser.data.user });
-      setuser(resUser?.data?.user)
+
+      // Get user from localStorage instead of backend
+      const userFromStorage = JSON.parse(localStorage.getItem('user'));
+      if (userFromStorage) {
+        dispatch({ type: 'SET_USER', payload: userFromStorage });
+        setuser(userFromStorage);
+      }
+
     } catch (err) {
       console.error('Error fetching video or user:', err);
     }
   }, [videoId]);
+
 
   useEffect(() => {
     fetchVideoAndUser();
@@ -115,7 +125,7 @@ const Videoplay = () => {
       (comment) => comment.videoId === videoId
     )
 
-    
+
     dispatch({ type: 'SET_COMMENTS', payload: filteredComments });
 
   }

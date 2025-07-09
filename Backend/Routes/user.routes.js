@@ -8,7 +8,7 @@ Router.post('/signup', uploadFields([ { name: 'logo', maxCount: 1 }, { name: 'bg
 Router.post('/login', userController.login);
 Router.get('/logout', userController.logout);
 Router.get('/getuser', isLoggedIn.auth, userController.getuser);
-Router.get('/getuserForLogo/:userId', isLoggedIn.auth, userController.getuserForLogo);
+Router.get('/getUsersForLogos', isLoggedIn.auth, userController.getUsersForLogos);
 Router.get('/validateToken', isLoggedIn.auth, userController.validateToken)
 
 module.exports = Router;

@@ -1,6 +1,9 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+
 
 
 const Login = () => {
@@ -24,6 +27,7 @@ const Login = () => {
 
             if (response.data) {
                 navigate('/'); // Redirect to home
+                localStorage.setItem('user', JSON.stringify(response?.data?.user));
             }
 
 

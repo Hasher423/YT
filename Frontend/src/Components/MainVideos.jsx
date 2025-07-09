@@ -18,11 +18,27 @@ const MainVideos = () => {
     const [user, setuser] = useState(null)
     const [errMessage, setErrMessage] = useState('');
 
+    const reArrangeArray = (arr) => {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+
+        return arr
+    }
+
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`);
-                setvideos(response.data.videos);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos?page=1&limit=23`,
+                    {
+                        headers: {
+                            'Cache-Control': 'no-cache',
+                        },
+                    }
+                );
+                // setvideos(response.data.videos);
+                setvideos(reArrangeArray(response?.data?.videos))
 
                 setloading(false);
             } catch (err) {
@@ -37,41 +53,50 @@ const MainVideos = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuser`, {
-                withCredentials: true,
-            });
-            setuser(response.data.user);
 
+        setuser(JSON.parse(localStorage.getItem('user')));
 
-
-        };
-        fetchData();
     }, []);
 
 
     useEffect(() => {
         const fetchLogoImg = async () => {
-            const logoMap = { ...logos };
+            const userIdMap = {}; // Used to track unique userIds
+            const uniqueUserIds = [];
+
             for (const video of videos) {
-                try {
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuserForLogo/${video.userId}`, {
-                        withCredentials: true,
-                    });
-                    logoMap[video.userId] = {userId : response?.data?.user?.logoId, channelName: response?.data?.user?.channelName};
-                } catch (err) {
-                    console.error('Error fetching logo for', video.userId, err);
+                if (!userIdMap[video.userId]) {
+                    userIdMap[video.userId] = true;
+                    uniqueUserIds.push(video.userId);
                 }
             }
 
-            setlogos(logoMap);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getUsersForLogos`, {
+                    params: { ids: uniqueUserIds.join(',') },
+                    withCredentials: true
+                });
+
+                console.log(response.data)
+                const logoMap = {};
+                for (const userId in response.data) {
+                    logoMap[userId] = {
+                        userId: response.data[userId].logoId,
+                        channelName: response.data[userId].channelName
+                    };
+                }
+
+                setlogos(logoMap);
+            } catch (err) {
+                console.error('Error fetching logos in batch:', err);
+            }
         };
-        
 
         if (videos) {
             fetchLogoImg();
         }
     }, [videos]);
+
 
 
 

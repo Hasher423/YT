@@ -13,7 +13,11 @@ const SideVideos = () => {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos/`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos/`, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    },
+                })
                 setdata(response.data)
             } catch (error) {
                 console.error('Error fetching videos:', error)
@@ -40,7 +44,7 @@ const SideVideos = () => {
                             {/* DIV OF THUMBNAIL  */}
                             <div className='relative' >
                                 <img
-                                    className=' sm:w-[20vw]   lt-sm:w-[100vw]  sm:max-h-[8vw]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                    className=' sm:w-[20vw]   lt-sm:w-[100vw] aspect-[30/17]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
                                     src={`${element?.thumbnail_Url?.url}`} alt="" />
                             </div>
                             {/* DETAILS OF VIDEO DIV */}

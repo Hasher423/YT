@@ -33,6 +33,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
             folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
             public_id: `${resourceType === 'video' ? 'video_' : 'thumb_'}${Date.now()}`,
             chunk_size: 6 * 1024 * 1024,
+             timeout: 180000, // 3 minutes
           },
           (error, result) => {
             if (error) return reject(error);

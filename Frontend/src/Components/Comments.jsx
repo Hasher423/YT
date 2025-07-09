@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { UserContext } from '../Context/GetUserContext';
 
 
 const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
@@ -8,24 +7,35 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!comment.trim() || !channel) return; // ensures user is loaded
-
-
+        if (!comment.trim() || !channel) return;
 
         try {
+            const start = Date.now(); // ⏱️ Start full request
+
             const response = await fetch(`http://localhost:3000/comment/addComment/${videoId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // correct place
+                credentials: 'include',
                 body: JSON.stringify({ comment, channel }),
             });
+
+            const afterFetch = Date.now(); // ⏱️ After fetch, before parsing
+            console.log(`Fetch time: ${afterFetch - start}ms`);
+
             const data = await response.json();
+
+            const afterJSON = Date.now(); // ⏱️ After JSON parsing
+            console.log(`JSON parse time: ${afterJSON - afterFetch}ms`);
+
             if (response.ok) {
-                console.log('Comment submitted:', data.message);
                 setComment('');
-                setrefreshComments((prev) => !prev )
+                setrefreshComments((prev) => !prev);
+
+                const afterStateUpdate = Date.now(); // ⏱️ After state updates
+                console.log(`State update time: ${afterStateUpdate - afterJSON}ms`);
+                console.log(`Total frontend time: ${afterStateUpdate - start}ms`);
             } else {
                 console.error('Error submitting comment:', data.message || data.error);
             }
@@ -33,6 +43,7 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
             console.error('Request failed:', err);
         }
     };
+
 
     const handleCancel = () => {
         setComment('');

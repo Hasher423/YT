@@ -1,6 +1,6 @@
 
 const videoService = require('../Services/search.service')
-module.exports.searchVideo = async (req,res) =>{
+module.exports. searchVideo = async (req,res) =>{
 
     const query = req.query.q;
     if(!query || query.trim() === "") return res.status(400).json({message : "Search query is required"});

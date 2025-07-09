@@ -4,12 +4,11 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import {UserContext} from '../Context/GetUserContext';
 
 
 
 const ChannelVideos = () => {
-    const data= useContext(UserContext)
+    const data= JSON.parse(localStorage.getItem('user'));
     const prevRef1 = useRef(null);
     const nextRef1 = useRef(null);
     const prevRef2 = useRef(null);

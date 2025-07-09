@@ -13,7 +13,7 @@ module.exports.comment = async (req, res) => {
 
     console.time('Finding User and video');
     const [video, user] = await Promise.all([
-      Video.findById(videoId), // don't use .lean() here
+      Video.findById(videoId).lean(), // don't use .lean() here
       userModel.findById(userId).lean() // lean here is fine
     ]);
     console.timeEnd('Finding User and video');

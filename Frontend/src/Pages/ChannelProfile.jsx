@@ -5,14 +5,13 @@ import MainVideos from '../Components/MainVideos'
 import { Context } from '../Context/VideosContext'
 import ChannelVideos from '../Components/ChannelVideos'
 
-import { UserContext } from '../Context/GetUserContext'
 
 
 
 const Home = () => {
 
     const showSideBar = useContext(Context)[0];
-    const user = useContext(UserContext)
+    const user = JSON.parse(localStorage.getItem('user'));
     
 
     return (
@@ -23,7 +22,7 @@ const Home = () => {
                 <div className='pt-[15vw] md:pt-[6vw] 530-780:pt-[10vw]  px-[3vw] md:px-[6vmax]'>
 
                     <div className='bg-red-900 h-[15vh] md:h-[25vh] 530-780:h-[20vh] rounded-lg md:rounded-2xl w-[95vw] md:w-[90vw] overflow-hidden '>
-                        <img className='w-full h-full object-cover object-center' src={user?.user?.bgBanner} alt="" />
+                        <img className='w-full h-full object-cover object-center' src={user?.bgBanner} alt="" />
                     </div>
 
 
@@ -35,7 +34,7 @@ const Home = () => {
                         <div className='h-full flex items-center justify-center'>
                             <img
                                 className='w-[20vw] md:w-[12vw] aspect-square rounded-full object-cover object-center'
-                                src={user?.user?.logoId}
+                                src={user?.logoId}
                                 alt=""
                             />
                         </div>
@@ -43,10 +42,10 @@ const Home = () => {
                         {/* TEXT */}
                         <div className='text-white h-full'>
                             <div className='text-[7vw] md:text-[3vw] font-[700] lg:text-[3.5vw]'>
-                                <p className='sm:text-[3.6vw]'>{user?.user?.channelName}</p>
+                                <p className='sm:text-[3.6vw]'>{user?.channelName}</p>
                             </div>
                             <div className='md:text-[2vw] font-[400]'>
-                                <span>@{user?.user?.channelName}{((Number(Date().length))*(Math.random())).toFixed(0)}</span>
+                                <span>@{user?.channelName}{((Number(Date().length))*(Math.random())).toFixed(0)}</span>
                             </div>
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>15.5k Subscribers</div>
