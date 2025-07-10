@@ -300,8 +300,8 @@ const SearchBar = () => {
                     </div>
                     <div className=''>
                         {['Search query 1 ', 'Search query 2', 'Search query 3 ', 'Search Query 4']
-                            .map((query) => {
-                                return <div>
+                            .map((query,idx) => {
+                                return <div key={idx}>
                                     <div className='border-b-[1px] border-zinc-700 px-[3vw]'>
                                         <p className='text-blue-600 text-[5vw]'>{query}</p>
                                     </div>

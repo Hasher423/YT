@@ -10,5 +10,5 @@ Router.get('/logout', userController.logout);
 Router.get('/getuser', isLoggedIn.auth, userController.getuser);
 Router.get('/getUsersForLogos', isLoggedIn.auth, userController.getUsersForLogos);
 Router.get('/validateToken', isLoggedIn.auth, userController.validateToken)
-
+Router.get('/getUserVideos/:userId', userController.getUserVideos)
 module.exports = Router;

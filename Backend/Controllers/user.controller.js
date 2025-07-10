@@ -212,3 +212,20 @@ module.exports.validateToken = async (req, res) => {
     res.set('Surrogate-Control', 'no-store');
     res.json({ valid: true })
 }
+
+
+module.exports.getUserVideos = async (req, res) => {
+    try {
+
+        const userId = req.params.userId;
+
+        const videos = await userService.getUserVideos(userId)
+
+        if (!videos) return res.status(401).json("Videos could not Found !");
+        return res.status(200).json(videos)
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+}
+
+

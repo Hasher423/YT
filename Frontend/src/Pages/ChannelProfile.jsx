@@ -4,15 +4,20 @@ import SideBar from '../Components/SideBar'
 import MainVideos from '../Components/MainVideos'
 import { Context } from '../Context/VideosContext'
 import ChannelVideos from '../Components/ChannelVideos'
+import ChannelHome from '../Components/ChannelHome'
+import { useState } from 'react'
+
 
 
 
 
 const Home = () => {
+    const [home, sethome] = useState(true)
+    const [videos, setvideos] = useState(false)
 
     const showSideBar = useContext(Context)[0];
     const user = JSON.parse(localStorage.getItem('user'));
-    
+
 
     return (
         <div>
@@ -45,7 +50,7 @@ const Home = () => {
                                 <p className='sm:text-[3.6vw]'>{user?.channelName}</p>
                             </div>
                             <div className='md:text-[2vw] font-[400]'>
-                                <span>@{user?.channelName}{((Number(Date().length))*(Math.random())).toFixed(0)}</span>
+                                <span>@{user?.channelName}{((Number(Date().length)) * (Math.random())).toFixed(0)}</span>
                             </div>
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>15.5k Subscribers</div>
@@ -69,10 +74,32 @@ const Home = () => {
 
 
 
+                    {/* Tabs */}
+                    <div className='cursor-pointer text-custom-white md:py-[.1vw] xl:text-[1.5vw] py-[4vw] text-opacity-30 border-b-[1px] border-zinc-700'>
+                        <div>
+                            <span className={`px-[3vw] md:px-[1.2vw] font-[500] inline-block ${home && 'text-white'}`}
+                                onClick={() => {
+                                    sethome(true)
+                                    setvideos(false)
+                                }}
+                            >Home</span>
+                            <span className={`px-[3vw] md:px-[1.2vw] font-[500] inline-block ${videos && 'text-white'}`}
+                                onClick={() => {
+                                    sethome(false)
+                                    setvideos(true)
+                                }}
+                            >Videos</span>
+                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block'>Shorts</span>
+                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block'>Playlists</span>
+                            <span><i className='ri-search-line text-[5vw] md:text-[1.2vw] xl:text-[2vw]' /></span>
+                        </div>
+                    </div>
 
 
 
-                    <ChannelVideos />
+                    {home && <ChannelHome />}
+                    {videos && <ChannelVideos />}
+
 
                 </div>
             </div>

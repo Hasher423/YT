@@ -27,6 +27,8 @@ const SearchResults = () => {
 
     }, [query])
 
+    const channel = localStorage.getItem('channel') ;
+
     return (
         <div className='min-h-screen bg-custom-black'>
             <SearchBar />
@@ -36,7 +38,7 @@ const SearchResults = () => {
                 {searchedVideos.map((elem) => {
                     return <Link to={`/video/videoPlayer?v=${elem?._id}`} className='w-[90vw] border-b-[1px] border-zinc-700 pt-2 ml-auto grid sm:grid-cols-[3fr_5fr_1fr] pb-[2vw] items-stretch pt- px-5'>
                         <div className=' p-[vw]'>
-                            <img className=' rounded-xl aspect-[16/9] object-cover  ' src={elem?.thumbnail_Url?.url} alt="" />
+                            <img className=' rounded-xl md:w-[30vw] aspect-[16/09] object-cover  ' src={elem?.thumbnail_Url?.url} alt="" />
                         </div>
                         <div className='bg-gree  text-custom-white sm:text-[1.2vw] font-[500] px-2'>
                             <p>{elem.title}</p>
@@ -47,10 +49,16 @@ const SearchResults = () => {
                                 <div>____ago</div>
                             </div>
 
+                            <div className='mt-[2vw] hidden md:block'>
+                                {elem.description.split(' ').length > 25
+                                    ? elem.description.split(' ').slice(0, 25).join(' ') + '...'
+                                    : elem.description}
+                            </div>
+
 
                             <div className=' hidden sm:flex items-center gap-2 sm:mt-[3vh] mt-[4vw]    '>
                                 <div><img className='sm:w-[3.3vw] w-[7vw] sm:h-[3.3vw] rounded-full ' src="https://yt3.ggpht.com/FdLutJAen7zJHXredukK2h42fRgrBY0BM43fAqsNI8oriRv7-_w02VyYf5cqATBrgRQFJHO_=s68-c-k-c0x00ffffff-no-rj" alt="" /></div>
-                                <div>{elem.channelName} </div>
+                                <div>{channel}</div>
                             </div>
                         </div>
                         <div className='sm:block hidden text-left font-bold'>
