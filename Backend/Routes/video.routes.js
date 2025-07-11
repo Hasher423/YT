@@ -15,6 +15,8 @@ Router.post('/upload', uploadFields([
 Router.get('/getVideos' , videoController.getVideos)
 Router.get('/getVideo' , videoController.getVideo)
 Router.post('/increase-view/:videoId', auth, videoController.increaseView);
+Router.post('/increase-like/:videoId', auth, videoController.increaseLike);
+Router.post('/increase-dislike/:videoId', auth, videoController.increaseDislike);
 
 
 module.exports = Router;

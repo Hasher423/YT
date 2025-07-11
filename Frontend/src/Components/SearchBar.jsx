@@ -218,11 +218,11 @@ const SearchBar = () => {
                         </div>
                         <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
                             <div><i className="ri-broadcast-line"></i></div>
-                            <div>Go live</div>
+                            <div className='text-red-900'>Go live</div>
                         </div>
                         <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
                             <div><i className="ri-file-text-line"></i></div>
-                            <div>Create post</div>
+                            <div className='text-red-900'>Create post</div>
                         </div>
                     </div> : ''}
                     <div className='text-[3vw] sm:text-[1.3vw] text-custom-white' onClick={handleShowPanel}>

@@ -89,8 +89,8 @@ const Home = () => {
                                     setvideos(true)
                                 }}
                             >Videos</span>
-                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block'>Shorts</span>
-                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block'>Playlists</span>
+                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block text-red-900'>Shorts</span>
+                            <span className='px-[3vw] md:px-[1.2vw] font-[500] inline-block text-red-900'>Playlists</span>
                             <span><i className='ri-search-line text-[5vw] md:text-[1.2vw] xl:text-[2vw]' /></span>
                         </div>
                     </div>

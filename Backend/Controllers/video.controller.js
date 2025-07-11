@@ -143,3 +143,59 @@ module.exports.increaseView = async (req, res) => {
 
 
 
+module.exports.increaseLike = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const userId = req.user._id;
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+    if (video.likedByUsers.includes(userId)) {
+      return res.status(400).json({ message: 'Video already liked' });
+    }
+    await Video.findByIdAndUpdate(videoId, {
+      $inc: { likes: 1 },
+      $push: { likedByUsers: userId }
+
+
+    });
+
+
+
+    return res.status(200).json({ message: "Video Liked Successfully" })
+  } catch (err) {
+    return res.status(401).json({ message: "Could not liked", err: err.message })
+  }
+
+
+}
+
+
+
+module.exports.increaseDislike = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const userId = req.user._id;
+
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    if (video.dislikedByUsers.includes(userId)) {
+      return res.status(400).json({ message: 'Video already disliked' });
+    }
+
+    await Video.findByIdAndUpdate(videoId, {
+      $inc: { dislikes: 1 },
+      $push: { dislikedByUsers: userId }
+    });
+
+    return res.status(200).json({ message: 'Video disliked successfully' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Could not dislike', err: err.message });
+  }
+};
+
+

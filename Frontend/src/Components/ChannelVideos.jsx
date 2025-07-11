@@ -36,7 +36,7 @@ const ChannelVideos = () => {
                             <img className=' rounded-xl  aspect-[16/9] object-cover  ' src={`${elem.thumbnail_Url.url}`} alt="" />
                         </div>
                         <div className='bg-gree  text-custom-white sm:text-[1.2vw] font-[500] px-4'>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, similique.</p>
+                            <p>{elem.title}</p>
 
                             <div className='flex items-center font-[400] text-white text-opacity-50'>
                                 <div>{elem.views} views</div>

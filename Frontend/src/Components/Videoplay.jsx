@@ -1,6 +1,4 @@
-// Scalable & optimized VideoPlay component with useReducer
-
-import React, { useEffect, useRef, useReducer, useCallback, useState, useContext } from 'react';
+import React, { useEffect, useRef, useReducer, useCallback, useState } from 'react';
 import 'remixicon/fonts/remixicon.css';
 import Controls from './Controls';
 import axios from 'axios';
@@ -21,30 +19,70 @@ const initialState = {
   loading: true,
   viewTimerStarted: false,
   showDescription: false,
+  like: false,
+  dislike: false,
 };
 
 function reducer(state, action) {
-
   switch (action.type) {
-    case 'SET_VIDEO': return { ...state, video: action.payload, description: action.payload?.description };
-    case 'SET_USER': return { ...state, user: action.payload };
-    case 'SET_COMMENTS': return { ...state, comments: action.payload };
-    case 'SET_AGO': return { ...state, ago: action.payload };
-    case 'SET_LOADING': return { ...state, loading: action.payload };
-    case 'SET_DURATION': return { ...state, duration: action.payload };
-    case 'SET_CURRENT_TIME': return { ...state, currentTime: action.payload };
-    case 'TOGGLE_PLAY': return { ...state, play: !state.play };
-    case 'TOGGLE_MUTE': return { ...state, mute: !state.mute };
-    case 'TOGGLE_DESCRIPTION': return { ...state, showDescription: !state.showDescription };
-    case 'START_TIMER': return { ...state, viewTimerStarted: true };
-    default: return state;
+    case 'SET_VIDEO':
+      return {
+        ...state,
+        video: action.payload,
+        description: action.payload?.description,
+        like: false,
+        dislike: false,
+      };
+    case 'SET_USER':
+      return { ...state, user: action.payload };
+    case 'SET_COMMENTS':
+      return { ...state, comments: action.payload };
+    case 'SET_AGO':
+      return { ...state, ago: action.payload };
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+    case 'SET_DURATION':
+      return { ...state, duration: action.payload };
+    case 'SET_CURRENT_TIME':
+      return { ...state, currentTime: action.payload };
+    case 'TOGGLE_PLAY':
+      return { ...state, play: !state.play };
+    case 'TOGGLE_MUTE':
+      return { ...state, mute: !state.mute };
+    case 'TOGGLE_DESCRIPTION':
+      return { ...state, showDescription: !state.showDescription };
+    case 'START_TIMER':
+      return { ...state, viewTimerStarted: true };
+    case 'LIKE':
+      return {
+        ...state,
+        like: !state.like,
+        dislike: false,
+        video: {
+          ...state.video,
+          likes: !state.like ? state.video.likes + 1 : state.video.likes - 1,
+          dislikes: state.dislike ? state.video.dislikes - 1 : state.video.dislikes,
+        },
+      };
+    case 'DISLIKE':
+      return {
+        ...state,
+        dislike: !state.dislike,
+        like: false,
+        video: {
+          ...state.video,
+          dislikes: !state.dislike ? state.video.dislikes + 1 : state.video.dislikes - 1,
+          likes: state.like ? state.video.likes - 1 : state.video.likes,
+        },
+      };
+    default:
+      return state;
   }
 }
 
 const Videoplay = () => {
-  const [comments, setcomments] = useState(null)
-  const [refreshComments, setrefreshComments] = useState(false)
-  const [user, setuser] = useState(null)
+  const [refreshComments, setrefreshComments] = useState(false);
+  const [user, setuser] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
   const videoRef = useRef(null);
   const location = useLocation();
@@ -62,43 +100,36 @@ const Videoplay = () => {
     return `${seconds} seconds`;
   };
 
-
-  const fetchVideoAndUser = useCallback(async () => {
+  const fetchVideo = useCallback(async () => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-
-      // Fetch video
       const resVideo = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`, {
-        headers: {
-          'Cache-Control': 'no-cache',
-        }
+        headers: { 'Cache-Control': 'no-cache' },
       });
       dispatch({ type: 'SET_VIDEO', payload: resVideo?.data?.video });
       dispatch({ type: 'SET_AGO', payload: calculateAgo(resVideo?.data?.video?.createdAt) });
 
-      // Get user from localStorage instead of backend
       const userFromStorage = JSON.parse(localStorage.getItem('user'));
       if (userFromStorage) {
         dispatch({ type: 'SET_USER', payload: userFromStorage });
         setuser(userFromStorage);
       }
-
     } catch (err) {
       console.error('Error fetching video or user:', err);
     }
   }, [videoId]);
 
-
   useEffect(() => {
-    fetchVideoAndUser();
-  }, [fetchVideoAndUser]);
+    fetchVideo();
+  }, [fetchVideo]);
 
   useEffect(() => {
     let timer;
     if (state.viewTimerStarted) {
       timer = setTimeout(() => {
-        axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-view/${videoId}`, {}, { withCredentials: true })
-          .catch(err => console.error('View increment failed:', err));
+        axios
+          .post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-view/${videoId}`, {}, { withCredentials: true })
+          .catch((err) => console.error('View increment failed:', err));
       }, 30000);
     }
     return () => clearTimeout(timer);
@@ -112,32 +143,15 @@ const Videoplay = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-
   const getComments = async () => {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/comment/getComments`, {
-
-    },
-      {
-        withCredentials: true
-      }
-    );
-    const filteredComments = response?.data?.allComments.filter(
-      (comment) => comment.videoId === videoId
-    )
-
-
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/comment/getComments`, {}, { withCredentials: true });
+    const filteredComments = response?.data?.allComments.filter((comment) => comment.videoId === videoId);
     dispatch({ type: 'SET_COMMENTS', payload: filteredComments });
-
-  }
-
-
-
+  };
 
   useEffect(() => {
-    getComments()
-  }, [videoId, refreshComments])
-
-
+    getComments();
+  }, [videoId, refreshComments]);
 
   const handlePlay = () => {
     if (!state.viewTimerStarted) dispatch({ type: 'START_TIMER' });
@@ -148,6 +162,26 @@ const Videoplay = () => {
       videoRef.current?.requestFullscreen();
     } else {
       document.exitFullscreen();
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) return;
+    dispatch({ type: 'LIKE' });
+    try {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-like/${videoId}`, {}, { withCredentials: true });
+    } catch (error) {
+      console.error('Failed to like the video:', error);
+    }
+  };
+
+  const handleDislike = async () => {
+    if (!user) return;
+    dispatch({ type: 'DISLIKE' });
+    try {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/increase-dislike/${videoId}`, {}, { withCredentials: true });
+    } catch (error) {
+      console.error('Failed to dislike the video:', error);
     }
   };
 
@@ -189,53 +223,67 @@ const Videoplay = () => {
         />
       </div>
 
-      <div className='w-full px-[1.5vw] py-[.7vw]'>
-        <p className='font-[700] text-white sm:text-[1.4vw] 2xl:text-[1.7vw]'>
-          {state.video?.title}
-        </p>
+      <div className="w-full px-[1.5vw] py-[.7vw]">
+        <p className="font-[700] text-white sm:text-[1.4vw] 2xl:text-[1.7vw]">{state.video?.title}</p>
       </div>
 
-      <div className='cursor-pointer flex flex-col gap-[2vh] lt-sm:gap-[4vw] lt-sm:mt-[2vh] lt-sm:px-[3vw]'>
-        <div className='flex items-center gap-[2vw] px-[1vw]'>
-          <img className='w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]' src={state.user?.logoId} alt="user" />
-          <div className='text-custom-white font-bold'>{state.user?.channelName}</div>
-          <button className='bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm'>SUBSCRIBE</button>
+      <div className="cursor-pointer flex flex-col gap-[2vh] lt-sm:gap-[4vw] lt-sm:mt-[2vh] lt-sm:px-[3vw]">
+        <div className="flex items-center gap-[2vw] px-[1vw]">
+          <img className="w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]" src={state.user?.logoId} alt="user" />
+          <div className="text-custom-white font-bold">{state.user?.channelName}</div>
+          <button className="bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm">SUBSCRIBE</button>
         </div>
 
-        <div className='text-custom-white flex items-center gap-[.6vw] flex-wrap'>
-          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl'>
-            <i className="ri-thumb-up-line"></i> &nbsp; 781K &nbsp;
-            <i className="ri-thumb-down-line"></i>
+        <div className="text-custom-white flex items-center gap-[.6vw] flex-wrap">
+          <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">
+            <i
+              onClick={handleLike}
+              className={`ri-thumb-up-line cursor-pointer ${state.like ? 'text-blue-400' : ''}`}
+            ></i>
+            {state.video?.likes}
+            <i
+              onClick={handleDislike}
+              className={`ri-thumb-down-line cursor-pointer ${state.dislike ? 'text-red-400' : ''}`}
+            ></i>
+            {state.video?.dislikes}
           </div>
-          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[700] text-sm rounded-3xl'>
+
+          <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[700] text-sm rounded-3xl">
             <i className="ri-share-forward-line"></i> &nbsp; Share
           </div>
-          <div className='bg-zinc-800 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl'>
+
+          <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl">
             <i className="ri-download-line"></i> &nbsp;
-            <a href={state.video?.video_Url?.url} download>Download</a>
+            <a href={state.video?.video_Url?.url} download>
+              Download
+            </a>
           </div>
-          <div className='bg-zinc-800 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm'>
+
+          <div className="bg-zinc-800 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm">
             <i className="ri-more-fill"></i>
           </div>
         </div>
 
-        <div className='text-white bg-custom-black rounded p-2 w-full'>
-          <div className='font-[700] flex items-center gap-[.6vw]'>
+        <div className="text-white bg-custom-black rounded p-2 w-full">
+          <div className="font-[700] flex items-center gap-[.6vw]">
             <p>{state.video?.views} views</p>
             <p>{state.ago} ago</p>
           </div>
-          <div className='whitespace-normal break-words'>
+          <div className="whitespace-normal break-words">
             {state.showDescription ? state.description : `${state.description?.slice(0, 80)}...`}
           </div>
-
           <p onClick={() => dispatch({ type: 'TOGGLE_DESCRIPTION' })}>
             {state.showDescription ? 'less...' : 'more...'}
           </p>
         </div>
       </div>
 
-
-      <Comments videoId={videoId} comments={state?.comments} setrefreshComments={setrefreshComments} channel={user?.channelName} />
+      <Comments
+        videoId={videoId}
+        comments={state.comments}
+        setrefreshComments={setrefreshComments}
+        channel={user?.channelName}
+      />
     </div>
   );
 };

@@ -14,6 +14,14 @@ const videoSchema = new mongoose.Schema({
     }, 
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     likedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    likes: {
+        type:Number,
+        default:0,
+    },
+    dislikes: {
+        type:Number,
+        default:0,
+    },
     dislikedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     video_Url: {
         type: Object,
