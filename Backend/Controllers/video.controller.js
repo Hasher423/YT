@@ -111,11 +111,22 @@ module.exports.getVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }
-    return res.json({ success: true, video });
+
+    let like = false;
+    let dislike = false;
+
+    if (req.user && req.user._id) {
+      const userIdStr = req.user._id.toString();
+      like = video.likedByUsers.some(id => id.toString() === userIdStr);
+      dislike = video.dislikedByUsers.some(id => id.toString() === userIdStr);
+    }
+
+    return res.json({ success: true, video, like, dislike });
   } catch (error) {
     return res.status(500).json({ message: 'Error fetching video', error: error.message });
   }
-}
+};
+
 
 
 module.exports.increaseView = async (req, res) => {

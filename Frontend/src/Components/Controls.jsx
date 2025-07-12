@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay, mute, setMute }) => {
+const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay, mute, setMute, playing }) => {
 
     const vloumeBar = useRef(null)
     const playback = useRef(null)
@@ -46,7 +46,7 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
         if (video.current) {
             setPlay(!play);
             console.log(play);
-            
+
             play ? video.current.pause() : video.current.play();
         }
     };
@@ -84,7 +84,7 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
                     {/* Left Controls */}
                     <div className="flex items-center gap-3 sm:gap-5">
                         <i className="ri-skip-back-fill text-[4vw] sm:text-[2vw] text-white"></i>
-                        {play ? (
+                        {playing ? (
                             <i onClick={handlePlay} className="ri-pause-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         ) : (
                             <i onClick={handlePlay} className="ri-play-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
@@ -97,7 +97,7 @@ const Controls = ({ video, duration, currentTime, setCurrentTime, play, setPlay,
                                 <i onClick={handleMute} className="ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             ) : (
                                 <i onClick={handleMute}
-                                className="ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
+                                    className="ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             )}
                             <input ref={vloumeBar} type="range" min="0" max="100" defaultValue={volumeRange} className="sm:w-[6vw] sm:block hidden " onChange={handleVolume} />
                         </div>
