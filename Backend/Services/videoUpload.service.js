@@ -33,7 +33,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
             folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
             public_id: `${resourceType === 'video' ? 'video_' : 'thumb_'}${Date.now()}`,
             chunk_size: 6 * 1024 * 1024,
-             timeout: 180000, // 3 minutes
+            timeout: 180000, // 3 minutes
           },
           (error, result) => {
             if (error) return reject(error);
@@ -66,9 +66,16 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
 
   } catch (err) {
     console.error('❌ Cloudinary chunked upload error:', err.message);
+    if (err.message === 'Request Timeout') {
+      return {
+        status: 'Error',
+        message: 'Weak internet Connection Try Again',
+      };
+    }
+
     return {
       status: 'Error',
-      message: err.message || 'Upload failed',
-    };
+      message: err.message || 'Upload Failed'
+    }
   }
 };

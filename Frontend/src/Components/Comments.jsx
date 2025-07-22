@@ -1,55 +1,42 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addComment, selectComments } from '../redux/features/commentSlice';
 
-
-const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
+const Comments = ({ videoId, setrefreshComments }) => {
     const [comment, setComment] = useState('');
+    const [channel, setChannel] = useState('');
+    const dispatch = useDispatch();
+    const commentList = useSelector(selectComments);
 
+    // Set channel only once when component mounts
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user?.channelName) {
+            setChannel(user.channelName);
+        }
+    }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setComment('');
         if (!comment.trim() || !channel) return;
 
-        try {
-            const start = Date.now(); // ⏱️ Start full request
+        console.log('Dispatching comment...');
 
-            const response = await fetch(`http://localhost:3000/comment/addComment/${videoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({ comment, channel }),
+        dispatch(addComment({ videoId, comment, channel }))
+            .unwrap()
+            .then(() => {
+                console.log('Commented Successfully');
+
+                setrefreshComments(prev => !prev);
+            })
+            .catch((err) => {
+                console.error('Error submitting comment:', err);
             });
-
-            const afterFetch = Date.now(); // ⏱️ After fetch, before parsing
-            console.log(`Fetch time: ${afterFetch - start}ms`);
-
-            const data = await response.json();
-
-            const afterJSON = Date.now(); // ⏱️ After JSON parsing
-            console.log(`JSON parse time: ${afterJSON - afterFetch}ms`);
-
-            if (response.ok) {
-                setComment('');
-                setrefreshComments((prev) => !prev);
-
-                const afterStateUpdate = Date.now(); // ⏱️ After state updates
-                console.log(`State update time: ${afterStateUpdate - afterJSON}ms`);
-                console.log(`Total frontend time: ${afterStateUpdate - start}ms`);
-            } else {
-                console.error('Error submitting comment:', data.message || data.error);
-            }
-        } catch (err) {
-            console.error('Request failed:', err);
-        }
     };
-
 
     const handleCancel = () => {
         setComment('');
     };
-
-
 
     return (
         <div className='text-white w-full grid grid-cols-1 min-h-10 py-[1.3vw] px-2 lt-sm:hidden'>
@@ -64,16 +51,13 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
                     />
                 </div>
                 <div className='w-full'>
-                    {<form onSubmit={handleSubmit} className='border-b-[1px]'>
-                        <input
-                            type='text'
-                            placeholder='Add a comment'
-                            className='outline-none text-[1.2vw] w-full bg-transparent'
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                        />
-                    </form>
-                    }
+                    <input
+                        type='text'
+                        placeholder='Add a comment'
+                        className='outline-none text-[1.2vw] w-full bg-transparent  border-b-[1px]'
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
                     {comment && (
                         <div className='w-full flex justify-end gap-[.7vw] font-bold font-sans'>
                             <button
@@ -84,7 +68,7 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
                                 Cancel
                             </button>
                             <button
-                                type='submit'
+                                type='button'
                                 onClick={handleSubmit}
                                 className='mt-[1vw] bg-blue-500 text-black p-[.3vw] px-[1.2vw] rounded-2xl'
                             >
@@ -95,9 +79,12 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
                 </div>
             </div>
 
-            {/* Additional Grid Example */}
-            {comments?.map((element, idx) => {
-                return (<div key={idx} className='w-full grid grid-cols-[.3fr_3fr_.1fr] mt-4 px-2'>
+            {/* Comment List */}
+            {commentList?.map((element, idx) => (
+                <div
+                    key={idx}
+                    className='w-full grid grid-cols-[.3fr_3fr_.1fr] mt-4 px-2'
+                >
                     <div className='flex items-center justify-center'>
                         <img
                             className='w-10 h-10 rounded-full object-cover'
@@ -106,14 +93,14 @@ const Comments = ({ videoId, comments, channel, setrefreshComments }) => {
                         />
                     </div>
                     <div className='flex flex-col text-white px-[.8vw] py-[.7vw]'>
-
                         <div>@{element?.channel}</div>
-                        <div>{element.commentText}</div>
+                        <div>{element.commentText || element.comment}</div>
                     </div>
-                    <div className='flex items-center justify-end text-white'><i class="ri-more-2-line"></i></div>
-                </div>)
-            })}
-
+                    <div className='flex items-center justify-end text-white'>
+                        <i className='ri-more-2-line'></i>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };

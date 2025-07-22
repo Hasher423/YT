@@ -25,7 +25,10 @@ import {
   setLoading,
   setPlaying,
   increaseViewCount,
-  fetchVideoData
+  fetchVideoData,
+  fetchVideo,
+  forceLike,
+  forceDislike
 } from '../redux/features/videoSlice';
 
 import { fetchComments } from '../redux/features/commentSlice';
@@ -43,8 +46,15 @@ const Videoplay = () => {
 
 
 
+  const getVideo = async () => {
+    // dispatch(setLoading(true)); // ✅ Show loader before fetch
+    const response = await dispatch(fetchVideo(videoId)).unwrap();
+    if (response.like) dispatch(forceLike());
+    else if (response.dislike) dispatch(forceDislike());
+  };
+
   useEffect(() => {
-    dispatch(fetchVideoData(videoId));
+    getVideo()
   }, [videoId]);
 
 
@@ -77,13 +87,13 @@ const Videoplay = () => {
 
   return (
     <div className="video-container flex-1 sm:h-[70%] lt-sm:py-10">
-      {video.loading && (
-        <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
-          <div className="w-12 h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
-        </div>
-      )}
 
       <div className="relative w-full h-full">
+        {video.loading && (
+          <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
+            <div className="w-12 h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
         <VideoPlayerElement
           videoRef={videoRef}
           videoUrl={video?.video?.video_Url?.url}
@@ -93,16 +103,18 @@ const Videoplay = () => {
             dispatch(setDuration(videoRef.current?.duration));
           }}
           onCanPlay={() => {
-            videoRef.current?.play();
             dispatch(setLoading(false));
+            videoRef.current?.play();
           }}
           onTimeUpdate={() => dispatch(setCurrentTime(videoRef.current.currentTime))}
           toggleFullScreen={toggleFullScreen}
-          onWaiting={() => dispatch(setLoading(true))}
-          onPlaying={() => { dispatch(setLoading(false)); dispatch(setPlaying(true)); }}
-          onPause={() => {
-            dispatch(setPlaying(false));
+          onWaiting={() => {
+            console.log('🔥 onWaiting (buffering)');
+            dispatch(setLoading(true));
           }}
+        onPause={() => {
+          dispatch(setPlaying(false));
+        }}
         />
 
         <Controls
@@ -115,17 +127,17 @@ const Videoplay = () => {
           setCurrentTime={(t) => dispatch(setCurrentTime(t))}
           setPlay={() => dispatch(togglePlay())}
           playing={video.playing}
+          setPlaying={setPlaying}
         />
       </div>
 
       <VideoInfo title={video?.video?.title} />
       <ChannelInfo user={video.user} />
       <InteractionBar
-        video={video.video}
+        videoId={videoId}
         dispatch={dispatch}
         like={video.like}
         dislike={video.dislike}
-        videoId={videoId}
         user={video.user}
       />
       <VideoDescription

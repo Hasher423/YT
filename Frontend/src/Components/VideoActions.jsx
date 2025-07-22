@@ -1,6 +1,14 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { increase_like } from '../redux/features/videoSlice';
 
-const VideoActions = ({ like, dislike, video, handleLike, handleDislike }) => {
+
+
+const VideoActions = ({ like, dislike, video,  handleDislike }) => {
+
+  const handleLike = () => {
+
+  }
   return (
     <div className="text-custom-white flex items-center gap-[.6vw] flex-wrap">
       <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">

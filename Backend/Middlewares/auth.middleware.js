@@ -5,7 +5,9 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../models/user.model'); // Make sure this path is correct
 
 module.exports.auth = async (req, res, next) => {
+
   const token = req.cookies.token;
+  console.log(token + 'hey')
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: No token provided' });
@@ -29,6 +31,7 @@ module.exports.auth = async (req, res, next) => {
       return res.status(401).json({ message: 'Unauthorized: User not found' });
     }
 
+    
     req.user = user; // Set the full user object
 
     return next();

@@ -17,6 +17,7 @@ const SideVideos = () => {
                     headers: {
                         'Cache-Control': 'no-cache',
                     },
+                    withCredentials: true,
                 })
                 setdata(response.data)
             } catch (error) {

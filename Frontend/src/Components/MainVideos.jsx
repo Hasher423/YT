@@ -35,6 +35,7 @@ const MainVideos = () => {
                         headers: {
                             'Cache-Control': 'no-cache',
                         },
+                        withCredentials: true,
                     }
                 );
                 // setvideos(response.data.videos);

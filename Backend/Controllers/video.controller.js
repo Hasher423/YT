@@ -81,7 +81,6 @@ module.exports.createVideo = async (req, res) => {
 
 
 module.exports.getVideos = async (req, res) => {
-  console.log(req.query.page)
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -112,15 +111,15 @@ module.exports.getVideo = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    let like = false;
-    let dislike = false;
+    let like ;
+    let dislike;
 
+    
     if (req.user && req.user._id) {
       const userIdStr = req.user._id.toString();
       like = video.likedByUsers.some(id => id.toString() === userIdStr);
       dislike = video.dislikedByUsers.some(id => id.toString() === userIdStr);
     }
-
     return res.json({ success: true, video, like, dislike });
   } catch (error) {
     return res.status(500).json({ message: 'Error fetching video', error: error.message });
@@ -157,6 +156,7 @@ module.exports.increaseView = async (req, res) => {
 module.exports.increaseLike = async (req, res) => {
   try {
     const { videoId } = req.params;
+    console.log(req.user)
     const userId = req.user._id;
     const video = await Video.findById(videoId);
     if (!video) {

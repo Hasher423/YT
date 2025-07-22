@@ -1,12 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { forceDislike, forceLike, increase_like, video } from '../redux/features/videoSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-const InteractionBar = ({ video }) => {
+
+
+
+const InteractionBar = ({ videoId }) => {
+   const {video} = useSelector((state) => state.video)
+   const like = useSelector((state) => state.video.like)
+   const dislike = useSelector((state) => state.video.dislike)
+
+
+  const dispatch = useDispatch()
+
+  const handleLike = async () => {
+
+    const res = await dispatch(increase_like(videoId)).unwrap();
+    
+
+      if(res.message === "Video Liked Successfully"){
+        dispatch(forceLike())
+      }
+    
+
+  }
 
   return (
     <div className="text-custom-white flex items-center gap-[.6vw] flex-wrap">
       <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">
         <i
-          className={`ri-thumb-up-line cursor-pointer  'text-blue-400' : ''}`}
+          onClick={handleLike}
+          className={`ri-thumb-up-line cursor-pointer ${like? 'text-blue-400' : ''}`}
         ></i>
         {video?.likes}
         <i
