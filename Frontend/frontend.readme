@@ -1,0 +1,52 @@
+# Frontend Directory Readme
+
+This directory contains the frontend client code for the application, including React components, pages, styles, and configuration files.
+
+## Structure
+
+- **src/**: Source code for React components, pages, context, redux store, and utilities.
+- **public/**: Static assets such as images, fonts, and the main HTML file.
+- **dist/**: Build output directory (generated after build).
+- **index.html**: Main HTML file for the React app.
+- **package.json** and **package-lock.json**: Project dependencies and lock files.
+- **.env**: Environment variables configuration file.
+- **.gitignore**: Git ignore rules.
+- **tailwind.config.js**: Tailwind CSS configuration.
+- **vite.config.js**: Vite build tool configuration.
+- **eslint.config.js**: ESLint configuration for code linting.
+- **postcss.config.js**: PostCSS configuration for CSS processing.
+- **README.md**: Frontend project documentation.
+
+## Key Points
+
+- The frontend uses React with functional components and hooks.
+- State management is done using Redux Toolkit.
+- Tailwind CSS is used for styling.
+- Routing is handled with React Router.
+- Components are organized by feature and page.
+- Utilities and context providers are used for shared logic and state.
+- The app communicates with the backend API for data.
+
+## How to Run
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Start the development server:
+   ```
+   npm run dev
+   ```
+
+3. Open the app in the browser at the provided local URL.
+
+## Testing
+
+- Manual testing by navigating through pages and interacting with UI components.
+- Verify API calls and state updates work as expected.
+- Check responsiveness and UI behavior on different screen sizes.
+
+## Contact
+
+For any issues or questions, please contact the development team.
