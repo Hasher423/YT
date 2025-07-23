@@ -1,20 +1,55 @@
-// Components/ChannelInfo.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleSubscription } from '../redux/features/videoSlice';
+import { useLocation } from 'react-router-dom';
+import {
+  ToggleSubscribe
+} from '../redux/features/videoSlice'
 
-const ChannelInfo = ({ user }) => {
-  if (!user) return null;
+const ChannelInfo = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [channelId, setChannelId] = useState(null);
+  const dispatch = useDispatch();
+  const { video } = useSelector((state) => state.video);
+  const videoData = useSelector((state) => state.video);
+
+  useEffect(() => {
+    console.log(videoData)
+    if (video && video?.userId) {
+      setChannelId(video?.userId);
+      setCurrentUser(JSON.parse(localStorage.getItem('user')));
+    }
+  }, [video?.userId]);
+
+
+
+  const handleSubscribeClick = async () => {
+    if (channelId && currentUser?._id !== channelId) {
+      // dispatch(ToggleSubscribe())
+      const res = await dispatch(handleSubscription(channelId)).unwrap();
+    }
+
+    console.log(videoData)
+  };
+
+  if (!currentUser) return null;
 
   return (
-    <div className="flex items-center gap-[2vw] px-[1vw]">
+    <div className="flex items-center gap-[2vw] px-[1vw] my-[1vw]">
       <img
         className="w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]"
-        src={user.logoId}
-        alt="user"
+        src={`${currentUser.logoId}`} // fallback image
+        alt="channel"
       />
-      <div className="text-custom-white font-bold">{user.channelName}</div>
-      <button className="bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm">
-        SUBSCRIBE
-      </button>
+      <div className="text-custom-white font-bold">{video.channelName}</div>
+      {channelId !== currentUser._id && (
+        <button
+          onClick={handleSubscribeClick}
+          className={`bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'bg-blue-900' : ''} `}
+        >
+          SUBSCRIBE
+        </button>
+      )}
     </div>
   );
 };

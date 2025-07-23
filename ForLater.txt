@@ -1,0 +1,12 @@
+LIKE AND DISLIKE FEATURE FIX 
+ => Use Separate Data Base for tracking LIKE and DISLIKE and don't use number rather use reaction which contains like or dislike on the bases of what you want to do and then update that . And for Getting the number of likes and Dislikes what you can do is use length of that array which contains in DATABASE .
+
+
+
+
+
+
+
+
+
+ 

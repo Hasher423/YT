@@ -39,15 +39,15 @@ const Videoplay = () => {
   const videoRef = useRef(null);
   const location = useLocation();
   const videoId = new URLSearchParams(location.search).get('v');
+  const { video, videoOwner, loading } = useSelector((state) => state.video);
   const dispatch = useDispatch();
 
-  const video = useSelector((state) => state.video);
-  const videoStarted = video.videoStarted;
+  const videoData = useSelector((state) => state.video);
+  const videoStarted = videoData.videoStarted;
 
 
 
   const getVideo = async () => {
-    // dispatch(setLoading(true)); // ✅ Show loader before fetch
     const response = await dispatch(fetchVideo(videoId)).unwrap();
     if (response.like) dispatch(forceLike());
     else if (response.dislike) dispatch(forceDislike());
@@ -62,7 +62,7 @@ const Videoplay = () => {
     if (!videoStarted) return;
     const timer = setTimeout(() => {
       if (!store.getState().video.viewed) {
-        dispatch(increaseViewCount(videoId));
+        dispatch((videoId));
       }
     }, 30000);
 
@@ -85,18 +85,20 @@ const Videoplay = () => {
     }
   };
 
+  if ( !video || !videoOwner) return <div>Loading...</div>;
+
   return (
-    <div className="video-container flex-1 sm:h-[70%] lt-sm:py-10">
+    <div className="videoData-container flex-1 sm:h-[70%] lt-sm:py-10">
 
       <div className="relative w-full h-full">
-        {video.loading && (
+        {videoData.loading && (
           <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
             <div className="w-12 h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
           </div>
         )}
         <VideoPlayerElement
           videoRef={videoRef}
-          videoUrl={video?.video?.video_Url?.url}
+          videoUrl={videoData?.video?.video_Url?.url}
           onPlay={() => dispatch(setVideoStarted(true))}
           onLoadedMetadata={() => {
             videoRef.current?.removeAttribute('controls');
@@ -104,54 +106,54 @@ const Videoplay = () => {
           }}
           onCanPlay={() => {
             dispatch(setLoading(false));
+            dispatch(setPlaying(true))
             videoRef.current?.play();
           }}
           onTimeUpdate={() => dispatch(setCurrentTime(videoRef.current.currentTime))}
           toggleFullScreen={toggleFullScreen}
           onWaiting={() => {
-            console.log('🔥 onWaiting (buffering)');
-            dispatch(setLoading(true));
+            dispatch(setLoading(true))
           }}
-        onPause={() => {
-          dispatch(setPlaying(false));
-        }}
+          onPause={() => {
+            dispatch(setPlaying(false));
+          }}
         />
 
         <Controls
           video={videoRef}
           duration={video.duration}
-          currentTime={video.currentTime}
-          play={video.play}
-          mute={video.mute}
+          currentTime={videoData.currentTime}
+          play={videoData.play}
+          mute={videoData.mute}
           setMute={() => dispatch(toggleMute())}
           setCurrentTime={(t) => dispatch(setCurrentTime(t))}
           setPlay={() => dispatch(togglePlay())}
-          playing={video.playing}
+          playing={videoData.playing}
           setPlaying={setPlaying}
         />
       </div>
 
-      <VideoInfo title={video?.video?.title} />
-      <ChannelInfo user={video.user} />
+      <VideoInfo title={videoData?.videoData?.title} />
+      <ChannelInfo user={videoData.user} />
       <InteractionBar
         videoId={videoId}
         dispatch={dispatch}
-        like={video.like}
-        dislike={video.dislike}
-        user={video.user}
+        like={videoData.like}
+        dislike={videoData.dislike}
+        user={videoData.user}
       />
       <VideoDescription
-        views={video?.video?.views}
-        ago={video.ago}
-        description={video.description}
-        showDescription={video.showDescription}
+        views={videoData?.videoData?.views}
+        ago={videoData.ago}
+        description={videoData.description}
+        showDescription={videoData.showDescription}
         toggleDescription={() => dispatch(toggleDescription())}
       />
       <CommentsSection
         videoId={videoId}
-        comments={video.comments}
+        comments={videoData.comments}
         setrefreshComments={setrefreshComments}
-        channel={video?.user?.channelName}
+        channel={videoData?.user?.channelName}
       />
     </div>
   );

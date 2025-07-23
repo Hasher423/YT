@@ -9,7 +9,6 @@ import Signup from './Pages/Signup';
 import IsLoggedIn from './Pages/IsLoggedIn';
 import Login from './Pages/Login';
 import ChannelProfile from './Pages/ChannelProfile';
-import PageLoader from './Components/PageLoader';
 import SearchResults from './Components/SearchResults';
 
 
@@ -17,7 +16,6 @@ import SearchResults from './Components/SearchResults';
 const App = () => {
   return (
     <div>
-      <PageLoader />
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
         <Route path="/channel/:channel_Profile" element={<ChannelProfile />} />

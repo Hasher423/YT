@@ -56,7 +56,6 @@ const Controls = ({
             dispatch(setPlaying(true))
         } else {
             video.current.pause();
-            setPlaying(false);
             dispatch(setPlaying(false))
         }
     };

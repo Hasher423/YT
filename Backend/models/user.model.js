@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema({
             ref: 'videos'
         }
     ],
-    category: []
+    subscribedUsers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
 }, { timestamps: true })
 
 

@@ -68,6 +68,14 @@ module.exports.createVideo = async (req, res) => {
 
     // Save video info in DB
     const video = await ToDataBase(title, description, videoData, thumbnailData, req.user._id);
+
+    // Push new video id into user's videos array
+    await userModel.findByIdAndUpdate(
+      req.user._id,
+      { $push: { videos: video._id } },
+      { new: true }
+    );
+    
     return res.json({ success: true, video });
 
   } catch (err) {
@@ -111,10 +119,10 @@ module.exports.getVideo = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    let like ;
+    let like;
     let dislike;
 
-    
+
     if (req.user && req.user._id) {
       const userIdStr = req.user._id.toString();
       like = video.likedByUsers.some(id => id.toString() === userIdStr);
@@ -208,5 +216,7 @@ module.exports.increaseDislike = async (req, res) => {
     return res.status(500).json({ message: 'Could not dislike', err: err.message });
   }
 };
+
+
 
 

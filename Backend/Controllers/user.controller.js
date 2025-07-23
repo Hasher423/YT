@@ -169,6 +169,20 @@ module.exports.getuser = async (req, res) => {
         console.error(err)
     }
 }
+module.exports.getuserById = async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+    const { id } = req.params
+    try {
+        const user = await userModel.findOne({ _id: id });
+        return res.status(200).json({ user })
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
 
 
 module.exports.getUsersForLogos = async (req, res) => {
@@ -229,3 +243,59 @@ module.exports.getUserVideos = async (req, res) => {
 }
 
 
+module.exports.subscription = async (req, res) => {
+    try {
+        const channelId = req.params.channelId;
+        const userId = req.user._id;
+
+        if (userId.toString() === channelId) {
+            return res.status(400).json({ message: "You cannot subscribe to yourself" });
+        }
+
+        const channelUser = await userModel.findById(channelId);
+        const currentUser = await userModel.findById(userId);
+
+        if (!channelUser || !currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isSubscribed = currentUser.subscribedChannels.includes(channelId);
+
+        if (isSubscribed) {
+            currentUser.subscribedChannels.pull(channelId);
+            channelUser.subscribers = Math.max(0, channelUser.subscribers - 1);
+            channelUser.subscribedUsers.pull(userId); // remove subscriber
+        } else {
+            currentUser.subscribedChannels.push(channelId);
+            channelUser.subscribers += 1;
+            channelUser.subscribedUsers.push(userId); // add subscriber
+        }
+
+
+        await currentUser.save();
+        await channelUser.save();
+
+        res.status(200).json({ subscribed: !isSubscribed, subscribersCount: channelUser.subscribers });
+
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
+    }
+};
+
+
+
+module.exports.isSubscribed = async (req, res) => {
+    try {
+        const subscriber = req.params.subscriber;
+        const loggedInUserId = req.user._id;
+        const loggedInUser = await userModel.findOne({ _id: loggedInUserId });
+        const isSubscribed = loggedInUser.subscribedChannels.some(
+            id => id.toString() === subscriber
+        );
+
+        return res.status(200).json({ isSubscribed })
+    } catch (err) {
+        return res.status(400).json({ message: 'Error in Checking the subscriber', err })
+    }
+
+}
