@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleSubscription } from '../redux/features/videoSlice';
 import { useLocation } from 'react-router-dom';
+
+
 import {
   ToggleSubscribe
 } from '../redux/features/videoSlice'
+import { current } from '@reduxjs/toolkit';
 
 const ChannelInfo = () => {
+  const location = useLocation();
+  const videoId = new URLSearchParams(location.search).get('v');
   const [currentUser, setCurrentUser] = useState(null);
   const [channelId, setChannelId] = useState(null);
   const dispatch = useDispatch();
@@ -14,22 +19,21 @@ const ChannelInfo = () => {
   const videoData = useSelector((state) => state.video);
 
   useEffect(() => {
-    console.log(videoData)
     if (video && video?.userId) {
       setChannelId(video?.userId);
       setCurrentUser(JSON.parse(localStorage.getItem('user')));
     }
-  }, [video?.userId]);
+  }, [videoId]);
 
 
 
   const handleSubscribeClick = async () => {
-    if (channelId && currentUser?._id !== channelId) {
+    if (channelId && currentUser?._id) {
       // dispatch(ToggleSubscribe())
-      const res = await dispatch(handleSubscription(channelId)).unwrap();
+      const res = await dispatch(handleSubscription(video?.userId)).unwrap();
+
     }
 
-    console.log(videoData)
   };
 
   if (!currentUser) return null;
@@ -45,9 +49,9 @@ const ChannelInfo = () => {
       {channelId !== currentUser._id && (
         <button
           onClick={handleSubscribeClick}
-          className={`bg-custom-white px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'bg-blue-900' : ''} `}
+          className={` px-[1vw] py-[.5vw] rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'border-white border-[1px] text-white' : 'bg-custom-white'} `}
         >
-          SUBSCRIBE
+          {videoData?.isSubscribed ? 'SUBSCRIBED' : 'SUBSCRIBE'}
         </button>
       )}
     </div>

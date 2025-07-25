@@ -59,7 +59,7 @@ const Home = () => {
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>{user?.subscribers} Subscribers</div>
                                 <span className='mx-[1.2vw] font-[900] sm:text-[1.2vw]'>.</span>
-                                <div className='sm:text-[1.5vw]'>{user} videos</div>
+                                <div className='sm:text-[1.5vw]'> videos</div>
                             </div>
 
                             <div className='hidden sm:block'>

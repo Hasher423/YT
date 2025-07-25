@@ -161,7 +161,7 @@ module.exports.increaseView = async (req, res) => {
 
 
 
-module.exports.increaseLike = async (req, res) => {
+module.exports.handleLike = async (req, res) => {
   try {
     const { videoId } = req.params;
     console.log(req.user)
@@ -171,28 +171,33 @@ module.exports.increaseLike = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
     if (video.likedByUsers.includes(userId)) {
-      return res.status(400).json({ message: 'Video already liked' });
+      // User already liked the video, so remove like
+      await Video.findByIdAndUpdate(videoId, {
+        $inc: { likes: -1 },  
+        $pull: { likedByUsers: userId }
+      });
+      return res.status(200).json({ message: "Like removed successfully" });
+    } else {
+      // If user had disliked before, remove dislike
+      let updateObj = {
+        $inc: { likes: 1 },
+        $push: { likedByUsers: userId }
+      };
+      if (video.dislikedByUsers.includes(userId)) {
+        updateObj.$inc.dislikes = -1;
+        updateObj.$pull = { dislikedByUsers: userId };
+      }
+      await Video.findByIdAndUpdate(videoId, updateObj);
+      return res.status(200).json({ message: "Video Liked Successfully" });
     }
-    await Video.findByIdAndUpdate(videoId, {
-      $inc: { likes: 1 },
-      $push: { likedByUsers: userId }
-
-
-    });
-
-
-
-    return res.status(200).json({ message: "Video Liked Successfully" })
   } catch (err) {
-    return res.status(401).json({ message: "Could not liked", err: err.message })
+    return res.status(401).json({ message: "Could not liked", err: err.message });
   }
-
-
 }
 
 
 
-module.exports.increaseDislike = async (req, res) => {
+module.exports.handleDislike = async (req, res) => {
   try {
     const { videoId } = req.params;
     const userId = req.user._id;
@@ -203,15 +208,25 @@ module.exports.increaseDislike = async (req, res) => {
     }
 
     if (video.dislikedByUsers.includes(userId)) {
-      return res.status(400).json({ message: 'Video already disliked' });
+      // User already disliked the video, so remove dislike
+      await Video.findByIdAndUpdate(videoId, {
+        $inc: { dislikes: -1 },
+        $pull: { dislikedByUsers: userId }
+      });
+      return res.status(200).json({ message: "Dislike removed successfully" });
+    } else {
+      // If user had liked before, remove like
+      let updateObj = {
+        $inc: { dislikes: 1 },
+        $push: { dislikedByUsers: userId }
+      };
+      if (video.likedByUsers.includes(userId)) {
+        updateObj.$inc.likes = -1;
+        updateObj.$pull = { likedByUsers: userId };
+      }
+      await Video.findByIdAndUpdate(videoId, updateObj);
+      return res.status(200).json({ message: "Video disliked successfully" });
     }
-
-    await Video.findByIdAndUpdate(videoId, {
-      $inc: { dislikes: 1 },
-      $push: { dislikedByUsers: userId }
-    });
-
-    return res.status(200).json({ message: 'Video disliked successfully' });
   } catch (err) {
     return res.status(500).json({ message: 'Could not dislike', err: err.message });
   }

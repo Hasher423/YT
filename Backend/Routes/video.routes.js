@@ -15,8 +15,8 @@ Router.post('/upload', uploadFields([
 Router.get('/getVideos' , isLoggedIn.auth,videoController.getVideos)
 Router.get('/getVideo' , isLoggedIn.auth,videoController.getVideo)
 Router.post('/increase-view/:videoId', isLoggedIn.auth, videoController.increaseView);
-Router.post('/increase-like/:videoId',isLoggedIn.auth, videoController.increaseLike);
-Router.post('/increase-dislike/:videoId',isLoggedIn.auth, videoController.increaseDislike);
+Router.post('/handleLike/:videoId',isLoggedIn.auth, videoController.handleLike);
+Router.post('/handleDislike/:videoId',isLoggedIn.auth, videoController.handleDislike);
 
 
 module.exports = Router;

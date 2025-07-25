@@ -49,8 +49,6 @@ const Videoplay = () => {
 
   const getVideo = async () => {
     const response = await dispatch(fetchVideo(videoId)).unwrap();
-    if (response.like) dispatch(forceLike());
-    else if (response.dislike) dispatch(forceDislike());
   };
 
   useEffect(() => {
@@ -85,7 +83,7 @@ const Videoplay = () => {
     }
   };
 
-  if ( !video || !videoOwner) return <div>Loading...</div>;
+  if (!video || !videoOwner) return <div>Loading...</div>;
 
   return (
     <div className="videoData-container flex-1 sm:h-[70%] lt-sm:py-10">
@@ -101,18 +99,22 @@ const Videoplay = () => {
           videoUrl={videoData?.video?.video_Url?.url}
           onPlay={() => dispatch(setVideoStarted(true))}
           onLoadedMetadata={() => {
-            videoRef.current?.removeAttribute('controls');
+            // videoRef.current?.removeAttribute('controls');
             dispatch(setDuration(videoRef.current?.duration));
           }}
           onCanPlay={() => {
+            videoRef.current?.play(); // 👈 force play when ready
             dispatch(setLoading(false));
-            dispatch(setPlaying(true))
-            videoRef.current?.play();
+            dispatch(setPlaying(true));
           }}
           onTimeUpdate={() => dispatch(setCurrentTime(videoRef.current.currentTime))}
           toggleFullScreen={toggleFullScreen}
           onWaiting={() => {
+            console.log('Bufferring ')
             dispatch(setLoading(true))
+          }}
+          onPlaying={() => {
+            dispatch(setLoading(false));
           }}
           onPause={() => {
             dispatch(setPlaying(false));
@@ -121,7 +123,7 @@ const Videoplay = () => {
 
         <Controls
           video={videoRef}
-          duration={video.duration}
+          duration={videoRef?.current?.duration}
           currentTime={videoData.currentTime}
           play={videoData.play}
           mute={videoData.mute}

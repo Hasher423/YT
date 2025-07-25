@@ -13,5 +13,5 @@ Router.get('/getUsersForLogos', isLoggedIn.auth, userController.getUsersForLogos
 Router.get('/validateToken', isLoggedIn.auth, userController.validateToken)
 Router.get('/getUserVideos/:userId', userController.getUserVideos)
 Router.put('/subscription/:channelId', isLoggedIn.auth, userController.subscription);
-Router.get('/isSubscribed/:subscriber', isLoggedIn.auth, userController.isSubscribed)
+Router.get('/isSubscribed/:channel', isLoggedIn.auth, userController.isSubscribed)
 module.exports = Router;

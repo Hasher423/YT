@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { calculateAgo } from '../../utils/Ago';
 
-
 export const fetchVideo = createAsyncThunk(
   'video/fetchVideo',
   async (videoId, { rejectWithValue, dispatch }) => {
@@ -11,13 +10,53 @@ export const fetchVideo = createAsyncThunk(
         `${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`,
         { withCredentials: true }
       );
-      
-      console.log(response.data)
+
 
       const videoData = response.data;
       const videoOwner = await dispatch(fetchVideoOwner(videoData.video.userId)).unwrap(); // fetch uploader info
-      dispatch(isSubscriberfunc(videoOwner.user._id))
+      const ans = await dispatch(isSubscriberfunc(videoData.video.userId)).unwrap();
+      if(ans.isSubscribed === true){
+        dispatch(ToggleSubscribe(true))
+      }else {
+        dispatch(ToggleSubscribe(false))
+      }
       return videoData;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+
+export const fetchVideoData = createAsyncThunk(
+  'video/fetchVideoData',
+  async (videoId, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setVideoStarted(false));
+      dispatch(setLoading(true));
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`,
+        {
+          headers: { 'Cache-Control': 'no-cache' },
+          withCredentials: true,
+        }
+      );
+      const { video: videoData, like, dislike } = res.data;
+
+      dispatch(setLikes(videoData?.likes))
+      dispatch(setDislikes(videoData?.dislikes))
+
+      if (like) dispatch(forceLike(true));
+      if (dislike) dispatch(forceDislike(true));
+
+      dispatch(setVideo(videoData));
+      dispatch(setAgo(calculateAgo(videoData.createdAt)));
+
+      const userFromStorage = JSON.parse(localStorage.getItem('user'));
+      if (userFromStorage) dispatch(setUser(userFromStorage));
+
+      dispatch(fetchVideoOwner(videoData.userId)); // fetch uploader info
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -27,21 +66,16 @@ export const fetchVideo = createAsyncThunk(
 
 
 export const isSubscriberfunc = createAsyncThunk(
-  'video/fetchVideo',
-  async (userId, { rejectWithValue, dispatch }) => {
+  'video/fetchVideoSubscriber',
+  async (channelId, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URI}/user/isSubscribed/${userId}`,
-        { withCredentials: true }
+        `${import.meta.env.VITE_BACKEND_URI}/user/isSubscribed/${channelId}`,
+        {
+          headers: { 'Cache-Control': 'no-cache' },
+          withCredentials: true,
+        }
       );
-      
-      console.log(response.data)
-      if(response.data.isSubscribed === true){
-        dispatch(ToggleSubscribe(true))
-      }else if(response.data.isSubscribed === false){
-        dispatch(ToggleSubscribe(false))
-      }
-
 
       return response.data;
     } catch (err) {
@@ -72,43 +106,12 @@ export const fetchVideoOwner = createAsyncThunk(
   }
 );
 
-export const fetchVideoData = createAsyncThunk(
-  'video/fetchVideoData',
-  async (videoId, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(setVideoStarted(false));
-      dispatch(setLoading(true));
 
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URI}/video/getVideo?v=${videoId}`,
-        {
-          headers: { 'Cache-Control': 'no-cache' },
-          withCredentials: true,
-        }
-      );
 
-      const { video: videoData, like, dislike } = res.data;
-
-      if (like) dispatch(forceLike());
-      if (dislike) dispatch(forceDislike());
-
-      dispatch(setVideo(videoData));
-      dispatch(setAgo(calculateAgo(videoData.createdAt)));
-
-      const userFromStorage = JSON.parse(localStorage.getItem('user'));
-      if (userFromStorage) dispatch(setUser(userFromStorage));
-
-      dispatch(fetchVideoOwner(videoData.userId)); // fetch uploader info
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-export const increase_like = createAsyncThunk('videoSlice/increase-like', async (videoId, { rejectWithValue }) => {
+export const handleLike = createAsyncThunk('videoSlice/increase-like', async (videoId, { rejectWithValue }) => {
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URI}/video/increase-like/${videoId}`,
+      `${import.meta.env.VITE_BACKEND_URI}/video/handleLike/${videoId}`,
       {},
       { withCredentials: true }
     );
@@ -118,10 +121,10 @@ export const increase_like = createAsyncThunk('videoSlice/increase-like', async 
   }
 });
 
-export const increase_dislike = createAsyncThunk('videoSlice/increase-dislike', async (videoId, { rejectWithValue }) => {
+export const handleDislike = createAsyncThunk('videoSlice/increase-dislike', async (videoId, { rejectWithValue }) => {
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URI}/video/increase-dislike/${videoId}`,
+      `${import.meta.env.VITE_BACKEND_URI}/video/handleDislike/${videoId}`,
       {},
       { withCredentials: true }
     );
@@ -140,10 +143,9 @@ export const handleSubscription = createAsyncThunk(
         {},
         { withCredentials: true }
       );
-      console.log(res.data)
-      if(res.data.subscribed === true){
+      if (res.data.subscribed === true) {
         dispatch(ToggleSubscribe(true))
-      }else if(res.data.subscribed === false){
+      } else if (res.data.subscribed === false) {
         dispatch(ToggleSubscribe(false))
       }
       return res.data; // { subscribed: true/false }
@@ -164,7 +166,7 @@ const videoSlice = createSlice({
     ago: '',
     comments: [],
     user: null,
-    loading: true,
+    loading: false,
     error: null,
     viewed: false,
     videoStarted: false,
@@ -172,10 +174,11 @@ const videoSlice = createSlice({
     currentTime: 0,
     play: false,
     mute: false,
-    viewTimerStarted: false,
     showDescription: false,
-    like: false,
-    dislike: false,
+    isLike: false,
+    isDislike: false,
+    likes: 0,
+    dislikes: 0,
     subscribers: 0,
     isSubscribed: false,
   },
@@ -183,6 +186,7 @@ const videoSlice = createSlice({
     setVideoStarted: (state, action) => {
       state.videoStarted = action.payload;
     },
+
     setPlaying: (state, action) => {
       state.playing = action.payload;
     },
@@ -202,6 +206,12 @@ const videoSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setLikes: (state, action) => {
+      state.likes = action.payload;
+    },
+    setDislikes: (state, action) => {
+      state.dislikes = action.payload;
+    },
     setDuration: (state, action) => {
       state.duration = action.payload;
     },
@@ -220,13 +230,11 @@ const videoSlice = createSlice({
     startViewTimer: (state) => {
       state.viewTimerStarted = true;
     },
-    forceLike: (state) => {
-      state.like = true;
-      state.dislike = false;
+    forceLike: (state, action) => {
+      state.isLike = action.payload;
     },
-    forceDislike: (state) => {
-      state.dislike = true;
-      state.like = false;
+    forceDislike: (state, action) => {
+      state.isDislike = action.payload;
     },
     ToggleSubscribe: (state, action) => {
       state.isSubscribed = action.payload;
@@ -241,8 +249,9 @@ const videoSlice = createSlice({
       .addCase(fetchVideo.fulfilled, (state, action) => {
         state.video = action.payload.video;
         state.description = action.payload.video.description;
-        state.like = action.payload.userLiked;
-        state.dislike = action.payload.userDisliked;
+        state.isLike = action.payload.userLiked;
+        state.isDislike = action.payload.userDisliked;
+        state.loading = false;
       })
       .addCase(fetchVideo.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
@@ -252,7 +261,7 @@ const videoSlice = createSlice({
       })
       .addCase(increaseViewCount.fulfilled, (state) => {
         state.viewed = true;
-      });
+      })
   },
 });
 
@@ -274,6 +283,9 @@ export const {
   forceDislike,
   setPlaying,
   ToggleSubscribe,
+  setDisikes,
+  setLikes,
+  setDislikes,
 } = videoSlice.actions;
 
 export default videoSlice.reducer;

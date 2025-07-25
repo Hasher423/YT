@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const blackListTokensModel = require('../models/blackListTokens');
 const cloudinaryUploadChunkedBuffer = require('../Services/videoUpload.service.js');
 const fs = require('fs');
+const videoModel = require('../models/video.model.js');
 
 module.exports.registerUser = async (req, res) => {
     try {
@@ -243,6 +244,69 @@ module.exports.getUserVideos = async (req, res) => {
 }
 
 
+// module.exports.subscription = async (req, res) => {
+//     try {
+//         const channelId = req.params.channelId;
+//         const userId = req.user._id;
+
+//         // if (userId.toString() === channelId) {
+//         //     return res.status(400).json({ message: "You cannot subscribe to yourself" });
+//         // }
+
+//         const channelUser = await userModel.findById(channelId);
+//         const currentUser = await userModel.findById(userId);
+
+//         if (!channelUser || !currentUser) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+
+//         const isSubscribed = currentUser.subscribedChannels.some(
+//             id => id.toString() === channelId
+//         );
+
+
+//         if (isSubscribed) {
+//             currentUser.subscribedChannels.pull(channelId);
+//             channelUser.subscribers = Math.max(0, channelUser.subscribers - 1);
+//             channelUser.subscribedUsers.pull(userId); // remove subscriber
+//         } else {
+//             currentUser.subscribedChannels.push(channelId);
+//             channelUser.subscribers += 1;
+//             channelUser.subscribedUsers.push(userId); // add subscriber
+//         }
+
+
+//         await currentUser.save();
+//         await channelUser.save();
+
+//         res.status(200).json({ subscribed: !isSubscribed, subscribersCount: channelUser.subscribers });
+
+//     } catch (err) {
+//         res.status(500).json({ message: "Internal Server Error", error: err.message });
+//     }
+// };
+
+
+
+module.exports.isSubscribed = async (req, res) => {
+    try {
+        const channelId = req.params.channel;
+        const loggedInUserId = req.user._id;
+        const channel = await userModel.findOne({ _id: channelId });
+        const isSubscribed = channel.subscribedUsers.some(
+            id => {
+                return id.toString() === loggedInUserId.toString()
+            }
+        );
+
+        return res.status(200).json({ isSubscribed })
+    } catch (err) {
+        return res.status(400).json({ message: 'Error in Checking the subscriber', err })
+    }
+
+}
+
+
 module.exports.subscription = async (req, res) => {
     try {
         const channelId = req.params.channelId;
@@ -259,43 +323,34 @@ module.exports.subscription = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const isSubscribed = currentUser.subscribedChannels.includes(channelId);
+        const channelObjectId = new mongoose.Types.ObjectId(channelId);
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+
+        const isSubscribed = currentUser.subscribedChannels.some(
+            id => id.toString() === channelId
+        );
 
         if (isSubscribed) {
-            currentUser.subscribedChannels.pull(channelId);
+            currentUser.subscribedChannels.pull(channelObjectId);
             channelUser.subscribers = Math.max(0, channelUser.subscribers - 1);
-            channelUser.subscribedUsers.pull(userId); // remove subscriber
+            channelUser.subscribedUsers.pull(userObjectId);
         } else {
-            currentUser.subscribedChannels.push(channelId);
+            currentUser.subscribedChannels.push(channelObjectId);
             channelUser.subscribers += 1;
-            channelUser.subscribedUsers.push(userId); // add subscriber
+            channelUser.subscribedUsers.push(userObjectId);
         }
-
 
         await currentUser.save();
         await channelUser.save();
 
-        res.status(200).json({ subscribed: !isSubscribed, subscribersCount: channelUser.subscribers });
-
+        return res.status(200).json({
+            subscribed: !isSubscribed,
+            subscribersCount: channelUser.subscribers,
+        });
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
     }
 };
-
-
-
-module.exports.isSubscribed = async (req, res) => {
-    try {
-        const subscriber = req.params.subscriber;
-        const loggedInUserId = req.user._id;
-        const loggedInUser = await userModel.findOne({ _id: loggedInUserId });
-        const isSubscribed = loggedInUser.subscribedChannels.some(
-            id => id.toString() === subscriber
-        );
-
-        return res.status(200).json({ isSubscribed })
-    } catch (err) {
-        return res.status(400).json({ message: 'Error in Checking the subscriber', err })
-    }
-
-}

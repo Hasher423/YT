@@ -80,8 +80,8 @@ const Controls = ({
                     type="range"
                     className="w-full"
                     min={0}
-                    max={duration}
-                    value={currentTime}
+                    max={isNaN(duration) ? 0 : duration}
+                    value={isNaN(currentTime) ? 0 : currentTime}
                     onChange={handleProgress}
                 />
                 <div className="controls flex w-full justify-between items-center">
