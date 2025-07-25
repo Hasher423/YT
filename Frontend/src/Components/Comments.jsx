@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addComment, selectComments } from '../redux/features/commentSlice';
+import { addComment, selectComments, fetchComments } from '../redux/features/commentSlice';
 
-const Comments = ({ videoId, setrefreshComments }) => {
+const Comments = () => {
     const [comment, setComment] = useState('');
-    const [channel, setChannel] = useState('');
+    const [refreshComments, setrefreshComments] = useState(null)
     const dispatch = useDispatch();
     const commentList = useSelector(selectComments);
+    const videoData = useSelector((state) => state.video);
 
-    // Set channel only once when component mounts
+
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user?.channelName) {
-            setChannel(user.channelName);
-        }
-    }, []);
+        dispatch(fetchComments(videoData?.video?._id));
+    }, [videoData?.video?._id, refreshComments]);
 
     const handleSubmit = async () => {
         setComment('');
-        if (!comment.trim() || !channel) return;
+        if (!comment.trim() || !videoData?.user?.channelName) return;
 
         console.log('Dispatching comment...');
 
-        dispatch(addComment({ videoId, comment, channel }))
+        dispatch(addComment({ videoId: videoData?.video?._id, comment, channel: videoData?.user?.channelName }))
             .unwrap()
             .then(() => {
                 console.log('Commented Successfully');
@@ -40,7 +38,7 @@ const Comments = ({ videoId, setrefreshComments }) => {
 
     return (
         <div className='text-white w-full grid grid-cols-1 min-h-10 py-[1.3vw] px-2 lt-sm:hidden'>
-            <h2 className='font-bold text-[1.2vw]'>79 Comments</h2>
+            <h2 className='font-bold text-[1.2vw]'>{commentList?.length} Comments</h2>
 
             <div className='grid place-items-center grid-cols-[10%_90%]'>
                 <div>

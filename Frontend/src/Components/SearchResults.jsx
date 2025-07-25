@@ -27,7 +27,7 @@ const SearchResults = () => {
 
     }, [query])
 
-    const channel = localStorage.getItem('channel') ;
+    const channel = localStorage.getItem('channel');
 
     return (
         <div className='min-h-screen bg-custom-black'>
@@ -53,12 +53,6 @@ const SearchResults = () => {
                                 {elem.description.split(' ').length > 25
                                     ? elem.description.split(' ').slice(0, 25).join(' ') + '...'
                                     : elem.description}
-                            </div>
-
-
-                            <div className=' hidden sm:flex items-center gap-2 sm:mt-[3vh] mt-[4vw]    '>
-                                <div><img className='sm:w-[3.3vw] w-[7vw] sm:h-[3.3vw] rounded-full ' src="https://yt3.ggpht.com/FdLutJAen7zJHXredukK2h42fRgrBY0BM43fAqsNI8oriRv7-_w02VyYf5cqATBrgRQFJHO_=s68-c-k-c0x00ffffff-no-rj" alt="" /></div>
-                                <div>{channel}</div>
                             </div>
                         </div>
                         <div className='sm:block hidden text-left font-bold'>

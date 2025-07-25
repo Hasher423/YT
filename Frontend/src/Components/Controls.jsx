@@ -1,18 +1,14 @@
 // --- FIXED CONTROLS.JSX ---
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleMute, setPlaying, setCurrentTime } from '../redux/features/videoSlice';
 
 const Controls = ({
     video,
-    duration,
-    currentTime,
-    setCurrentTime,
-    playing,
-    setPlaying,
-    mute,
-    setMute,
 }) => {
     const dispatch = useDispatch();
+    const videoData = useSelector((state) => state.video)
+    // console.log(videoData)
     const vloumeBar = useRef(null);
     const playback = useRef(null);
     const [showPlayBack, setshowPlayBack] = useState(true);
@@ -24,10 +20,8 @@ const Controls = ({
     };
 
     const handleMute = () => {
-        setMute((prevMute) => {
-            if (video.current) video.current.volume = prevMute ? Number((vloumeBar.current.value / 100).toFixed(1)) : 0;
-            return !prevMute;
-        });
+        video.current.muted = !videoData?.mute;
+        dispatch(toggleMute());
     };
 
     const handleProgress = (e) => {
@@ -80,14 +74,14 @@ const Controls = ({
                     type="range"
                     className="w-full"
                     min={0}
-                    max={isNaN(duration) ? 0 : duration}
-                    value={isNaN(currentTime) ? 0 : currentTime}
+                    max={isNaN(videoData?.duration) ? 0 : videoData?.duration}
+                    value={isNaN(videoData?.currentTime) ? 0 : videoData?.currentTime}
                     onChange={handleProgress}
                 />
                 <div className="controls flex w-full justify-between items-center">
                     <div className="flex items-center gap-3 sm:gap-5">
                         <i className="ri-skip-back-fill text-[4vw] sm:text-[2vw] text-white"></i>
-                        {playing ? (
+                        {videoData?.playing ? (
                             <i onClick={handlePlayToggle} className="ri-pause-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         ) : (
                             <i onClick={handlePlayToggle} className="ri-play-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
@@ -95,7 +89,7 @@ const Controls = ({
                         <i className="ri-skip-forward-fill text-[4vw] sm:text-[2vw] text-white"></i>
 
                         <div className="flex items-center gap-4">
-                            {mute ? (
+                            {videoData?.mute ? (
                                 <i onClick={handleMute} className="ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             ) : (
                                 <i onClick={handleMute} className="ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
@@ -112,9 +106,9 @@ const Controls = ({
                         </div>
 
                         <div className="text-white text-[4vw] sm:text-[1.4vw]">
-                            {`${Math.floor(currentTime / 60)}:${Math.floor(currentTime % 60).toString().padStart(2, '0')}`} /{' '}
-                            {duration
-                                ? `${Math.floor(duration / 60)}:${Math.floor(duration % 60).toString().padStart(2, '0')}`
+                            {`${Math.floor(videoData?.currentTime / 60)}:${Math.floor(videoData?.currentTime % 60).toString().padStart(2, '0')}`} /{' '}
+                            {videoData?.duration
+                                ? `${Math.floor(videoData?.duration / 60)}:${Math.floor(videoData?.duration % 60).toString().padStart(2, '0')}`
                                 : '00:00'}
                         </div>
                     </div>

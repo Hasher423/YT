@@ -98,8 +98,8 @@ const InteractionBar = () => {
         </Link>
       </div>
 
-      <div className="bg-zinc-800 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm">
-        <i className="ri-more-fill"></i>
+      <div className=" bg-red-900 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm">
+        <i className="ri-more-fill "></i>
       </div>
     </div>
   );

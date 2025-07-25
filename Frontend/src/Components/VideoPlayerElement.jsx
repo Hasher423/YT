@@ -1,17 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDuration, setVideoStarted, setCurrentTime, setLoading, setPlaying } from '../redux/features/videoSlice';
 
 const VideoPlayerElement = ({
-  videoUrl,
-  onPlay,
-  onLoadedMetadata,
-  onCanPlay,
-  onTimeUpdate,
-  toggleFullScreen,
-  onWaiting,
-  onPlaying,
-  onPause,
   videoRef
 }) => {
+  const dispatch = useDispatch();
+  const videoData = useSelector((state) => state.video)
   useEffect(() => {
     const handleFullscreenChange = () => {
       videoRef.current?.removeAttribute('controls');
@@ -23,20 +18,42 @@ const VideoPlayerElement = ({
     };
   }, [videoRef]);
 
+
+
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      videoRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+
   return (
     <div className="relative  w-full ">
       <video
         ref={videoRef}
-        onPlay={onPlay}
-        onLoadedMetadata={onLoadedMetadata}
-        onCanPlay={onCanPlay}
-        onTimeUpdate={onTimeUpdate}
+        onPlay={() => dispatch(setVideoStarted(true))}
+        onLoadedMetadata={() => dispatch(setDuration(videoRef.current?.duration))}
+        onCanPlay={() => {
+          videoRef.current.play(); // 👈 force play when ready
+          dispatch(setLoading(false));
+          dispatch(setPlaying(true));
+        }}
+        onTimeUpdate={() => dispatch(setCurrentTime(videoRef.current.currentTime))}
         onDoubleClick={toggleFullScreen}
-        onWaiting={onWaiting}
-        onPlaying={onPlaying}
-        onPause={onPause}
+        onWaiting={() => {
+          console.log('Bufferring ')
+          dispatch(setLoading(true))
+        }}
+        onPlaying={() => {
+          dispatch(setLoading(false));
+        }}
+        onPause={() => {
+          dispatch(setPlaying(false));
+        }}
         className="w-full rounded-xl"
-        src={videoUrl}
+        src={videoData?.video?.video_Url?.url}
         controls={false}
         height="100%"
       />

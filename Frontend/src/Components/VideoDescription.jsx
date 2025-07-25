@@ -1,19 +1,29 @@
 // Components/VideoDescription.jsx
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleDescription } from '../redux/features/videoSlice';
 
-const VideoDescription = ({ views, ago, description, showDescription, toggleDescription }) => {
+const VideoDescription = () => {
+  const { video, ago, description, showDescription } = useSelector((state) => state.video);
+
+  const dispatch = useDispatch()
   return (
     <div className="text-white bg-custom-black rounded p-2 w-full">
       <div className="font-[700] flex items-center gap-[.6vw]">
-        <p>{views} views</p>
+        <p>{video.views} views</p>
         <p>{ago} ago</p>
       </div>
       <div className="whitespace-normal break-words">
-        {showDescription ? description : `${description?.slice(0, 80)}...`}
+        {(description.length > 55) && (showDescription ? description : `${description?.slice(0, 50)}...`)}
+        {(description.length  <= 55) &&  description }
       </div>
-      <p onClick={toggleDescription}>
-        {showDescription ? 'less...' : 'more...'}
-      </p>
+
+
+      {description?.length > 55 && (
+        <p onClick={() => dispatch(toggleDescription())}>
+          {showDescription ? 'less' : 'more...'}
+        </p>
+      )}
     </div>
   );
 };
