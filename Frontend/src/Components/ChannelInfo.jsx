@@ -29,7 +29,7 @@ const ChannelInfo = () => {
 
   const handleSubscribeClick = async () => {
     if (channelId && currentUser?._id) {
-      // dispatch(ToggleSubscribe())
+      dispatch(ToggleSubscribe(!(videoData?.isSubscribed)))
       const res = await dispatch(handleSubscription(video?.userId)).unwrap();
 
     }

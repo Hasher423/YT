@@ -103,6 +103,7 @@ module.exports.ToDataBase = async (
     },
     thumbnailObject,
     userId,
+    channelName
 ) => {
     const video = await videoModel.create({
         title,
@@ -117,6 +118,7 @@ module.exports.ToDataBase = async (
             secureurl: thumbnailObject.secureUrl,
         },
         userId,
+        channelName,
     })
 
     return video;

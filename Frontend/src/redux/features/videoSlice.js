@@ -15,9 +15,9 @@ export const fetchVideo = createAsyncThunk(
       const videoData = response.data;
       const videoOwner = await dispatch(fetchVideoOwner(videoData.video.userId)).unwrap(); // fetch uploader info
       const ans = await dispatch(isSubscriberfunc(videoData.video.userId)).unwrap();
-      if(ans.isSubscribed === true){
+      if (ans.isSubscribed === true) {
         dispatch(ToggleSubscribe(true))
-      }else {
+      } else {
         dispatch(ToggleSubscribe(false))
       }
       return videoData;
@@ -63,6 +63,20 @@ export const fetchVideoData = createAsyncThunk(
   }
 );
 
+
+export const fetchVideos = createAsyncThunk('video/fetchVideos', async (dispatch, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/video/getVideos/`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+      withCredentials: true,
+    })
+    return response.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
 
 
 export const isSubscriberfunc = createAsyncThunk(

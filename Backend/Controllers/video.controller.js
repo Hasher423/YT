@@ -66,8 +66,9 @@ module.exports.createVideo = async (req, res) => {
       secureUrl: thumbnailResponse?.response?.secure_url || thumbnailResponse?.secure_url,
     };
 
+    const user = await userModel.findOne({ _id: req.user._id });
     // Save video info in DB
-    const video = await ToDataBase(title, description, videoData, thumbnailData, req.user._id);
+    const video = await ToDataBase(title, description, videoData, thumbnailData, req.user._id, user?.channelName);
 
     // Push new video id into user's videos array
     await userModel.findByIdAndUpdate(
@@ -75,7 +76,7 @@ module.exports.createVideo = async (req, res) => {
       { $push: { videos: video._id } },
       { new: true }
     );
-    
+
     return res.json({ success: true, video });
 
   } catch (err) {
@@ -90,7 +91,7 @@ module.exports.createVideo = async (req, res) => {
 
 module.exports.getVideos = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
+    const page = parseInt(req.query.page) || 2;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
@@ -173,7 +174,7 @@ module.exports.handleLike = async (req, res) => {
     if (video.likedByUsers.includes(userId)) {
       // User already liked the video, so remove like
       await Video.findByIdAndUpdate(videoId, {
-        $inc: { likes: -1 },  
+        $inc: { likes: -1 },
         $pull: { likedByUsers: userId }
       });
       return res.status(200).json({ message: "Like removed successfully" });
