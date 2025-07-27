@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Home from './Home';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import App from '../App'
 const IsLoggedIn = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading

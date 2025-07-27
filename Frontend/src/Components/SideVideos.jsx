@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchVideos } from '../redux/features/videoSlice';
 import { calculateAgo } from '../utils/Ago';
+import Loader from './Loader';
 
 
 const SideVideos = () => {
@@ -73,7 +74,7 @@ const SideVideos = () => {
                         </Link>)
                     })}
                 </div> : (
-                    <h1 className='w-[20vw] text-center text-white'>No videos available</h1>
+                    <h1 className='w-[20vw] text-center text-white'><Loader /></h1>
 
                 )}
             </div>

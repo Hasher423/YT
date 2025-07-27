@@ -13,8 +13,6 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
   buffer,
   mimetype,
   resourceType = 'video',
-  io,
-  socketId,
   eventName = 'upload-progress-video'
 ) {
   if (!buffer || !mimetype) {
@@ -52,9 +50,6 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
             lastEmittedPercent = percent;
             console.log(`📤 Upload progress: ${percent}%`);
 
-            if (io && socketId) {
-              io.to(socketId).emit(eventName, percent);
-            }
           }
         });
 

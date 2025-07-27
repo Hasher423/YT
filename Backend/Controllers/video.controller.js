@@ -10,7 +10,7 @@ const { ToDataBase } = require('../Services/video.service.js');
 
 
 module.exports.createVideo = async (req, res) => {
-  const { title, description, socketId } = req.body;
+  const { title, description }  = req.body;
 
   const videoFile = req.files?.video_Url?.[0];
   const thumbnailFile = req.files?.thumbnail?.[0];
@@ -23,7 +23,6 @@ module.exports.createVideo = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized - user not found" });
   }
 
-  const io = req.app.get('io'); // get socket.io instance
 
   try {
     // Upload video
@@ -31,8 +30,6 @@ module.exports.createVideo = async (req, res) => {
       videoFile.buffer,
       videoFile.mimetype,
       'video',
-      io,
-      socketId,
       'upload-progress-video' // custom event name
     );
 
@@ -45,8 +42,6 @@ module.exports.createVideo = async (req, res) => {
       thumbnailFile.buffer,
       thumbnailFile.mimetype,
       'image',
-      io,
-      socketId,
       'upload-progress-thumbnail' // custom event name
     );
 
@@ -91,7 +86,7 @@ module.exports.createVideo = async (req, res) => {
 
 module.exports.getVideos = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 2;
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 

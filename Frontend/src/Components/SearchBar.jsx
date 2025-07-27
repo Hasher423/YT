@@ -239,7 +239,7 @@ const SearchBar = () => {
                     className='bg-red-900 w-[7vw] h-[7vw] sm:w-8 sm:h-8 rounded-full overflow-hidden'>
                     {showChannel ? <div className='lt-sm:right-[5vh] lt-sm:text-[2vh] lt-sm:-bottom-[8vh] absolute rounded right-0 -bottom-[4vw] px-[2vw] bg-black text-white whitespace-nowrap'>
                         <div className='py-1'>
-                            <Link to={`/channel/@${user?.channelName}`}>Channel</Link>
+                            <Link to={`/channel/@${user?.channelName + user._id}`}>Channel</Link>
                         </div>
                         <div
                             onClick={() => {
@@ -250,7 +250,7 @@ const SearchBar = () => {
                         </div>
                     </div> : ''}
                     <img
-                        className='w-full h-full object-cover'
+                        className='w-full aspect-[1/1] object-cover'
                         src={`${user?.logoId}`}
                         alt="IMAGEERROR"
                     />

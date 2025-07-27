@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import SideBar from './SideBar'
 import 'remixicon/fonts/remixicon.css';
-
 import { Link } from 'react-router-dom';
+import { calculateAgo } from '../utils/Ago';
 
 
-const category = ['All', 'Music', 'Podcasts', 'Publications', 'Movies', 'Gaming', 'Live', 'Sports', 'News', 'Fashion', 'Beauty', 'Comedy', 'Education', 'Science', 'Travel', 'Gym', 'Food', 'Music', 'Podcasts', 'Publications', 'Movies', 'Gaming', 'Live', 'Sports', 'News', 'Fashion', 'Beauty',]
-
+const category = [];
 
 const MainVideos = () => {
 
@@ -77,8 +76,6 @@ const MainVideos = () => {
                     params: { ids: uniqueUserIds.join(',') },
                     withCredentials: true
                 });
-
-                console.log(response.data)
                 const logoMap = {};
                 for (const userId in response.data) {
                     logoMap[userId] = {
@@ -108,19 +105,13 @@ const MainVideos = () => {
         <div className='w-[86vw] py-2'>
             {/* CATEGORY */}
             <div className=' inline-block mt-10'>
-                <div className=' bg-red- py-[1vw]  h-[10vh] w-[100vw] overflow-x-auto mt-4 SCROLLBAR_OF_CATEGORY' >
+                {/* <div className=' bg-red- py-[1vw]  h-[10vh] w-[100vw] overflow-x-auto mt-4 SCROLLBAR_OF_CATEGORY' >
                     {category.map((category, key) => {
                         return (
                             <div key={key} className='cursor-pointer bg-zinc-800 px-3 py-2 text-white rounded inline mx-2 font-medium'>{category}</div>
                         )
                     })}
-
-
-
-
-
-
-                </div>
+                </div> */}
 
                 <div className='text-white bg-green- w-[100vw] flex justify-center py-2   '>
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
@@ -160,7 +151,7 @@ const MainVideos = () => {
                                                     <p className='text-zinc-500 lt-sm:text-[2vh]'>{logos[video?.userId]?.channelName}</p>
                                                     <div className='flex items-center leading-none lt-sm:text-[2vh]'>
                                                         <p className='text-zinc-500'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
-                                                        <p className='text-zinc-500'> ------ ago</p>
+<p className='text-zinc-500'>{calculateAgo(video.createdAt)}</p>
                                                     </div>
                                                 </div>
 

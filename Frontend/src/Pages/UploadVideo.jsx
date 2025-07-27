@@ -1,11 +1,8 @@
-import React, { useReducer, useEffect } from 'react';
+
+import React, { useReducer } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
 
-const socket = io(import.meta.env.VITE_BACKEND_URI, {
-  withCredentials: true,
-});
 
 const initialState = {
   video: null,
@@ -41,16 +38,6 @@ const UploadVideo = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    socket.on('upload-progress-video', (percent) => {
-      dispatch({ type: 'SET_PROGRESS', progress: percent });
-    });
-
-    return () => {
-      socket.off('upload-progress-video');
-    };
-  }, []);
-
   const handleDrop = (e) => {
     e.preventDefault();
     dispatch({ type: 'SET_DRAGGING', isDragging: false });
@@ -82,7 +69,7 @@ const UploadVideo = () => {
     data.append('thumbnail', state.thumbnail);
     data.append('title', state.title);
     data.append('description', state.description);
-    data.append('socketId', socket.id); // send socket ID to backend
+    // Removed socketId from form data
 
     try {
       const res = await axios.post(

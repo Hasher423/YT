@@ -42,7 +42,7 @@ const Home = () => {
                         {/* IMAGE */}
                         <div className='h-full flex items-center justify-center'>
                             <img
-                                className='w-[20vw] md:w-[12vw] aspect-square rounded-full object-cover object-center'
+                                className='w-[20vw] md:w-[12vw] aspect-[30/30] rounded-full object-cover '
                                 src={user?.logoId}
                                 alt=""
                             />

@@ -8,13 +8,12 @@ import InteractionBar from './InteractionBar';
 import VideoDescription from './VideoDescription';
 import CommentsSection from './CommentsSection';
 import { useDispatch, useSelector } from 'react-redux';
+import Loader from './Loader';
 import store from '../redux/store';
 import {
   increaseViewCount,
   fetchVideo,
 } from '../redux/features/videoSlice';
-
-import { fetchComments } from '../redux/features/commentSlice';
 
 
 const Videoplay = () => {
@@ -53,17 +52,13 @@ const Videoplay = () => {
 
 
 
-  if (!video || !videoOwner) return <div>Loading...</div>;
+  if (!video || !videoOwner) return <div><Loader /></div>;
 
   return (
     <div className="videoData-container flex-1 sm:h-[70%] lt-sm:py-10">
 
       <div className="relative w-full h-full">
-        {videoData.loading && (
-          <div className="absolute top-0 left-0 w-[60vw] h-full flex items-center justify-center z-10 bg-black bg-opacity-60 rounded-xl">
-            <div className="w-12 h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
-          </div>
-        )}
+        {videoData.loading && <Loader />}
         <VideoPlayerElement
           videoRef={videoRef}
         />

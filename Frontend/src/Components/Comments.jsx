@@ -86,7 +86,7 @@ const Comments = () => {
                     <div className='flex items-center justify-center'>
                         <img
                             className='w-10 h-10 rounded-full object-cover'
-                            src='https://res.cloudinary.com/dmazphi1z/image/upload/v1751113598/my_thumbnail/my_thumbnail/thumbnail_1751113596025.jpg'
+                            src={element.logo}
                             alt='User'
                         />
                     </div>

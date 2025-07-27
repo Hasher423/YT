@@ -21,10 +21,9 @@ module.exports.comment = async (req, res) => {
     if (!video || !user) return res.status(404).json({ message: 'Video or User not found' });
 
     console.time("Add Comment");
-    const newComment = await addComment(videoId, userId, comment, channel);
+    const newComment = await addComment(videoId, userId, comment, channel, user.logoId);
     console.timeEnd("Add Comment");
 
-    // ⛔ Removed: video.comments.push(...) and video.save()
 
     console.timeEnd("Total");
     return res.status(200).json({ message: 'Comment added' });

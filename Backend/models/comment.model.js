@@ -18,6 +18,9 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    logo:{
+        type:String,
+    }
 
 },{timestamps: true});
 
