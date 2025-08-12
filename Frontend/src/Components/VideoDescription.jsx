@@ -20,7 +20,7 @@ const VideoDescription = () => {
 
 
       {description?.length > 55 && (
-        <p className='pointer' onClick={() => dispatch(toggleDescription())}>
+        <p className='cursor-pointer' onClick={() => dispatch(toggleDescription())}>
           {showDescription ? 'less' : 'more...'}
         </p>
       )}

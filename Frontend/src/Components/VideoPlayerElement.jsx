@@ -19,6 +19,11 @@ const VideoPlayerElement = ({
   }, [videoRef]);
 
 
+  useEffect(() => {
+    dispatch(setLoading(true));
+  }, []);
+
+
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -36,9 +41,7 @@ const VideoPlayerElement = ({
         onPlay={() => dispatch(setVideoStarted(true))}
         onLoadedMetadata={() => dispatch(setDuration(videoRef.current?.duration))}
         onCanPlay={() => {
-          videoRef.current.play(); // 👈 force play when ready
-          dispatch(setLoading(false));
-          dispatch(setPlaying(true));
+          videoRef.current.play();
         }}
         onTimeUpdate={() => dispatch(setCurrentTime(videoRef.current.currentTime))}
         onDoubleClick={toggleFullScreen}

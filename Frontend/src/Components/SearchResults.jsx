@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SearchBar from './SearchBar'
 import axios from 'axios'
 import { Link, useLocation } from 'react-router-dom'
+import { calculateAgo } from '../utils/Ago'
 
 const SearchResults = () => {
     const [searchedVideos, setsearchedVideos] = useState([])
@@ -46,7 +47,7 @@ const SearchResults = () => {
                             <div className='flex items-center font-[400] text-white text-opacity-50'>
                                 <div>{elem.views} views</div>
                                 <div className='mx-2'>•</div>
-                                <div>____ago</div>
+                                <div>{calculateAgo(elem.createdAt)} ago</div>
                             </div>
 
                             <div className='mt-[2vw] hidden md:block'>

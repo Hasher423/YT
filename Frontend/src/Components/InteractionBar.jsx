@@ -33,42 +33,71 @@ const InteractionBar = () => {
   }, [video?._id, dispatch]);
 
   const frontHandleLike = async () => {
+    const alreadyLiked = isLike;
+    const alreadyDisliked = isDislike;
 
-    const res = await dispatch(handleLike(video._id)).unwrap();
+    // Optimistic UI update
+    dispatch(forceLike(!alreadyLiked));
+    dispatch(forceDislike(false));
+    dispatch(setLikes(likes + (alreadyLiked ? -1 : 1)));
+    if (alreadyDisliked) dispatch(setDislikes(dislikes - 1));
 
-    if (res.message === "Video Liked Successfully") {
-      dispatch(forceLike(true))
-      dispatch(forceDislike(false))
-      dispatch(setLikes((likes + 1)))
-      if (isDislike) dispatch(setDislikes(dislikes - 1))
+    try {
+      const res = await dispatch(handleLike(video._id)).unwrap();
 
-    } else if (res.message === "Like removed successfully") {
-      dispatch(forceLike(false))
-      dispatch(setLikes((likes - 1)));
+      // Optional: rollback if server fails or returns unexpected message
+      if (res.message !== "Video Liked Successfully" && res.message !== "Like removed successfully") {
+        // rollback
+        dispatch(forceLike(alreadyLiked));
+        dispatch(forceDislike(alreadyDisliked));
+        dispatch(setLikes(likes));
+        if (alreadyDisliked) dispatch(setDislikes(dislikes));
+      }
+    } catch (err) {
+      // rollback on error
+      dispatch(forceLike(alreadyLiked));
+      dispatch(forceDislike(alreadyDisliked));
+      dispatch(setLikes(likes));
+      if (alreadyDisliked) dispatch(setDislikes(dislikes));
+      console.error("Like failed:", err);
     }
-
-
-  }
+  };
 
 
 
   const frontHandleDislike = async () => {
+    const alreadyLiked = isLike;
+    const alreadyDisliked = isDislike;
 
-    const res = await dispatch(handleDislike(video._id)).unwrap();
+    // Optimistic UI update
+    dispatch(forceDislike(!alreadyDisliked));
+    dispatch(forceLike(false));
+    dispatch(setDislikes(dislikes + (alreadyDisliked ? -1 : 1)));
+    if (alreadyLiked) dispatch(setLikes(likes - 1));
 
-    if (res.message === "Video disliked successfully") {
-      dispatch(forceDislike(true))
-      dispatch(forceLike(false))
-      dispatch(setDislikes(dislikes + 1));
-      if (isLike) dispatch(setLikes(likes - 1))
+    try {
+      const res = await dispatch(handleDislike(video._id)).unwrap();
 
-    } else if (res.message === "Dislike removed successfully") {
-      dispatch(forceDislike(false))
-      dispatch(setDislikes(dislikes - 1));
+      // Optional: rollback if unexpected response
+      if (
+        res.message !== "Video disliked successfully" &&
+        res.message !== "Dislike removed successfully"
+      ) {
+        dispatch(forceDislike(alreadyDisliked));
+        dispatch(forceLike(alreadyLiked));
+        dispatch(setDislikes(dislikes));
+        if (alreadyLiked) dispatch(setLikes(likes));
+      }
+    } catch (err) {
+      // rollback on error
+      dispatch(forceDislike(alreadyDisliked));
+      dispatch(forceLike(alreadyLiked));
+      dispatch(setDislikes(dislikes));
+      if (alreadyLiked) dispatch(setLikes(likes));
+      console.error("Dislike failed:", err);
     }
+  };
 
-
-  }
 
   return (
     <div className="text-custom-white flex pb-[1vw] items-center gap-[.6vw] flex-wrap">

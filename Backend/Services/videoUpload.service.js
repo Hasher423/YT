@@ -1,6 +1,5 @@
 const { Readable } = require('stream');
 const cloudinary = require('cloudinary').v2;
-const streamifier = require('streamifier');
 
 /**
  * Upload large video/image buffer using stream (avoids timeouts)
@@ -22,6 +21,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
   try {
     const fileSize = buffer.length;
     let lastEmittedPercent = 0;
+    let offset = 0; // Move offset outside read()
 
     const streamUpload = () =>
       new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
             resource_type: resourceType,
             folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
             public_id: `${resourceType === 'video' ? 'video_' : 'thumb_'}${Date.now()}`,
-            chunk_size: 6 * 1024 * 1024,
+            chunk_size: 6 * 1024 * 1024, // ~6MB
             timeout: 180000, // 3 minutes
           },
           (error, result) => {
@@ -39,17 +39,33 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
           }
         );
 
-        const readStream = streamifier.createReadStream(buffer);
+        // Create readable stream from buffer in fixed chunks
+        const CHUNK_SIZE = 2 * 1024 * 1024; // 6 MB
+        const readStream = new Readable({
+          read() {
+            if (offset >= buffer.length) {
+              this.push(null);
+              return;
+            }
+            const end = Math.min(offset + CHUNK_SIZE, buffer.length);
+            const chunk = buffer.slice(offset, end);
+            offset = end;
+            this.push(chunk);
+          }
+        });
+
         let uploadedBytes = 0;
 
         readStream.on('data', (chunk) => {
           uploadedBytes += chunk.length;
-          const percent = Math.round((uploadedBytes / fileSize) * 100);
+          const percent = Math.min(
+            100,
+            Math.round((uploadedBytes / fileSize) * 100)
+          );
 
           if (percent !== lastEmittedPercent) {
             lastEmittedPercent = percent;
             console.log(`📤 Upload progress: ${percent}%`);
-
           }
         });
 
@@ -71,6 +87,6 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
     return {
       status: 'Error',
       message: err.message || 'Upload Failed'
-    }
+    };
   }
 };

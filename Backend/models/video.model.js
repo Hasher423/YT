@@ -17,10 +17,12 @@ const videoSchema = new mongoose.Schema({
     likes: {
         type:Number,
         default:0,
+        min:0,
     },
     dislikes: {
         type:Number,
         default:0,
+        min:0,
     },
     dislikedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     video_Url: {

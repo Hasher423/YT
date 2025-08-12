@@ -54,6 +54,7 @@ const Home = () => {
                                 <p className='sm:text-[3.6vw]'>{user?.channelName}</p>
                             </div>
                             <div className='md:text-[2vw] font-[400]'>
+                                {console.log(user)}
                                 <span>@{user?.channelName}{((Number(Date().length)) * (Math.random())).toFixed(0)}</span>
                             </div>
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>

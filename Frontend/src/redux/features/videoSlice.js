@@ -176,7 +176,7 @@ const videoSlice = createSlice({
     video: null,
     videoOwner: null, // uploader info
     description: '',
-    playing: false,
+    playing: true,
     ago: '',
     comments: [],
     user: null,
@@ -264,8 +264,7 @@ const videoSlice = createSlice({
         state.video = action.payload.video;
         state.description = action.payload.video.description;
         state.isLike = action.payload.userLiked;
-        state.isDislike = action.payload.userDisliked;
-        state.loading = false;
+        state.isDislike = action.payload.userDisliked; 
       })
       .addCase(fetchVideo.rejected, (state, action) => {
         state.error = action.payload || action.error.message;

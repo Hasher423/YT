@@ -81,6 +81,7 @@ const Controls = ({
                 <div className="controls flex w-full justify-between items-center">
                     <div className="flex items-center gap-3 sm:gap-5">
                         <i className="ri-skip-back-fill text-[4vw] sm:text-[2vw] text-white"></i>
+                       
                         {videoData?.playing ? (
                             <i onClick={handlePlayToggle} className="ri-pause-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         ) : (
