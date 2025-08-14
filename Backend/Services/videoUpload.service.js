@@ -1,5 +1,13 @@
 const { Readable } = require('stream');
 const cloudinary = require('cloudinary').v2;
+const { getSocket } = require('../Controllers/initSocket.controller');
+
+const emiProgressToSocket = (socketId, eventName, progress) => {
+  const io = getSocket();
+  if (socketId && io) {
+    io.to(socketId).emit(eventName, progress);
+  }
+}
 
 /**
  * Upload large video/image buffer using stream (avoids timeouts)
@@ -12,7 +20,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
   buffer,
   mimetype,
   resourceType = 'video',
-  eventName = 'upload-progress-video'
+  id
 ) {
   if (!buffer || !mimetype) {
     throw new Error('Buffer or mimetype is missing.');
@@ -65,6 +73,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
 
           if (percent !== lastEmittedPercent) {
             lastEmittedPercent = percent;
+            emiProgressToSocket(id, 'takePercentage', percent)
             console.log(`📤 Upload progress: ${percent}%`);
           }
         });

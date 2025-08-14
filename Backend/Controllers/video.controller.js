@@ -11,6 +11,7 @@ const { ToDataBase } = require('../Services/video.service.js');
 
 module.exports.createVideo = async (req, res) => {
   const { title, description }  = req.body;
+  console.log(req.body)
 
   const videoFile = req.files?.video_Url?.[0];
   const thumbnailFile = req.files?.thumbnail?.[0];
@@ -30,7 +31,7 @@ module.exports.createVideo = async (req, res) => {
       videoFile.buffer,
       videoFile.mimetype,
       'video',
-      'upload-progress-video' // custom event name
+      req.body.socketid
     );
 
     if (videoResponse?.status === 'Error') {

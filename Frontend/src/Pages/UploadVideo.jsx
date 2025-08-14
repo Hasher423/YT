@@ -2,6 +2,9 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import socket from '../Components/Socket'
+import { useEffect } from 'react';
+import Loader from '../Components/Loader';
 
 
 const initialState = {
@@ -38,6 +41,7 @@ const UploadVideo = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
+
   const handleDrop = (e) => {
     e.preventDefault();
     dispatch({ type: 'SET_DRAGGING', isDragging: false });
@@ -69,6 +73,7 @@ const UploadVideo = () => {
     data.append('thumbnail', state.thumbnail);
     data.append('title', state.title);
     data.append('description', state.description);
+    data.append('socketid', socket.id)
     // Removed socketId from form data
 
     try {
@@ -88,6 +93,21 @@ const UploadVideo = () => {
       });
     }
   };
+
+
+  useEffect(() => {
+    console.log('Connected : ', socket.id);
+
+    const handleProgress = (percentage) => {
+      dispatch({ type: 'SET_PROGRESS', progress: percentage });
+    };
+
+    socket.on('takePercentage', handleProgress);
+
+    return () => {
+      socket.off('takePercentage', handleProgress);
+    };
+  }, []);
 
   return (
     <div className="w-screen h-screen bg-[#181818] flex items-center justify-center p-6">
@@ -110,9 +130,8 @@ const UploadVideo = () => {
           }}
           onDragLeave={() => dispatch({ type: 'SET_DRAGGING', isDragging: false })}
           onDrop={handleDrop}
-          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${
-            state.isDragging ? 'border-blue-500' : 'border-[#303030]'
-          } flex flex-col gap-4`}
+          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${state.isDragging ? 'border-blue-500' : 'border-[#303030]'
+            } flex flex-col gap-4`}
         >
           {!state.video && (
             <div className="flex flex-col items-center justify-center border-2 border-dashed p-10 rounded bg-[#2a2a2a] text-white">
@@ -162,7 +181,15 @@ const UploadVideo = () => {
             </>
           )}
 
-          {state.progress > 0 && (
+
+
+
+          {state.progress == 100 ? (
+            <div>
+              <div className="w-12 mx-auto h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
+              <div className='text-custom-white'>Hang Tight it's uploading...</div>
+            </div>
+          ) : state.progress > 0 && (
             <div className="w-full h-2 bg-gray-700 rounded">
               <div
                 className="h-full bg-green-500 rounded"
@@ -170,6 +197,8 @@ const UploadVideo = () => {
               ></div>
             </div>
           )}
+
+          { }
 
           {state.error && (
             <p className="text-red-500 text-sm text-center">

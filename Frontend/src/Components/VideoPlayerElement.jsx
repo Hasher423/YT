@@ -55,7 +55,7 @@ const VideoPlayerElement = ({
         onPause={() => {
           dispatch(setPlaying(false));
         }}
-        className="w-full rounded-xl"
+        className="w-full min-h-[70vh] rounded-xl"
         src={videoData?.video?.video_Url?.url}
         controls={false}
         height="100%"

@@ -19,7 +19,7 @@ const VideoWrapper = ({
   }, [videoRef]);
 
   return (
-    <div className="video w-full sm:h-full">
+    <div className="video w-full ">
       <video
         ref={videoRef}
         onPlay={onPlay}

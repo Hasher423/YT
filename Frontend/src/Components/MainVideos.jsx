@@ -125,7 +125,7 @@ const MainVideos = () => {
                                     <div className='sm:w-[28vw]    '>
                                         <div>
                                             <img
-                                                className='w-full sm:max-h-[16vmax] object-cover rounded object-center '
+                                                className='w-full aspect-[16/9] object-cover rounded object-center '
                                                 src={video?.thumbnail_Url?.secureurl}
                                                 alt=""
                                             />

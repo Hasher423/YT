@@ -14,10 +14,13 @@ export default {
         'custom-black': '#181818',
       },
       fontFamily: {
-        'youtube': ['Roboto', 'Arial', 'sans-serif'],
+        youtube: ['Roboto', 'Arial', 'sans-serif'],
+        playWrite: ['PlayWrite', 'sans-serif'],
+        bebasNeue: ['BebasNeue', 'sans-serif'],
+        robotoCustom: ['Roboto', 'sans-serif'], // Your TTF-based Roboto
       },
       screens: {
-        'lt-sm': { max: '639px' }, // Custom screen for <640px
+        'lt-sm': { max: '639px' },
         '530-780': {'raw': '(min-width: 530px) and (max-width: 780px)'},
       },
     },
