@@ -30,7 +30,6 @@ A **modern MERN stack video platform** featuring real-time video uploads, stream
 - 🔎 **Full-text Search** on video titles and descriptions  
 - 💡 **Search Suggestions** with autocomplete  
 - ⚡ **Instant Results** with relevance scoring  
-- 📝 **Search History** (frontend implementation)  
 
 ### 📊 Analytics & Insights
 - 📈 **View Analytics** with unique viewer tracking  
