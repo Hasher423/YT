@@ -18,7 +18,7 @@ const App = () => {
     <div className='font-robotoCustom'>
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
-        <Route path="/channel/:channel_Profile" element={<ChannelProfile />} />
+        <Route path="/channel/:channel_Profile/:id" element={<ChannelProfile />} />
         <Route path='/signup' element={<Signup />} ></Route>
         <Route path='/login' element={<Login />} ></Route>
         <Route path="/video" element={<Videoplay />} />

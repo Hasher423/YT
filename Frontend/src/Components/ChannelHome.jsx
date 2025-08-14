@@ -4,13 +4,15 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { calculateAgo } from '../utils/Ago';
 
-const ChannelVideos = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+const ChannelVideos = ({ user }) => {
+  
   const [forYouVideos, setForYouVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { id } = useParams();
 
   const prevRef1 = useRef(null);
   const nextRef1 = useRef(null);
@@ -20,7 +22,7 @@ const ChannelVideos = () => {
   const fetchVideos = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URI}/user/getUserVideos/${user._id}`
+        `${import.meta.env.VITE_BACKEND_URI}/user/getUserVideos/${id}`
       );
 
       // Inject 'ago' field directly into each video

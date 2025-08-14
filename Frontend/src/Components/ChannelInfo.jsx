@@ -40,8 +40,7 @@ const ChannelInfo = () => {
 
   return (
     <div  className="flex items-center gap-[2vw] px-[1vw] my-[1vw]">
-      {console.log(videoData)}
-      <Link to={`${import.meta.env.VITE_FRONTEND_URI}/channel/@${videoData?.videoOwner?.channelName}${videoData?.videoOwner._id}`}>
+      <Link to={`${import.meta.env.VITE_FRONTEND_URI}/channel/@${videoData?.videoOwner?.channelName}/${videoData?.videoOwner._id}`}>
         <img
           className="w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]"
           src={`${videoData?.videoOwner?.logoId}`} // fallback image

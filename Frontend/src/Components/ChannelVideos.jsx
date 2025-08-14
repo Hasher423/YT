@@ -1,17 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { calculateAgo } from '../utils/Ago';
 
-const ChannelVideos = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+const ChannelVideos = ({ user }) => {
 
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { id } = useParams();
   const fetchVideos = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getUserVideos/${user._id}`);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getUserVideos/${id}`);
       const processed = response.data.map(video => ({
         ...video,
         ago: calculateAgo(video.createdAt)
