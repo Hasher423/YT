@@ -2,53 +2,47 @@
 
 A complete YouTube-like video platform built with modern web technologies, featuring video upload, streaming, user interactions, and real-time features.
 
-## 🚀 Live Demo
-[Live Demo](https://your-demo-link.com) *(Replace with your actual deployment URL)*
-
 ## ✨ Features
 
 ### 🔐 **Authentication & User Management**
-- **User Registration** with channel creation
+- **User Registration** with channel creation (username, email, password, channel name, logo, banner)
 - **Secure Login/Logout** with JWT tokens
-- **Profile Management** with custom logos and banners
+- **Profile Management** with custom logos and background banners
 - **Channel Customization** with unique branding
 
 ### 📹 **Video Management**
-- **Video Upload** with real-time progress tracking
-- **Multiple Format Support** (MP4, AVI, MOV, etc.)
-- **Automatic Thumbnail Generation**
+- **Video Upload** with real-time progress tracking via Socket.io
+- **Automatic Thumbnail Upload** 
 - **Video Compression & Optimization**
-- **Cloud Storage** via Cloudinary
-- **Video Streaming** with adaptive quality
+- **Cloud Storage** via Cloudinary CDN
+- **Drag & Drop Upload** interface
 
 ### 👍 **Engagement Features**
-- **Like/Dislike System** with user tracking
-- **Comment System** with nested replies
-- **Subscribe/Unsubscribe** functionality
+- **Like/Dislike System** with user tracking and state management
+- **Comment System** with real-time updates
+- **Subscribe/Unsubscribe** functionality with subscriber counts
 - **View Counting** (30-second rule for authentic views)
-- **Search Functionality** with MongoDB indexing
 - **Video Sharing** capabilities
 
 ### 🔍 **Advanced Search**
-- **Full-text Search** across video titles and descriptions
-- **Search Suggestions** with autocomplete
-- **Filtered Results** by relevance
-- **Indexed Search** for fast performance
+- **Full-text Search** across video titles and descriptions using MongoDB indexes
+- **Search Suggestions** with autocomplete functionality
+- **Instant Results** with relevance scoring
+- **Search History** (frontend implementation)
 
 ### 📊 **Analytics & Insights**
-- **View Analytics** with unique viewer tracking
-- **Engagement Metrics** (likes, comments, shares)
-- **Subscriber Analytics**
-- **Real-time Upload Progress**
+- **View Analytics** with unique viewer tracking (30-second rule)
+- **Engagement Metrics** (likes, dislikes, comments count)
+- **Subscriber Analytics** with real-time updates
+- **Channel Performance** tracking
 
 ### 🔔 **Real-time Features**
-- **Live Upload Progress** via Socket.io
-- **Real-time Notifications**
+- **Live Upload Progress** via Socket.io events
 - **Instant Comment Updates**
 - **Live Subscriber Counts**
 
 ### 📱 **Responsive Design**
-- **Mobile-First Approach**
+- **Mobile-First Approach** with Tailwind CSS
 - **Cross-platform Compatibility**
 - **Touch-friendly Interface**
 - **Optimized for All Screen Sizes**
@@ -56,50 +50,101 @@ A complete YouTube-like video platform built with modern web technologies, featu
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** with Hooks
+- **React 18** with Functional Components & Hooks
 - **Redux Toolkit** for state management
 - **React Router** for navigation
-- **Axios** for API calls
-- **Tailwind CSS** for styling
-- **Vite** for build tooling
+- **Axios** for API communication
+- **Tailwind CSS** for responsive styling
+- **Vite** for fast development & building
+- **Socket.io Client** for real-time features
 
 ### Backend
-- **Node.js** with Express
-- **MongoDB** with Mongoose ODM
-- **JWT** for authentication
-- **Socket.io** for real-time features
-- **Cloudinary** for media storage
-- **Multer** for file uploads
+- **Node.js** with Express.js framework
+- **MongoDB Atlas** with Mongoose ODM
+- **JWT Authentication** with secure token management
+- **Socket.io** for real-time bidirectional communication
+- **Cloudinary** for media storage & CDN
+- **Bcrypt** for password hashing
 
 ### Database
-- **MongoDB Atlas** for cloud database
-- **Indexed Collections** for search optimization
-- **Schema Validation** for data integrity
+- **MongoDB Atlas** cloud database
+- **Indexed Collections** for optimized search
+- **Schema Validation** with Mongoose
 
-### Deployment
-- **Vercel** for frontend hosting
-- **Railway/Render** for backend hosting
-- **Cloudinary** for media CDN
 
 ## 📁 Project Structure
 
 ```
 ├── Frontend/
 │   ├── src/
-│   │   ├── Components/     # Reusable UI components
-│   │   ├── Pages/         # Main application pages
-│   │   ├── Context/       # React context providers
-│   │   ├── Redux/         # Redux store and slices
-│   │   └── utils/         # Utility functions
-│   └── public/            # Static assets
+│   │   ├── Components/
+│   │   │   ├── ChannelHome.jsx       # Channel homepage
+│   │   │   ├── ChannelInfo.jsx       # Channel information
+│   │   │   ├── ChannelVideos.jsx     # Channel videos list
+│   │   │   ├── Comments.jsx          # Video comments
+│   │   │   ├── CommentsSection.jsx   # Comments container
+│   │   │   ├── Controls.jsx          # Video controls
+│   │   │   ├── InteractionBar.jsx    # Like/dislike/subscribe
+│   │   │   ├── Loader.jsx            # Loading states
+│   │   │   ├── MainVideos.jsx        # Homepage videos
+│   │   │   ├── SearchBar.jsx         # Search functionality
+│   │   │   ├── SearchResults.jsx     # Search results display
+│   │   │   ├── SideBar.jsx           # Navigation sidebar
+│   │   │   ├── SideVideos.jsx        # Related videos
+│   │   │   ├── Socket.jsx            # Socket.io connection
+│   │   │   ├── VideoDescription.jsx  # Video details
+│   │   │   ├── VideoInfo.jsx         # Video metadata
+│   │   │   ├── Videoplay.jsx         # Video player
+│   │   │   ├── VideoPlayerElement.jsx # Enhanced player
+│   │   │   └── VideoWrapper.jsx      # Video container
+│   │   ├── Pages/
+│   │   │   ├── ChannelProfile.jsx    # Channel page
+│   │   │   ├── Home.jsx              # Homepage
+│   │   │   ├── IsLoggedIn.jsx        # Auth wrapper
+│   │   │   ├── Login.jsx             # Login page
+│   │   │   ├── Signup.jsx            # Registration page
+│   │   │   ├── UploadVideo.jsx       # Video upload page
+│   │   │   └── VideoPlayer.jsx       # Video watch page
+│   │   ├── Context/
+│   │   │   └── VideosContext.jsx     # Video state management
+│   │   ├── Redux/
+│   │   │   ├── store.js              # Redux store
+│   │   │   └── features/
+│   │   │       ├── commentSlice.js   # Comments state
+│   │   │       └── videoSlice.js     # Videos state
+│   │   └── utils/
+│   │       └── Ago.js                # Time formatting
+│   └── public/
+│       └── assets/                   # Static assets
 │
 ├── Backend/
-│   ├── Controllers/       # API route handlers
-│   ├── Models/           # Database schemas
-│   ├── Routes/          # Express routes
-│   ├── Services/         # Business logic
-│   ├── Middlewares/      # Authentication & validation
-│   └── Config/          # Configuration files
+│   ├── Controllers/
+│   │   ├── user.controller.js        # User management
+│   │   ├── video.controller.js       # Video operations
+│   │   ├── comment.controller.js     # Comments
+│   │   ├── search.controller.js      # Search functionality
+│   │   └── initSocket.controller.js  # Socket.io setup
+│   ├── Models/
+│   │   ├── user.model.js             # User schema
+│   │   ├── video.model.js            # Video schema
+│   │   ├── comment.model.js          # Comment schema
+│   │   └── videoView.js              # View tracking
+│   ├── Routes/
+│   │   ├── user.routes.js            # User endpoints
+│   │   ├── video.routes.js           # Video endpoints
+│   │   ├── comment.routes.js         # Comment endpoints
+│   │   └── search.routes.js          # Search endpoints
+│   ├── Services/
+│   │   ├── user.service.js           # User business logic
+│   │   ├── video.service.js          # Video operations
+│   │   ├── comment.service.js        # Comment operations
+│   │   ├── search.service.js         # Search algorithms
+│   │   └── videoUpload.service.js    # Upload handling
+│   ├── Middlewares/
+│   │   └── auth.middleware.js        # Authentication
+│   ├── Config/
+│   │   ├── cloudinary.config.js      # Cloudinary setup
+│   │   └── multer.config.js          # File upload config
 ```
 
 ## 🚀 Getting Started
@@ -108,13 +153,14 @@ A complete YouTube-like video platform built with modern web technologies, featu
 - Node.js (v16 or higher)
 - MongoDB Atlas account
 - Cloudinary account
+- Git
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/youtube-clone.git
-cd youtube-clone
+git clone https://github.com/HASHERprogrammer/yt.git
+cd yt
 ```
 
 2. **Backend Setup**
@@ -122,122 +168,133 @@ cd youtube-clone
 cd Backend
 npm install
 cp .env.example .env
-# Edit .env with your credentials
-npm start
 ```
 
-3. **Frontend Setup**
+3. **Environment Variables**
+Create a `.env` file in the Backend directory:
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_jwt_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+FRONTEND_URL=http://localhost:5173
+```
+
+4. **Start Backend Server**
 ```bash
-I have gathered sufficient information about the project structure and features. Now, I will create a comprehensive README file that showcases all the features of the project, including user authentication, video upload, commenting, and more.
+npm start
+# or for development
+npm run dev
+```
 
-### Proposed README Structure
+5. **Frontend Setup**
+```bash
+cd ../Frontend
+npm install
+```
 
-**Project Title: Video Streaming Platform**
+6. **Frontend Environment Variables**
+Create a `.env` file in the Frontend directory:
+```env
+VITE_BACKEND_URI=http://localhost:3000
+```
 
-**Description:**
-A video streaming platform that allows users to sign up, log in, upload videos, like/dislike videos, comment, and search for videos.
+7. **Start Frontend Development Server**
+```bash
+npm run dev
+```
 
-**Features:**
-- **User Authentication:**
-  - Sign up with username, email, password, channel name, logo, and background banner.
-  - Log in and log out functionality.
-  - User profile management.
+8. **Access the Application**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
 
-- **Video Management:**
-  - Upload videos with titles, descriptions, and thumbnails.
-  - Real-time upload progress tracking.
-  - Incremental view counting after 30 seconds of user view.
+## 📖 API Documentation
 
-- **Interaction:**
-  - Like and dislike videos.
-  - Comment on videos.
-  - Subscribe to channels.
+### Authentication Endpoints
+- `POST /user/signup` - User registration
+- `POST /user/login` - User login
+- `POST /user/logout` - User logout
+- `GET /user/getuser` - Get current user
+- `GET /user/validate-token` - Validate JWT token
 
-- **Search Functionality:**
-  - Search for videos by title or description.
-  - Suggestions based on search queries.
+### Video Endpoints
+- `POST /video/upload` - Upload new video
+- `GET /video/getvideos` - Get all videos (pagination)
+- `GET /video/getvideo?v=videoId` - Get specific video
+- `POST /video/increase-view/:videoId` - Increment view count
+- `POST /video/like/:videoId` - Like/unlike video
+- `POST /video/dislike/:videoId` - Dislike/undislike video
 
-- **Database:**
-  - MongoDB for data storage with Mongoose ODM.
-  - Cloudinary for video and image uploads.
+### Comment Endpoints
+- `POST /comment/:videoId` - Add comment
+- `GET /comment/getcomments` - Get all comments
 
-**How to Run:**
-1. Clone the repository.
-2. Navigate to the `Backend` directory and install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables in the `.env` file.
-4. Start the backend server:
-   ```bash
-   npm start
-   ```
-5. Navigate to the `Frontend` directory and install dependencies:
-   ```bash
-   npm install
-   ```
-6. Start the frontend development server:
-   ```bash
-   npm run dev
-   ```
+### Search Endpoints
+- `GET /search?q=query` - Search videos
+- `GET /search/suggestions?q=query` - Get search suggestions
 
-**Testing:**
-- Use Postman or Curl to test API endpoints.
-- Ensure authentication tokens are provided for protected routes.
+### User Endpoints
+- `GET /user/getUserVideos/:userId` - Get user's videos
+- `POST /user/subscription/:channelId` - Subscribe/unsubscribe
+- `GET /user/isSubscribed/:channel` - Check subscription status
 
-**Contact:**
-For any issues or questions, please contact the development team.
+## 🧪 Testing
+
+### Manual Testing Checklist
+- [ ] User registration with logo and banner
+- [ ] User login and authentication
+- [ ] Video upload with progress tracking
+- [ ] Like/dislike functionality
+- [ ] Comment system
+- [ ] Search functionality
+- [ ] Subscription system
+- [ ] View counting (30-second rule)
+- [ ] Responsive design on mobile
+
+### API Testing with Postman
+1. Import the provided Postman collection
+2. Test each endpoint with appropriate headers
+3. Verify authentication tokens are working
+4. Test file uploads with form-data
+
+
+### Environment Variables for Production
+- Update all URLs to production domains
+- Set secure cookie flags
+- Configure CORS for production frontend
+- Set up SSL certificates
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Contributors
+
+- **HASHERprogrammer** - Initial work - [HASHERprogrammer](https://github.com/HASHERprogrammer)
+
+## 🙏 Acknowledgments
+
+- React community for amazing libraries
+- MongoDB team for excellent documentation
+- Cloudinary for media management
+- Socket.io team for real-time features
+- All contributors and testers
+
+## 📞 Support
+
+For support, email hasher423@gmail.com 
 
 ---
 
-I will now create the README files for both the `Frontend` and `Backend` directories with the above content. 
+**Built with ❤️ by [HASHERprogrammer](https://github.com/HASHERprogrammer)**
 
-### Creating README files
-
-1. **Backend README**: `Backend/readme.md`
-2. **Frontend README**: `Frontend/frontend.readme`
-
-Let's proceed with creating these files.
-
-<create_file>
-<path>Backend/readme.md</path>
-<content>
-# Video Streaming Platform - Backend
-
-This directory contains the backend server code for the application, including API controllers, models, services, routes, configuration, and middleware.
-
-## Features
-- User Authentication
-- Video Management
-- Interaction (Like, Dislike, Comment)
-- Search Functionality
-
-## Structure
-- **app.js**: Main entry point for the backend server application.
-- **server.js**: Server startup script.
-- **Config/**: Configuration files such as database connection and third-party service configs.
-- **Controllers/**: Contains controller files that handle incoming API requests and responses.
-- **DBConnection/**: Database connection setup and utilities.
-- **Middlewares/**: Express middleware functions for authentication, error handling, etc.
-- **models/**: Mongoose schema definitions for database collections.
-- **Routes/**: Express route definitions mapping endpoints to controllers.
-- **Services/**: Business logic and service layer functions used by controllers.
-- **uploads/**: Directory for storing uploaded files such as videos and images.
-
-## How to Run
-1. Install dependencies:
-   ```
-   npm install
-   ```
-2. Set up environment variables in `.env`.
-3. Start the server:
-   ```
-   npm start
-   ```
-
-## Testing
-- API endpoints can be tested using tools like Postman or Curl.
-- Ensure authentication tokens are provided for protected routes.
-
-## Contact
-For any issues or questions, please contact the development team.
