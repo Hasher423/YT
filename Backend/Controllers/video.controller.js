@@ -90,8 +90,9 @@ module.exports.getVideos = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-
-    const videos = await videoModel.find().skip(skip).limit(limit);
+    //  we will set this on second version 
+    // const videos = await videoModel.find().skip(skip).limit(limit);
+    const videos = await videoModel.find();
     const totalVideos = await videoModel.countDocuments();
     const totalPages = Math.ceil(totalVideos / limit);
 
