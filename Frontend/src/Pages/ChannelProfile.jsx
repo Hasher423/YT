@@ -62,12 +62,12 @@ const Home = () => {
                                 <span className='mx-[1.2vw] font-[900] sm:text-[1.2vw]'>.</span>
                                 <div className='sm:text-[1.5vw]'> videos</div>
                             </div>
-
-                            <div className='hidden sm:block'>
+                                {/* FIX SUBSCRIBING FROM THE PROFILE ! */}
+                            {/* <div className='hidden sm:block'>
                                 <button className='bg-red-900 text-black text-[2vw] mt-[1vw] px-[2vw] py-[.7vw] sm:py-[.4vw] rounded-3xl font-[500] sm:text-[1.3vw]'>
                                     Subscribe
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
