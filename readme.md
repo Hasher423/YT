@@ -14,8 +14,6 @@ A **modern MERN stack video platform** featuring real-time video uploads, stream
 
 ### 📹 Video Management
 - 📤 **Video Upload** with **live progress tracking** via Socket.io  
-- 🖼️ **Automatic Thumbnail Generation**  
-- ⚡ **Video Compression & Optimization**  
 - ☁️ **Cloud Storage** via Cloudinary CDN  
 - 🖱️ **Drag & Drop Upload Interface**  
 
@@ -23,12 +21,11 @@ A **modern MERN stack video platform** featuring real-time video uploads, stream
 - ❤️ **Like/Dislike** system with user tracking  
 - 💬 **Comments** with real-time updates  
 - 🧑‍🤝‍🧑 **Subscribe/Unsubscribe** with live subscriber counts  
-- 👀 **View Counting** (30-second rule for authentic views)  
-- 🔗 **Video Sharing** capabilities  
+- 👀 **View Counting** (30-second rule for authentic views) 
 
 ### 🔍 Advanced Search
 - 🔎 **Full-text Search** on video titles and descriptions  
-- 💡 **Search Suggestions** with autocomplete  
+- 💡 **Search Suggestions** on enter  
 - ⚡ **Instant Results** with relevance scoring  
 
 ### 📊 Analytics & Insights
@@ -44,7 +41,6 @@ A **modern MERN stack video platform** featuring real-time video uploads, stream
 
 ### 📱 Responsive Design
 - 📱 **Mobile-First Approach** using Tailwind CSS  
-- 🌐 **Cross-platform Compatibility**  
 - 🖐️ **Touch-Friendly Interface**  
 - 🖥️ **Optimized for All Screen Sizes**  
 
