@@ -38,7 +38,7 @@ const ChannelVideos = ({ user }) => {
             >
               <div className="p-[1vw]">
                 <img
-                  className="rounded-xl aspect-[16/09] object-cover"
+                  className="rounded-xl aspect-[16/9] object-cover"
                   src={elem.thumbnail_Url.url}
                   alt=""
                 />

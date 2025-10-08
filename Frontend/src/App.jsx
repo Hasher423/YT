@@ -15,7 +15,7 @@ import SearchResults from './Components/SearchResults';
 
 const App = () => {
   return (
-    <div className='font-robotoCustom'>
+    <div className='font-bebasNeue'>
       <Routes>
         <Route path="/" element={<IsLoggedIn />} />
         <Route path="/channel/:channel_Profile/:id" element={<ChannelProfile />} />

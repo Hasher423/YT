@@ -35,7 +35,7 @@ const SideVideos = () => {
                 {/* SIDE VIDEO CONTAINER */}
 
 
-                {data?.length > 0 ? <div className='sm:bg-red-90 flex-1 '>
+                {data?.length > 0 ? <div className='sm:bg-red-90 flex-1  '>
 
                     {data.map((element, index) => {
                         // {console.log(element)}
@@ -49,11 +49,11 @@ const SideVideos = () => {
                                 {/* DIV OF THUMBNAIL  */}
                                 <div className='relative' >
                                     <img
-                                        className=' sm:w-[20vw]   lt-sm:w-[100vw] aspect-[30/17]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                        className=' sm:w-[20vw]   lt-sm:w-[100vw] aspect-[16/9]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
                                         src={`${element?.thumbnail_Url?.url}`} alt="" />
                                 </div>
                                 {/* DETAILS OF VIDEO DIV */}
-                                <div className='w-[100%] text-white font-medium px-3 sm:px-0'>
+                                <div className='w-[100%] text-white font-bebasNeue px-3 sm:px-0'>
                                     <h1 className='overflow-hidden w-[15vw] lt-sm:w-[80%]  text-wrap '>
 
                                         {
@@ -65,7 +65,7 @@ const SideVideos = () => {
 
                                     </h1>
                                     <h3>@{element.channelName}</h3>
-                                    <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-thin'>
+                                    <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-bebasNeue'>
                                         <h3>{element?.views} views</h3>
                                         <h3>{calculateAgo(element.createdAt)}</h3>
                                     </div>

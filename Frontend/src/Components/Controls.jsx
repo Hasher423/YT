@@ -72,7 +72,7 @@ const Controls = ({
             <div className="controls w-full sm:h-[90px] absolute bottom-0 sm:py-4 px-3 bg-transparent">
                 <input
                     type="range"
-                    className="w-full"
+                    className="w-full accent-red-600 "
                     min={0}
                     max={isNaN(videoData?.duration) ? 0 : videoData?.duration}
                     value={isNaN(videoData?.currentTime) ? 0 : videoData?.currentTime}
@@ -101,7 +101,7 @@ const Controls = ({
                                 min="0"
                                 max="100"
                                 defaultValue={volumeRange}
-                                className="sm:w-[6vw] sm:block hidden"
+                                className="sm:w-[6vw] sm:block hidden accent-red-600"
                                 onChange={handleVolume}
                             />
                         </div>

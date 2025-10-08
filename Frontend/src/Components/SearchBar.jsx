@@ -3,6 +3,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Context } from '../Context/VideosContext'
 
+
+
+
 const SearchBar = () => {
     const isVoiceSupported = 'webkitSpeechRecognition' in window;
     const setshowSideBar = useContext(Context)[1]
@@ -118,6 +121,18 @@ const SearchBar = () => {
         }
     };
 
+    useEffect(() => {
+        if (searchInput.trim() === '') {
+            setsearchSuggestions(['Search Anything you want ']);
+            setShowSearchSueggestions(false);
+            return;
+        }
+        const timer = setTimeout(() => {
+            getSuggestions(searchInput);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+
 
 
     return (
@@ -176,11 +191,6 @@ const SearchBar = () => {
                             setShowSearchSueggestions((prev) => !prev)
                             setsearchSuggestions(['Search Anything You want '])
                         }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                getSuggestions(e.target.value);
-                            }
-                        }}
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         placeholder='Search '
@@ -230,7 +240,7 @@ const SearchBar = () => {
                         Create
                     </div>
                 </div>
-                <div className='text-[5vw] sm:text-[1.7vw]'><i className="ri-notification-4-line text-white"></i></div>
+                <div className='text-[5vw] sm:text-[1.7vw] text-red-900'><i className="ri-notification-4-line text-red-900"></i></div>
 
                 <div
                     onClick={() => {
@@ -299,11 +309,17 @@ const SearchBar = () => {
                         </div>
                     </div>
                     <div className=''>
-                        {['Search query 1 ', 'Search query 2', 'Search query 3 ', 'Search Query 4']
-                            .map((query,idx) => {
+                        {searchSuggestions
+                            .map((query, idx) => {
                                 return <div key={idx}>
                                     <div className='border-b-[1px] border-zinc-700 px-[3vw]'>
-                                        <p className='text-blue-600 text-[5vw]'>{query}</p>
+                                        <p className='text-blue-600 text-[5vw]'>{(searchSuggestions.length > 0 && ShowSearchSuggestions) &&
+                                            searchSuggestions.map((suggestion) => (
+                                                <div key={suggestion} className={`py-2 px-4 font-[500] cursor-pointer`}>
+                                                    <Link to={`/results?q=${searchInput.split(' ').join('+')}`}>  {suggestion.length > 45 ? suggestion.slice(0, 45) + '...' : suggestion}</Link>
+                                                </div>
+                                            ))
+                                        }</p>
                                     </div>
                                 </div>
                             })
@@ -318,3 +334,10 @@ const SearchBar = () => {
 }
 
 export default SearchBar
+
+
+
+
+
+
+

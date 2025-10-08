@@ -136,7 +136,7 @@ const MainVideos = () => {
                                                 <img className='w-[4vw] h-[4vw] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full' src={`${logos[video?.userId]?.userId}`} alt="" />
                                             </div>
 
-                                            <div className='w-[75%]  h-[100%]'>
+                                            <div className='w-[75%] font-bebasNeue  h-[100%]'>
                                                 {/* TITLE */}
                                                 <div className='  '>
                                                     <div>
@@ -158,7 +158,7 @@ const MainVideos = () => {
                                             </div>
 
 
-                                            <div className='mt-[1vw] lt-sm:text-[3vh]'>
+                                            <div className='mt-[1vw] lt-sm:text-[3vh] text-red-900'>
                                                 <i className="ri-more-2-fill"></i>
                                             </div>
                                         </div>

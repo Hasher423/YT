@@ -122,3 +122,27 @@
     rotate: 360deg;
   }
 }
+
+
+
+/* Thin horizontal track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;             /* base color */
+  border-radius: 1px;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 5px;        
+  border-radius: 1px;
+}
+
+
+/* Chrome, Safari, Edge */
+input[type="range"]::-webkit-slider-thumb {
+  margin-top: calc((track-height - thumb-height) / 2 * -1);
+}
+
+/* Example: if track is 4px and thumb is 16px */
+input[type="range"]::-webkit-slider-thumb {
+  margin-top: -5px; 
+}

@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div className='bg-custom-black w-full min-h-screen overflow-x-hidden'>
       <SearchBar />
-      <div className='flex items w-screen'>
+      <div className='flex items w-screen font-robotoCustom'>
         <SideBar showSideBar={showSideBar}/>
 
         <MainVideos />
