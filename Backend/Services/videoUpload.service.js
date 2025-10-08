@@ -29,8 +29,8 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
   try {
     const fileSize = buffer.length;
     let lastEmittedPercent = 0;
-    let offset = 0; // Move offset outside read()
-
+    let offset = 0; 
+    
     const streamUpload = () =>
       new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
@@ -91,7 +91,10 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
         status: 'Error',
         message: 'Weak internet Connection Try Again',
       };
-    }
+    }if(err.message === 'write ECONNRESET') return {
+        status: 'Error',
+        message: ' internet Connection Failed  Try Again',
+      };
 
     return {
       status: 'Error',

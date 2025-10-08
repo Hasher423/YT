@@ -38,9 +38,9 @@ module.exports.comment = async (req, res) => {
 
 
 
-module.exports.getComments = async (req, res) => {
+module.exports. getComments = async (req, res) => {
   try {
-    const allComments = await commentModel.find(); // .find() returns all documents
+    const allComments = await commentModel.find();
     return res.status(200).json({ allComments });
   } catch (err) {
     console.error(err);

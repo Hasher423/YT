@@ -95,7 +95,6 @@ module.exports.registerUser = async (req, res) => {
 
 
 module.exports.login = async (req, res) => {
-    console.log(req.body);
 
     try {
         const { email, password } = req.body;
@@ -242,50 +241,6 @@ module.exports.getUserVideos = async (req, res) => {
         return res.status(400).json({ error: err.message });
     }
 }
-
-
-// module.exports.subscription = async (req, res) => {
-//     try {
-//         const channelId = req.params.channelId;
-//         const userId = req.user._id;
-
-//         // if (userId.toString() === channelId) {
-//         //     return res.status(400).json({ message: "You cannot subscribe to yourself" });
-//         // }
-
-//         const channelUser = await userModel.findById(channelId);
-//         const currentUser = await userModel.findById(userId);
-
-//         if (!channelUser || !currentUser) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         const isSubscribed = currentUser.subscribedChannels.some(
-//             id => id.toString() === channelId
-//         );
-
-
-//         if (isSubscribed) {
-//             currentUser.subscribedChannels.pull(channelId);
-//             channelUser.subscribers = Math.max(0, channelUser.subscribers - 1);
-//             channelUser.subscribedUsers.pull(userId); // remove subscriber
-//         } else {
-//             currentUser.subscribedChannels.push(channelId);
-//             channelUser.subscribers += 1;
-//             channelUser.subscribedUsers.push(userId); // add subscriber
-//         }
-
-
-//         await currentUser.save();
-//         await channelUser.save();
-
-//         res.status(200).json({ subscribed: !isSubscribed, subscribersCount: channelUser.subscribers });
-
-//     } catch (err) {
-//         res.status(500).json({ message: "Internal Server Error", error: err.message });
-//     }
-// };
-
 
 
 module.exports.isSubscribed = async (req, res) => {
