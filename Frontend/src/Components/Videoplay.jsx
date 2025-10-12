@@ -55,9 +55,9 @@ const Videoplay = () => {
   if (!video || !videoOwner) return <div><Loader /></div>;
 
   return (
-    <div className="videoData-container flex-1 sm:h-[70%] lt-sm:py-10">
+    <div className="videoData-container b flex-1 sm:h-[70%] lt-sm:pb-10">
 
-      <div className="relative w-full h-full">
+      <div className="relative w-full  h-full">
         {videoData.loading && <Loader />}
         <VideoPlayerElement
           videoRef={videoRef}

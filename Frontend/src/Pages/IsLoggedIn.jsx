@@ -3,7 +3,8 @@ import Home from './Home';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import App from '../App'
-const IsLoggedIn = () => {
+import SearchBar from '../Components/SearchBar';
+const IsLoggedIn = ({ element }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading
 
@@ -30,7 +31,11 @@ const IsLoggedIn = () => {
 
   if (isLoggedIn === null) return <div>Checking...</div>;
 
-  return isLoggedIn ? <Home /> : <Navigate to="/login" />;
+  return isLoggedIn ? (<div>
+    <SearchBar />
+
+    {element}
+  </div>) : <Navigate to="/login" />;
 };
 
 export default IsLoggedIn;

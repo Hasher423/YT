@@ -100,8 +100,8 @@ const InteractionBar = () => {
 
 
   return (
-    <div className="text-custom-white flex pb-[1vw] items-center gap-[.6vw] flex-wrap">
-      <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">
+    <div className="text-custom-white 2xl:py-6 flex py-[3vw] md:py-1  items-center gap-[.6vw] flex-wrap">
+      <div className="bg-zinc-800 2xl:text-[2rem] 2xl:py-5 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">
         <i
           onClick={frontHandleLike}
           className={`ri-thumb-up-line cursor-pointer ${isLike ? 'text-blue-400' : ''}`}
@@ -111,23 +111,23 @@ const InteractionBar = () => {
 
         <i
           onClick={frontHandleDislike}
-          className={`ri-thumb-down-line cursor-pointer text-rd-400 ${isDislike ? 'text-red-400' : ''}`}
+          className={`ri-thumb-down-line cursor-pointer 2xl:text-[2.5rem] text-rd-400 ${isDislike ? 'text-red-400' : ''}`}
         ></i>
         {dislikes}
       </div>
 
-      <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[700] text-sm rounded-3xl">
+      <div className="bg-zinc-800 px-[2vw] py-[.4vw] 2xl:py-5 font-[700] 2xl:text-[2.5rem] text-sm rounded-3xl">
         <i className="ri-share-forward-line"></i> &nbsp; Share
       </div>
 
-      <div className="bg-zinc-800 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl">
-        <i className="ri-download-line"></i> &nbsp;
+      <div className="bg-red-900 px-[2vw] py-[.4vw] 2xl:py-5 font-[400] 2xl:text-[2.5rem] text-sm rounded-3xl">
+        <i className="ri-download-line "></i> &nbsp;
         <Link href={video?.video_Url?.url} download>
           Download
         </Link>
       </div>
 
-      <div className=" bg-red-900 px-[.7vw] py-[.5vw] rounded-full flex items-center justify-center font-bold text-sm">
+      <div className=" bg-red-900 px-[.7vw] py-[.5vw] 2xl:p-5 2xl:text-[2.5rem] rounded-full flex items-center justify-center font-bold text-sm">
         <i className="ri-more-fill "></i>
       </div>
     </div>

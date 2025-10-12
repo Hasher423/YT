@@ -32,7 +32,6 @@ const SearchResults = () => {
 
     return (
         <div className='min-h-screen bg-custom-black'>
-            <SearchBar />
 
 
             <div className='pt-14 sm:pt-24 2xl:pt-40'>

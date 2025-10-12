@@ -13,8 +13,7 @@ const VideoPlayer = () => {
     const setshowSideBar = useContext(Context)[1]
     return (
         <div className='min-h-screen min-w-screen bg-[#0F0F0F] '>
-            <SearchBar showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
-            <div className='sm:flex sm:gap-6  min-w-screen sm:p-5  p]t-16 sm:pt-20'>
+            <div className='sm:flex sm:gap-6 b  min-w-screen sm:p5  pt-10 md:pt-[9vh]'>
                 <SideBar showSideBar={showSideBar} />
                 <Videoplay  />
                 <SideVideos />

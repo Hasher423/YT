@@ -35,7 +35,7 @@ const SideVideos = () => {
                 {/* SIDE VIDEO CONTAINER */}
 
 
-                {data?.length > 0 ? <div className='sm:bg-red-90 flex-1  '>
+                {data?.length > 0 ? <div className='2xl:text-[1.7rem]  sm:bg-red-90 flex-1 sm:text-[.9rem] text-[1rem]  '>
 
                     {data.map((element, index) => {
                         // {console.log(element)}
@@ -49,16 +49,16 @@ const SideVideos = () => {
                                 {/* DIV OF THUMBNAIL  */}
                                 <div className='relative' >
                                     <img
-                                        className=' sm:w-[20vw]   lt-sm:w-[100vw] aspect-[16/9]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                        className=' sm:w-[20vw]    lt-sm:w-[100vw] aspect-[16/9]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
                                         src={`${element?.thumbnail_Url?.url}`} alt="" />
                                 </div>
                                 {/* DETAILS OF VIDEO DIV */}
-                                <div className='w-[100%] text-white font-bebasNeue px-3 sm:px-0'>
+                                <div className='w-[100%] leading-6 2xl:leading-10  sm:leading-[2.6vw] text-white font-bebasNeue px-3 sm:px-0'>
                                     <h1 className='overflow-hidden w-[15vw] lt-sm:w-[80%]  text-wrap '>
 
                                         {
                                             element.title.length > 30
-                                                ? `${element.title.slice(0, 20)}...`
+                                                ? `${element.title.slice(0, 30)}...`
                                                 :
                                                 `${element.title} `
                                         }

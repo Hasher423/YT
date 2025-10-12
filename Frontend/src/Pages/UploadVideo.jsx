@@ -201,8 +201,8 @@ const UploadVideo = () => {
           { }
 
           {state.error && (
-            <p className="text-red-500 text-sm text-center">
-              {typeof state.error === 'object' ? JSON.stringify(state.error) : state.error}
+            <p className="text-red-500 text-xl text-center">
+              {typeof state.error === 'object' ? (state.error.message === "getaddrinfo ENOTFOUND api.cloudinary.com" ? 'Internet Connection LOST !' : state.error.message) : state.error}
             </p>
           )}
 

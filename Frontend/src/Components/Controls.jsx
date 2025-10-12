@@ -69,7 +69,7 @@ const Controls = ({
 
     return (
         <div>
-            <div className="controls w-full sm:h-[90px] absolute bottom-0 sm:py-4 px-3 bg-transparent">
+            <div className="controls w-full sm:h-[90px] absolute 2xl:bottom-20 bottom-0 sm:py-4 px-3 bg-transparent">
                 <input
                     type="range"
                     className="w-full accent-red-600 "
@@ -118,7 +118,7 @@ const Controls = ({
                         <div className='flex flex-col'>
                             <div
                                 ref={playback}
-                                className={`${showPlayBack ? 'opacity-0' : ''} absolute bottom-[7vw] flex flex-col py-2 right-[2vw] bg-black text-white`}>
+                                className={`${showPlayBack ? 'hidden' : 'block'} absolute bottom-[7vw] flex flex-col py-2 right-[2vw] bg-black text-white`}>
                                 {[0.5, 1.0, 1.5, 2.0].map((rate) => (
                                     <button
                                         key={rate}

@@ -34,7 +34,6 @@ const Home = () => {
     return (
         <div>
             <div className='bg-custom-black w-full min-h-'>
-                <SearchBar />
                 <div className='pt-[15vw] md:pt-[6vw] 530-780:pt-[10vw] px-[3vw] md:px-[6vmax]'>
 
                     <div className='bg-red-900 h-[15vh] md:h-[25vh] 530-780:h-[20vh] rounded-lg md:rounded-2xl w-[95vw] md:w-[90vw] overflow-hidden'>

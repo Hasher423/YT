@@ -35,7 +35,7 @@ const VideoPlayerElement = ({
 
 
   return (
-    <div className="relative  w-full ">
+    <div className="relative  w-full  ">
       <video
         ref={videoRef}
         onPlay={() => dispatch(setVideoStarted(true))}
@@ -55,7 +55,7 @@ const VideoPlayerElement = ({
         onPause={() => {
           dispatch(setPlaying(false));
         }}
-        className="w-full min-h-[70vh] rounded-xl"
+        className="w-full md:min-h-[70vh] rounded-xl"
         src={videoData?.video?.video_Url?.url}
         controls={false}
         height="100%"
