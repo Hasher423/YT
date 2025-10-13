@@ -38,7 +38,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
             resource_type: resourceType,
             folder: resourceType === 'video' ? 'my_videos' : 'my_thumbnail',
             public_id: `${resourceType === 'video' ? 'video_' : 'thumb_'}${Date.now()}`,
-            chunk_size: 10 * 1024 * 1024, // 1MB
+            chunk_size: 1 * 1024 * 1024, // 1MB
             timeout: 180000, // 3 minutes
           },
           (error, result) => {
@@ -48,7 +48,7 @@ module.exports = async function cloudinaryUploadChunkedBuffer(
         );
 
         // Create readable stream from buffer in fixed chunks
-        const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
+        const CHUNK_SIZE = 1 * 1024 * 1024; // 10 MB
         const readStream = new Readable({
           read() {
             if (offset >= buffer.length) {
