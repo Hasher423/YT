@@ -17,7 +17,7 @@ const Home = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/user/getuserById/${id}`, {
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/user/getuserById/${id}`, {
                     withCredentials: true
                 });
                 setUser(res.data.user);
