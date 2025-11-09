@@ -1,6 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+
+const corsOptions = {
+  origin: "https://yt-jpx7.vercel.app",  // frontend URL
+  credentials: true,                     // allow cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma"] ,
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests for all routes
+app.options("*", cors(corsOptions));
+
+
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -22,17 +36,6 @@ const commentRouter = require('./Routes/comment.routes')
 const searchRouter = require('./Routes/search.routes')
 
 
-const corsOptions = {
-  origin: "https://yt-jpx7.vercel.app",  // frontend URL
-  credentials: true,                     // allow cookies
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma"] ,
-};
-
-app.use(cors(corsOptions));
-
-// Handle preflight OPTIONS requests for all routes
-app.options("*", cors(corsOptions));
 app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(morgan('dev'));
