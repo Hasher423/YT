@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 
 // Handle preflight OPTIONS requests for all routes
 app.options("*", cors(corsOptions));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads')) ;
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(express.json({ limit: '500mb' }));
