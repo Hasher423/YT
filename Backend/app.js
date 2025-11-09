@@ -18,12 +18,17 @@ const commentRouter = require('./Routes/comment.routes')
 const searchRouter = require('./Routes/search.routes')
 
 
-app.use(cors({
-  origin: "*",          // Allow all origins
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"],
-  credentials: false,   // must be false if origin is "*"
-}));
+const corsOptions = {
+  origin: "https://yt-jpx7.vercel.app",  // frontend URL
+  credentials: true,                     // allow cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests for all routes
+app.options("*", cors(corsOptions));
 app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(morgan('dev'));
@@ -32,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Working fine ');
+  res.send('Working fine ');
 });
 
 app.get("/test-db", async (req, res) => {
@@ -42,16 +47,16 @@ app.get("/test-db", async (req, res) => {
 app.use('/user', userRouter);
 app.use('/video', videoRouter);
 app.use('/comment', commentRouter);
-app.use('/search' , searchRouter)
+app.use('/search', searchRouter)
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(`[${new Date().toISOString()}] Error:`, err.stack);
-    res.status(500).json({
-        success: false,
-        message: 'Internal Server Error',
-        error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-    });
+  console.error(`[${new Date().toISOString()}] Error:`, err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
 });
 
 module.exports = app;

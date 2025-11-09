@@ -117,12 +117,13 @@ module.exports.login = async (req, res) => {
 
         const token = await user.generateToken();
         res.cookie('token', token, {
-            httpOnly: false,
-            secure: false,          // local dev = HTTP → must be false
-            sameSite: 'Lax',        // Lax is a bit more flexible than Strict for local testing
-            maxAge: 30 * 60 * 60 * 24 * 1000,// 30 days
+            httpOnly: true,          // safer: cannot be read by JS
+            secure: true,            // required for HTTPS
+            sameSite: 'None',        // must be None for cross-site requests
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             path: '/',
         });
+
 
 
 
