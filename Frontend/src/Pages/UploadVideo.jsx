@@ -2,7 +2,7 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import socket from '../Components/Socket'
+// import socket from '../Components/Socket'
 import { useEffect } from 'react';
 import Loader from '../Components/Loader';
 
@@ -73,7 +73,7 @@ const UploadVideo = () => {
     data.append('thumbnail', state.thumbnail);
     data.append('title', state.title);
     data.append('description', state.description);
-    data.append('socketid', socket.id)
+    // data.append('socketid', socket.id)
     // Removed socketId from form data
 
     try {
@@ -96,16 +96,16 @@ const UploadVideo = () => {
 
 
   useEffect(() => {
-    console.log('Connected : ', socket.id);
+    // console.log('Connected : ', socket.id);
 
-    const handleProgress = (percentage) => {
-      dispatch({ type: 'SET_PROGRESS', progress: percentage });
-    };
+    // const handleProgress = (percentage) => {
+    //   dispatch({ type: 'SET_PROGRESS', progress: percentage });
+    // };
 
-    socket.on('takePercentage', handleProgress);
+    // socket.on('takePercentage', handleProgress);
 
     return () => {
-      socket.off('takePercentage', handleProgress);
+      // socket.off('takePercentage', handleProgress);
     };
   }, []);
 
