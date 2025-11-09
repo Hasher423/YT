@@ -22,7 +22,7 @@ const corsOptions = {
   origin: "https://yt-jpx7.vercel.app",  // frontend URL
   credentials: true,                     // allow cookies
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"] ,
 };
 
 app.use(cors(corsOptions));
