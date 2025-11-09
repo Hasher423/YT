@@ -8,6 +8,10 @@ const morgan = require('morgan');
 const connection = require('./DBConnection/db');
 connection();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 const configOfCloudinary = require('./Config/cloudinary.config');
 configOfCloudinary();
 
