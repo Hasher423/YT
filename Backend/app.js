@@ -18,14 +18,12 @@ const commentRouter = require('./Routes/comment.routes')
 const searchRouter = require('./Routes/search.routes')
 
 
-
 app.use(cors({
-  origin: '*',
-  credentials: true,
+  origin: "*",          // Allow all origins
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"],
+  credentials: false,   // must be false if origin is "*"
 }));
-
-
-
 app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(morgan('dev'));
