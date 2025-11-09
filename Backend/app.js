@@ -1,3 +1,4 @@
+const cors = require('cors');
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -16,7 +17,6 @@ app.options("*", cors(corsOptions));
 
 
 const mongoose = require('mongoose');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const connection = require('./DBConnection/db');
