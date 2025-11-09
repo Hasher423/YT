@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
@@ -19,7 +20,7 @@ const searchRouter = require('./Routes/search.routes')
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: '*',
   credentials: true,
 }));
 
@@ -33,7 +34,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Working');
+    res.send('Working fine ');
+});
+
+app.get("/test-db", async (req, res) => {
+  const state = mongoose.connection.readyState;
+  res.send(state === 1 ? "DB Connected" : "DB Not Connected");
 });
 app.use('/user', userRouter);
 app.use('/video', videoRouter);
