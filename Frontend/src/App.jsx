@@ -16,7 +16,7 @@ import SearchBar from './Components/SearchBar';
 
 const App = () => {
   return (
-    <div className='font-bebasNeue 2xl:text-[2.5rem]'>
+    <div className='font-robotoCustom 2xl:text-[2.5rem]'>
     
       <Routes>
         <Route path="/" element={<IsLoggedIn element={<Home />} />} />

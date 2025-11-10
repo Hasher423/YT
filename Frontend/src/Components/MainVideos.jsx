@@ -113,7 +113,7 @@ const MainVideos = () => {
                     })}
                 </div> */}
 
-                <div className='text-white bg-green- w-[100vw] flex justify-center py-2   '>
+                <div className='text-white bg-green- w-[100vw] flex justify-center p-5 md:p-0   '>
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
                             loading ? (

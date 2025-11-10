@@ -53,7 +53,7 @@ const SideVideos = () => {
                                         src={`${element?.thumbnail_Url?.url}`} alt="" />
                                 </div>
                                 {/* DETAILS OF VIDEO DIV */}
-                                <div className='w-[100%] leading-6 2xl:leading-10  sm:leading-[2.6vw] text-white font-bebasNeue px-3 sm:px-0'>
+                                <div className='w-[100%] leading-6 2xl:leading-10  sm:leading-[1.6vw] text-white font-robotoCustom  px-3 sm:px-0'>
                                     <h1 className='overflow-hidden w-[15vw] lt-sm:w-[80%]  text-wrap '>
 
                                         {
@@ -65,7 +65,7 @@ const SideVideos = () => {
 
                                     </h1>
                                     <h3>@{element.channelName}</h3>
-                                    <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-bebasNeue'>
+                                    <div className='flex items-center gap-3 text-zinc-400 opacity-70 font-robotoCustom'>
                                         <h3>{element?.views} views</h3>
                                         <h3>{calculateAgo(element.createdAt)}</h3>
                                     </div>

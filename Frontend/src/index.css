@@ -5,16 +5,16 @@
 
 @font-face {
   font-family: PlayWrite;
-  src: url('./assests/Fonts/PlaywriteHU-Regular.ttf');
+  src: url('/Fonts/PlaywriteHU-Regular.ttf');
 }
 
 @font-face {
   font-family: BebasNeue;
-  src: url('./assets/Fonts/BebasNeue-Regular.ttf');
+  src: url('/Fonts/BebasNeue-Regular.ttf');
 }
 @font-face {
   font-family: Roboto;
-  src: url('./assests/Fonts/Roboto-Italic-VariableFont_wdth\,wght.ttf');
+  src: url('/Fonts/Roboto-Italic.ttf');
 }
 
 @theme {
