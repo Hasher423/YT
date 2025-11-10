@@ -41,7 +41,7 @@ app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
-app.use(fileUpload());
+// app.use(fileUpload());
 app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => res.send('Working fine'));
