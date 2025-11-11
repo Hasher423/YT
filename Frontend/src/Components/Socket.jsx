@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 // Create socket connection with detailed logging
-const socket = io('http://localhost:3000', {
+const socket = io('https://ytbackendtwo-production.up.railway.app/', {
   withCredentials: true,
   transports: ['websocket', 'polling'],
   timeout: 10000,
