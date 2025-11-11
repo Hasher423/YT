@@ -35,21 +35,21 @@ const SideVideos = () => {
                 {/* SIDE VIDEO CONTAINER */}
 
 
-                {data?.length > 0 ? <div className='2xl:text-[1.7rem]  sm:bg-red-90 flex-1 sm:text-[.9rem] text-[1rem]  '>
+                {data?.length > 0 ? <div className='2xl:text-[1.7rem] p-4 sm:bg-red-90 flex-1 sm:text-[.9rem] text-[1rem]  '>
 
                     {data.map((element, index) => {
-                        // {console.log(element)}
+                        // {console.log(element)} 
                         return (<Link
                             key={index}
                             to={`?v=${element._id}`}>
                             {/* SINGLE VIDEO */}
                             <div
                                 key={index}
-                                className={`sm:flex sm:leading-[2vw] gap-3 max  ${index === 0 ? 'pb-3' : 'pb-[.3vmax]'} `}>
+                                className={`sm:flex border-b-2  border-zinc-800 py-4 w-[98%] sm:leading-[2vw] gap-3 max  ${index === 0 ? 'pb-3' : 'pb-[.3vmax]'} `}>
                                 {/* DIV OF THUMBNAIL  */}
                                 <div className='relative' >
                                     <img
-                                        className=' sm:w-[20vw]    lt-sm:w-[100vw] aspect-[16/9]  border-[1px] border-zinc-900  sm:rounded-md  object-cover'
+                                        className=' sm:w-[20vw]    lt-sm:w-[100vw] aspect-[16/9]  border-[1px] border-zinc-900  rounded-xl  object-cover'
                                         src={`${element?.thumbnail_Url?.url}`} alt="" />
                                 </div>
                                 {/* DETAILS OF VIDEO DIV */}
