@@ -1,5 +1,5 @@
 
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import socket from '../Components/Socket'
@@ -39,6 +39,7 @@ function reducer(state, action) {
 
 const UploadVideo = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [qeueShow, setqeueShow] = useState(false)
   const navigate = useNavigate();
 
 
@@ -212,13 +213,20 @@ const UploadVideo = () => {
           {state.video &&
             state.thumbnail &&
             state.title &&
-            state.description && (
-              <button
-                type="submit"
-                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition mt-3"
-              >
-                Upload Video
-              </button>
+            state.description &&
+            (
+              <div className='flex flex-col text-center'>
+                {qeueShow && <p className='inline text-white font-light text-3xl font-bebasNeue'>Your video has been qeued </p>
+                }
+                {
+                  qeueShow === false && <button
+                    onClick={() => { setqeueShow(true) }}
+                    type="submit"
+                    className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition mt-3"
+                  >
+                    Upload Video
+                  </button>}
+              </div>
             )}
         </form>
       )}

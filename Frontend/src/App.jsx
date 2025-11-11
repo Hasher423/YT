@@ -25,7 +25,7 @@ const App = () => {
         <Route path='/login' element={<Login />} ></Route>
         <Route path="/video" element={<IsLoggedIn element={<Videoplay />} />} />
         <Route path="/video/:videoPlayer" element={<IsLoggedIn element={<VideoPlayer />} />} />
-        <Route path="/UploadVideo" element={<IsLoggedIn element={<UploadVideo />} />} />
+        <Route path="/UploadVideo" element={<UploadVideo />} />
         <Route path="/results" element={<IsLoggedIn element={<SearchResults />} />} />
       </Routes>
     </div>
