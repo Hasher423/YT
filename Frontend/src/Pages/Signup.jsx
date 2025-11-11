@@ -9,6 +9,7 @@ const signup = () => {
     const [password, setpassword] = useState('')
     const [channelName, setchannelName] = useState('')
     const [logo, setlogo] = useState([])
+    const [showLogin, setshowLogin] = useState(false)
     const [bgBanner, setbgBanner] = useState([])
 
     const navigate = useNavigate();
@@ -46,6 +47,10 @@ const signup = () => {
 
     return (
         <div className="bg-custom-black w-[100vw] h-[100vh] flex justify-center xl:text-[1.3vw]">
+            {showLogin && <div className='w-screen text-6xl p-5 font-bebasNeue h-screen bg-white absolute top-0 left-0'>
+                Signing in...
+            </div>}
+
             <div className="flex items-center justify-center text-custom-white font-youtube bg-transparent">
                 <form method={'post'} onSubmit={SubmitHandler} className="flex items-center gap-[2vw] flex-col justify-center p-[8vw] border-zinc-800 shadow-2xl border-2">
                     <input
@@ -112,6 +117,8 @@ const signup = () => {
                     </label>
 
                     <input
+
+                        onClick={() => setshowLogin(true)}
                         type="submit"
                         value="Sign Up"
                         className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold py-[.6vw] rounded-md shadow-lg hover:from-red-700 hover:to-red-900 transition-all cursor-pointer"

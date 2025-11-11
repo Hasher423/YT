@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Login = () => {
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
+    const [showLogin, setshowLogin] = useState(false)
 
 
     const navigate = useNavigate();
@@ -42,6 +43,11 @@ const Login = () => {
 
     return (
         <div className="bg-custom-black w-[100vw] h-[100vh] flex justify-center xl:text-[1.3vw]">
+            
+           {showLogin && <div className='w-screen text-6xl p-5 font-bebasNeue h-screen bg-white absolute top-0 left-0'>
+                            logging in...
+            </div>}
+           
             <div className="flex items-center justify-center text-custom-white font-youtube bg-transparent">
                 <form method={'post'} onSubmit={SubmitHandler} className="flex items-center gap-[2vw] flex-col justify-center p-[8vw] border-zinc-800 shadow-2xl border-2">
 
@@ -63,6 +69,7 @@ const Login = () => {
                     />
 
                     <input
+                    onClick={() => setshowLogin(true)}
                         type="submit"
                         value="Log in"
                         className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold py-[.6vw] rounded-md shadow-lg hover:from-red-700 hover:to-red-900 transition-all cursor-pointer"
