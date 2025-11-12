@@ -34,7 +34,7 @@ const Login = () => {
 
             console.log('User registered:', response);
         } catch (error) {
-            console.error('Error registering:', error.response?.data);
+            console.error('Error registering:', error);
         }
     };
 

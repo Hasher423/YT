@@ -1,11 +1,8 @@
-
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import socket from '../Components/Socket'
-import { useEffect } from 'react';
+import socket from '../Components/Socket';
 import Loader from '../Components/Loader';
-
 
 const initialState = {
   video: null,
@@ -27,7 +24,7 @@ function reducer(state, action) {
     case 'SET_PROGRESS':
       return { ...state, progress: action.progress };
     case 'UPLOAD_SUCCESS':
-      return { ...state, isUploaded: true };
+      return { ...state, isUploaded: true, progress: 100, error: null };
     case 'UPLOAD_ERROR':
       return { ...state, error: action.error };
     case 'SET_DRAGGING':
@@ -37,201 +34,270 @@ function reducer(state, action) {
   }
 }
 
-const UploadVideo = () => {
+export default function UploadVideo() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [qeueShow, setqeueShow] = useState(false)
+  const [socketId, setSocketId] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(true);
   const navigate = useNavigate();
 
+  // -----------------------------------------------------------------
+  // 1. SOCKET – single instance, connection handling
+  // -----------------------------------------------------------------
+  useEffect(() => {
+    if (!socket.connected) socket.connect();
 
+    const onConnect = () => {
+      setSocketId(socket.id);
+      setIsConnecting(false);
+    };
+    const onError = (err) => {
+      console.error('socket error', err);
+      setIsConnecting(false);
+    };
+    const onProgress = (pct) => dispatch({ type: 'SET_PROGRESS', progress: pct });
+
+    socket.on('connect', onConnect);
+    socket.on('connect_error', onError);
+    socket.on('takePercentage', onProgress);
+
+    if (socket.connected) {
+      setSocketId(socket.id);
+      setIsConnecting(false);
+    }
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('connect_error', onError);
+      socket.off('takePercentage', onProgress);
+    };
+  }, []);
+
+  // -----------------------------------------------------------------
+  // 2. FILE HANDLERS
+  // -----------------------------------------------------------------
   const handleDrop = (e) => {
     e.preventDefault();
     dispatch({ type: 'SET_DRAGGING', isDragging: false });
     const file = e.dataTransfer.files[0];
-    if (file) {
+    if (file && file.type.startsWith('video/')) {
       dispatch({ type: 'SET_FILE', field: 'video', file });
+    } else {
+      alert('Please drop a **video** file.');
     }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     const name = e.target.name;
-    if (file) {
-      dispatch({ type: 'SET_FILE', field: name, file });
+    if (!file) return;
+
+    if (name === 'video' && !file.type.startsWith('video/')) {
+      alert('Select a valid video file.');
+      return;
     }
+    if (name === 'thumbnail' && !file.type.startsWith('image/')) {
+      alert('Select a valid image file.');
+      return;
+    }
+    dispatch({ type: 'SET_FILE', field: name, file });
   };
 
-  const handleTextChange = (e) => {
-    const { name, value } = e.target;
-    dispatch({ type: 'SET_FIELD', field: name, value });
+  const handleText = (e) => {
+    dispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
   };
 
+  // -----------------------------------------------------------------
+  // 3. SUBMIT – shows loader after 100%
+  // -----------------------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'UPLOAD_ERROR', error: null });
 
-    const data = new FormData();
-    data.append('video_Url', state.video);
-    data.append('thumbnail', state.thumbnail);
-    data.append('title', state.title);
-    data.append('description', state.description);
-    data.append('socketid', socket.id)
-    // Removed socketId from form data
+    if (isConnecting || !socketId) {
+      alert('Still connecting…');
+      return;
+    }
+
+    dispatch({ type: 'UPLOAD_ERROR', error: null });
+    dispatch({ type: 'SET_PROGRESS', progress: 0 });
+
+    const form = new FormData();
+    form.append('video_Url', state.video);
+    form.append('thumbnail', state.thumbnail);
+    form.append('title', state.title);
+    form.append('description', state.description);
+    form.append('socketid', socketId);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/video/upload`,
-        data,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-          withCredentials: true,
-        }
-      );
-      if (res.data.success) dispatch({ type: 'UPLOAD_SUCCESS' });
-    } catch (err) {
-      dispatch({
-        type: 'UPLOAD_ERROR',
-        error: err.response?.data || 'Upload failed.',
+      const res = await axios.post('http://localhost:3000/video/upload', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
+        timeout: 0,
       });
+
+      // ANY 2xx → success
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+    } catch (err) {
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        'Upload failed – please try again.';
+      dispatch({ type: 'UPLOAD_ERROR', error: msg });
     }
   };
 
-
-  useEffect(() => {
-    console.log('Connected : ', socket.id);
-
-    const handleProgress = (percentage) => {
-      dispatch({ type: 'SET_PROGRESS', progress: percentage });
-    };
-
-    socket.on('takePercentage', handleProgress);
-
-    return () => {
-      socket.off('takePercentage', handleProgress);
-    };
-  }, []);
+  // -----------------------------------------------------------------
+  // 4. UI – Loader after 100%
+  // -----------------------------------------------------------------
+  const showFinalisingLoader = state.progress === 100 && !state.isUploaded && !state.error;
 
   return (
-    <div className="w-screen h-screen bg-[#181818] flex items-center justify-center p-6">
-      {state.isUploaded ? (
-        <div className="relative w-full max-w-2xl h-full flex items-center justify-center">
-          <h1 className="text-white text-2xl text-center">✅ Video uploaded successfully!</h1>
+    <div className="min-h-screen bg-[#181818] flex items-center justify-center p-4 relative">
+      {/* ---------- FINALISING LOADER (after 100%) ---------- */}
+      {showFinalisingLoader && (
+        <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50">
+          <Loader size="lg" />
+          <p className="mt-4 text-xl text-white animate-pulse">
+            Finalising upload… please wait
+          </p>
+        </div>
+      )}
+
+      {/* ---------- SUCCESS SCREEN ---------- */}
+      {state.isUploaded && (
+        <div className="text-center space-y-6">
+          <h1 className="text-4xl font-bold text-white">
+            Video uploaded successfully!
+          </h1>
           <button
             onClick={() => navigate('/')}
-            className="absolute bottom-4 right-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             Go Home
           </button>
         </div>
-      ) : (
+      )}
+
+      {/* ---------- UPLOAD FORM ---------- */}
+      {!state.isUploaded && (
         <form
           onSubmit={handleSubmit}
           onDragOver={(e) => {
             e.preventDefault();
             dispatch({ type: 'SET_DRAGGING', isDragging: true });
           }}
-          onDragLeave={() => dispatch({ type: 'SET_DRAGGING', isDragging: false })}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            dispatch({ type: 'SET_DRAGGING', isDragging: false });
+          }}
           onDrop={handleDrop}
-          className={`w-full max-w-2xl bg-[#212121] p-6 rounded-xl border-2 transition-colors ${state.isDragging ? 'border-blue-500' : 'border-[#303030]'
-            } flex flex-col gap-4`}
+          className={`max-w-2xl w-full bg-[#212121] p-8 rounded-xl border-2 transition-colors ${
+            state.isDragging ? 'border-blue-500' : 'border-[#303030]'
+          } space-y-6`}
         >
+          {/* VIDEO */}
           {!state.video && (
-            <div className="flex flex-col items-center justify-center border-2 border-dashed p-10 rounded bg-[#2a2a2a] text-white">
-              <p>📽️ Drag and drop a video here or</p>
-              <input
-                type="file"
-                name="video"
-                accept="video/*"
-                onChange={handleFileChange}
-                className="mt-2 text-white"
-              />
+            <div className="border-2 border-dashed border-gray-500 rounded-lg p-12 text-center bg-[#2a2a2a]">
+              <p className="text-white mb-4">Drop a video or click below</p>
+              <label className="cursor-pointer inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Choose Video
+                <input
+                  type="file"
+                  name="video"
+                  accept="video/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
             </div>
           )}
 
+          {/* THUMBNAIL */}
           {state.video && !state.thumbnail && (
-            <div className="flex flex-col gap-2">
-              <label className="text-white">Select a thumbnail:</label>
+            <div>
+              <label className="block text-white mb-2">Thumbnail</label>
               <input
                 type="file"
                 name="thumbnail"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="text-white"
+                className="block w-full text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-600 file:text-white"
               />
             </div>
           )}
 
+          {/* TITLE & DESC */}
           {state.video && state.thumbnail && (
             <>
               <input
-                type="text"
+                required
                 name="title"
                 placeholder="Title"
                 value={state.title}
-                onChange={handleTextChange}
-                className="px-4 py-2 rounded bg-white text-black"
-                required
+                onChange={handleText}
+                className="w-full px-4 py-2 rounded bg-white text-black"
               />
               <textarea
+                required
                 name="description"
                 placeholder="Description"
                 value={state.description}
-                onChange={handleTextChange}
-                className="px-4 py-2 rounded bg-white text-black h-24 resize-none"
-                required
+                onChange={handleText}
+                rows={4}
+                className="w-full px-4 py-2 rounded bg-white text-black resize-none"
               />
             </>
           )}
 
-
-
-          {console.log(state.progress)}
-          {state.progress == 100 ? (
-            <div>
-              <div className="w-12 mx-auto h-12 border-[1.8px] border-white border-t-transparent border-b-transparent rounded-full animate-spin"></div>
-              <div className='text-custom-white'>Hang Tight it's uploading...</div>
-            </div>
-          ) : state.progress > 0 && (
-            <div className="w-full h-2 bg-gray-700 rounded">
-              <div
-                className="h-full bg-green-500 rounded"
-                style={{ width: `${state.progress}%` }}
-              ></div>
-              <div className='text-white text-2xl font-bebasNeue text-center'>
-                {state.progress}%
+          {/* PROGRESS BAR */}
+          {state.progress > 0 && state.progress < 100 && (
+            <div className="space-y-1">
+              <div className="flex justify-between text-sm text-white">
+                <span>Uploading…</span>
+                <span>{state.progress}%</span>
+              </div>
+              <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all"
+                  style={{ width: `${state.progress}%` }}
+                />
               </div>
             </div>
           )}
 
-          { }
-
+          {/* CONNECTION / ERROR */}
+          {isConnecting && (
+            <p className="text-yellow-400 text-center animate-pulse">
+              Connecting to server…
+            </p>
+          )}
           {state.error && (
-            <p className="text-red-500 text-xl text-center">
-              {typeof state.error === 'object' ? (state.error.message === "getaddrinfo ENOTFOUND api.cloudinary.com" ? 'Internet Connection LOST !' : state.error.message) : state.error}
+            <p className="text-red-500 bg-red-900/30 p-3 rounded text-center">
+              {state.error}
             </p>
           )}
 
-          {state.video &&
-            state.thumbnail &&
-            state.title &&
-            state.description &&
-            (
-              <div className='flex flex-col text-center'>
-                {qeueShow && <p className='inline text-white font-light text-3xl font-bebasNeue'>Your video has been qeued </p>
-                }
-                {
-                  qeueShow === false && <button
-                    onClick={() => { setqeueShow(true) }}
-                    type="submit"
-                    className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition mt-3"
-                  >
-                    Upload Video
-                  </button>}
-              </div>
-            )}
+          {/* UPLOAD BUTTON */}
+          {state.video && state.thumbnail && state.title && state.description && (
+            <div className="text-center">
+              <button
+                type="submit"
+                disabled={isConnecting || !socketId}
+                className={`px-8 py-3 rounded font-medium transition ${
+                  socketId && !isConnecting
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {isConnecting
+                  ? 'Connecting…'
+                  : !socketId
+                  ? 'Server Offline'
+                  : 'Upload Video'}
+              </button>
+            </div>
+          )}
         </form>
       )}
     </div>
   );
-};
-
-export default UploadVideo;
+}
