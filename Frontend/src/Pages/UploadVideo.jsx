@@ -128,7 +128,7 @@ export default function UploadVideo() {
     form.append('socketid', socketId);
 
     try {
-      const res = await axios.post('http://localhost:3000/video/upload', form, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
         timeout: 0,
