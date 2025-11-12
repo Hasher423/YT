@@ -117,38 +117,88 @@ export default function UploadVideo() {
   /* -----------------------------------------------------------------
    *  SUBMIT – shows loader after 100%
    * ----------------------------------------------------------------- */
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (isConnecting || !socketId) {
+  //     alert('Still connecting…');
+  //     return;
+  //   }
+
+  //   dispatch({ type: 'UPLOAD_ERROR', error: null });
+  //   dispatch({ type: 'SET_PROGRESS', progress: 0 });
+
+  //   const form = new FormData();
+  //   form.append('video_Url', state.video);
+  //   form.append('thumbnail', state.thumbnail);
+  //   form.append('title', state.title);
+  //   form.append('description', state.description);
+  //   form.append('socketid', socketId);
+
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //       withCredentials: true,
+  //       timeout: 0,
+  //     });
+
+  //     dispatch({ type: 'UPLOAD_SUCCESS' });
+  //   } catch (err) {
+  //     const msg =
+  //       err.response?.data?.message || err.message || 'Upload failed – please try again.';
+  //     dispatch({ type: 'UPLOAD_ERROR', error: msg });
+  //   }
+  // };
+
+
+
+
+
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (isConnecting || !socketId) {
-      alert('Still connecting…');
-      return;
-    }
+  if (isConnecting || !socketId) {
+    alert('Still connecting…');
+    return;
+  }
 
-    dispatch({ type: 'UPLOAD_ERROR', error: null });
-    dispatch({ type: 'SET_PROGRESS', progress: 0 });
+  dispatch({ type: 'UPLOAD_ERROR', error: null });
+  dispatch({ type: 'SET_PROGRESS', progress: 0 });
 
-    const form = new FormData();
-    form.append('video_Url', state.video);
-    form.append('thumbnail', state.thumbnail);
-    form.append('title', state.title);
-    form.append('description', state.description);
-    form.append('socketid', socketId);
+  const form = new FormData();
+  form.append('video_Url', state.video);
+  form.append('thumbnail', state.thumbnail);
+  form.append('title', state.title);
+  form.append('description', state.description);
+  form.append('socketid', socketId);
 
-    try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true,
-        timeout: 0,
-      });
+  try {
+    await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      withCredentials: true,
+      timeout: 0,
+      onUploadProgress: (progressEvent) => {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        console.log('Upload progress:', percent + '%'); // This works!
+        dispatch({ type: 'SET_PROGRESS', progress: percent });
+      },
+    });
 
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-    } catch (err) {
-      const msg =
-        err.response?.data?.message || err.message || 'Upload failed – please try again.';
-      dispatch({ type: 'UPLOAD_ERROR', error: msg });
-    }
-  };
+    dispatch({ type: 'UPLOAD_SUCCESS' });
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Upload failed';
+    dispatch({ type: 'UPLOAD_ERROR', error: msg });
+  }
+};
+
+
+
+
+
+
+
+
 
   /* -----------------------------------------------------------------
    *  UI – Loader after 100%
