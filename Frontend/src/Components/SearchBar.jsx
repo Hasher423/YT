@@ -165,7 +165,7 @@ const SearchBar = () => {
                     <img
                         className='w-[6vw] h-[6vw]  sm:w-[2.3vw] sm:h-[2.3vw] '
                         src="/assets/images/ytlogo.png" alt="" />
-                    <Link to={'/'} className='font-youtube font-[500] ml-[1.4vw] sm:ml-0 text-[3.3vw] sm:text-[1.6vw] text-custom-white tracking-[-.1vw] after:content-["PK"] after:text-gray-400 after:absolute sm:after:top-3 after:top-[3vw] after:text-[3vw] sm:after:text-[.8vw] after:font-light '>YouTube</Link>
+                    <Link to={'/'} className='font-youtube font-[500] ml-[1.4vw] sm:ml-0 text-[3.3vw] sm:text-[1.6vw] text-custom-white tracking-[-.1vw] after:content-["PK"] after:text-gray-400 after:absolute sm:after:top-3 after:top-[3vw] after:text-[3vw] sm:after:text-[.8vw] after:font-light '>HTube</Link>
                 </div>
             </div>
 
