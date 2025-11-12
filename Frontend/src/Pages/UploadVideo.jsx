@@ -40,26 +40,34 @@ export default function UploadVideo() {
   const [isConnecting, setIsConnecting] = useState(true);
   const navigate = useNavigate();
 
-  // -----------------------------------------------------------------
-  // 1. SOCKET – single instance, connection handling
-  // -----------------------------------------------------------------
+  /* -----------------------------------------------------------------
+   *  SOCKET – single instance, connection handling + PROGRESS
+   * ----------------------------------------------------------------- */
   useEffect(() => {
+    // Connect if not already
     if (!socket.connected) socket.connect();
 
     const onConnect = () => {
+      console.log('Frontend socket connected:', socket.id);
       setSocketId(socket.id);
       setIsConnecting(false);
     };
+
     const onError = (err) => {
       console.error('socket error', err);
       setIsConnecting(false);
     };
-    const onProgress = (pct) => dispatch({ type: 'SET_PROGRESS', progress: pct });
+
+    const onProgress = (pct) => {
+      console.log('Progress event received:', pct); // <-- MUST appear in browser console
+      dispatch({ type: 'SET_PROGRESS', progress: pct });
+    };
 
     socket.on('connect', onConnect);
     socket.on('connect_error', onError);
     socket.on('takePercentage', onProgress);
 
+    // If already connected (HMR, page reload)
     if (socket.connected) {
       setSocketId(socket.id);
       setIsConnecting(false);
@@ -70,11 +78,11 @@ export default function UploadVideo() {
       socket.off('connect_error', onError);
       socket.off('takePercentage', onProgress);
     };
-  }, []);
+  }, [dispatch]); // <-- dispatch is now a dependency
 
-  // -----------------------------------------------------------------
-  // 2. FILE HANDLERS
-  // -----------------------------------------------------------------
+  /* -----------------------------------------------------------------
+   *  FILE HANDLERS
+   * ----------------------------------------------------------------- */
   const handleDrop = (e) => {
     e.preventDefault();
     dispatch({ type: 'SET_DRAGGING', isDragging: false });
@@ -106,9 +114,9 @@ export default function UploadVideo() {
     dispatch({ type: 'SET_FIELD', field: e.target.name, value: e.target.value });
   };
 
-  // -----------------------------------------------------------------
-  // 3. SUBMIT – shows loader after 100%
-  // -----------------------------------------------------------------
+  /* -----------------------------------------------------------------
+   *  SUBMIT – shows loader after 100%
+   * ----------------------------------------------------------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -128,26 +136,23 @@ export default function UploadVideo() {
     form.append('socketid', socketId);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/video/upload`, form, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
         timeout: 0,
       });
 
-      // ANY 2xx → success
       dispatch({ type: 'UPLOAD_SUCCESS' });
     } catch (err) {
       const msg =
-        err.response?.data?.message ||
-        err.message ||
-        'Upload failed – please try again.';
+        err.response?.data?.message || err.message || 'Upload failed – please try again.';
       dispatch({ type: 'UPLOAD_ERROR', error: msg });
     }
   };
 
-  // -----------------------------------------------------------------
-  // 4. UI – Loader after 100%
-  // -----------------------------------------------------------------
+  /* -----------------------------------------------------------------
+   *  UI – Loader after 100%
+   * ----------------------------------------------------------------- */
   const showFinalisingLoader = state.progress === 100 && !state.isUploaded && !state.error;
 
   return (
@@ -248,8 +253,8 @@ export default function UploadVideo() {
             </>
           )}
 
-          {/* PROGRESS BAR */}
-          {state.progress >= 0 && state.progress <= 100 && (
+          {/* PROGRESS BAR – show as soon as upload starts */}
+          {state.progress > 0 && (
             <div className="space-y-1">
               <div className="flex justify-between text-sm text-white">
                 <span>Uploading…</span>
@@ -257,7 +262,7 @@ export default function UploadVideo() {
               </div>
               <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all"
+                  className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-300 ease-out"
                   style={{ width: `${state.progress}%` }}
                 />
               </div>
