@@ -249,7 +249,7 @@ export default function UploadVideo() {
           )}
 
           {/* PROGRESS BAR */}
-          {state.progress > 0 && state.progress < 100 && (
+          {state.progress >= 0 && state.progress <= 100 && (
             <div className="space-y-1">
               <div className="flex justify-between text-sm text-white">
                 <span>Uploading…</span>
