@@ -60,7 +60,7 @@ export default function UploadVideo() {
 
     const onProgress = (pct) => {
       console.log('Progress event received:', pct); // <-- MUST appear in browser console
-      dispatch({ type: 'SET_PROGRESS', progress: pct });
+      // dispatch({ type: 'SET_PROGRESS', progress: pct });
     };
 
     socket.on('connect', onConnect);
