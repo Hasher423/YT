@@ -1,13 +1,13 @@
 const { Readable } = require('stream');
 const cloudinary = require('cloudinary').v2;
-// const { getSocket } = require('../Controllers/initSocket.controller');
+const { getSocket } = require('../Controllers/initSocket.controller');
 
-// const emiProgressToSocket = (socketId, eventName, progress) => {
-//   const io = getSocket();
-//   if (socketId && io) {
-//     io.to(socketId).emit(eventName, progress);
-//   }
-// }
+const emiProgressToSocket = (socketId, eventName, progress) => {
+  const io = getSocket();
+  if (socketId && io) {
+    io.to(socketId).emit(eventName, progress);
+  }
+} 
 
 /**
  * Upload large video/image buffer using stream (avoids timeouts)

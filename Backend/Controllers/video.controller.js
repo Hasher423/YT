@@ -27,6 +27,7 @@ module.exports.createVideo = async (req, res) => {
 
   try {
     // Upload video
+    console.log(req.body)
     const videoResponse = await cloudinaryUploadChunkedBuffer(
       videoFile.buffer,
       videoFile.mimetype,

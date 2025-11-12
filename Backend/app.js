@@ -18,7 +18,7 @@ const app = express();
 
 // ✅ CORS setup (must be at very top)
 const corsOptions = {
-  origin: "https://yt-jpx7.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma"],
@@ -28,7 +28,7 @@ app.options("*", cors(corsOptions));
 
 // ✅ Extra CORS safety headers (for long uploads)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://yt-jpx7.vercel.app");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control, Pragma");
   next();
