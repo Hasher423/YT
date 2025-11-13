@@ -51,7 +51,7 @@ const ChannelInfo = () => {
       {channelId !== currentUser?._id && (
         <button
           onClick={handleSubscribeClick}
-          className={` px-[1vw] py-[.5vw] 2xl:py-4 2xl:text-[1.5rem]  rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'border-white border-[1px] text-white' : 'bg-red-900'} `}
+          className={` px-[1vw] py-[.5vw] 2xl:py-4 2xl:text-[1.5rem]  rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'border-white border-[1px] text-white' : 'bg-custom-white'} `}
         >
           {videoData?.isSubscribed ? 'SUBSCRIBED' : 'SUBSCRIBE'}
         </button>
