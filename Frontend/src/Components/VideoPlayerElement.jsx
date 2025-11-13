@@ -56,7 +56,7 @@ const VideoPlayerElement = ({
           dispatch(setPlaying(false));
         }}
         className="w-full md:min-h-[70vh] rounded-xl max-h-[50vh]"
-        src={videoData?.video?.video_Url?.url}
+        src={videoData?.video?.video_Url?.secureUrl}
         controls={false}
         height="100%"
       />
