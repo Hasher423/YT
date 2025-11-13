@@ -59,7 +59,7 @@ const Home = () => {
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>{user.subscribers} Subscribers</div>
                                 <span className='mx-[1.2vw] font-[900] sm:text-[1.2vw]'>.</span>
-                                <div className='sm:text-[1.5vw]'> videos</div>
+                                <div className='sm:text-[1.5vw]'>{user.videos} videos</div>
                             </div>
                                 {/* FIX SUBSCRIBING FROM THE PROFILE ! */}
                             {/* <div className='hidden sm:block'>
@@ -71,7 +71,7 @@ const Home = () => {
                     </div>
 
                     <div className='mt-[1vh] md:mt-[8vw] sm:mt-0 sm:hidden'>
-                        <button className='bg-white font-[500] w-full md:w-[14vw] sm:py-[.4vw] py-[1vw] md:text-[2.3vw] rounded-2xl text-custom-black'>Subscribe</button>
+                        <button className='bg-red-900 font-[500] w-full md:w-[14vw] sm:py-[.4vw] py-[1vw] md:text-[2.3vw] rounded-2xl text-custom-black'>Subscribe</button>
                     </div>
 
                     <div className='cursor-pointer text-custom-white md:py-[.1vw] xl:text-[1.5vw] py-[4vw] text-opacity-30 border-b-[1px] border-zinc-700'>
