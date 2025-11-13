@@ -52,6 +52,7 @@ export default function UploadVideo() {
       setSocketId(socket.id);
       setIsConnecting(false);
     };
+    
 
     const onError = (err) => {
       console.error('socket error', err);
