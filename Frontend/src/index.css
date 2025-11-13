@@ -146,3 +146,8 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-webkit-slider-thumb {
   margin-top: -5px; 
 }
+
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
