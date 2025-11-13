@@ -78,9 +78,9 @@ module.exports.registerUser = async (req, res) => {
         // Set cookie
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'Lax',
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+            secure: true,          // <-- only send over HTTPS
+            sameSite: 'None',      // <-- required for cross-site with credentials
+            maxAge: 30 * 24 * 60 * 60 * 1000,
             path: '/',
         });
 
