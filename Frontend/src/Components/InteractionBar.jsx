@@ -101,7 +101,7 @@ const InteractionBar = () => {
 
   return (
     <div className="text-custom-white 2xl:py-6 flex py-[3vw] md:py-1  items-center gap-[.6vw] flex-wrap">
-      <div className="bg-zinc-800 2xl:text-[2rem] 2xl:py-5 px-[2vw] py-[.4vw] font-[600] text-sm rounded-3xl flex items-center gap-4">
+      <div className="bg-zinc-800 2xl:text-[2rem] 2xl:py-5 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl flex items-center gap-4">
         <i
           onClick={frontHandleLike}
           className={`ri-thumb-up-line cursor-pointer ${isLike ? 'text-blue-400' : ''}`}
@@ -116,7 +116,7 @@ const InteractionBar = () => {
         {dislikes}
       </div>
 
-      <div className="bg-zinc-800 px-[2vw] py-[.4vw] 2xl:py-5 font-[700] 2xl:text-[2.5rem] text-sm rounded-3xl">
+      <div className="bg-zinc-800 px-[2vw] py-[.4vw] 2xl:py-5 font-[400] 2xl:text-[2.5rem] text-sm rounded-3xl">
         <i className="ri-share-forward-line"></i> &nbsp; Share
       </div>
 

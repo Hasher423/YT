@@ -140,7 +140,7 @@ const SearchBar = () => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
+            ref={searchBar} className={`w-full h-[8vh] fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
 
 
             <div
@@ -153,14 +153,14 @@ const SearchBar = () => {
 
             {/* HAMBURGER AND LOGO */}
             <div className=' flex items-center gap-[2vw] sm:gap-[1.8vw]'>
-                <i
+                {/* <i
                     onClick={() => {
                         setshowSideBar((prev) => {
                             return !prev;
                         });
 
                     }}
-                    className="ri-menu-line text-custom-white font-[100]  text-[4vw]  sm:text-[2vw]"></i>
+                    className="ri-menu-line text-custom-white font-[100]  text-[4vw]  sm:text-[2vw]"></i> */}
                 <div className='flex items-center gap-[.2vw]'>
                     <img
                         className='w-[6vw] h-[6vw]  sm:w-[2.3vw] sm:h-[2.3vw] '
@@ -316,7 +316,11 @@ const SearchBar = () => {
                                         <p className='text-blue-600 text-[5vw]'>{(searchSuggestions.length > 0 && ShowSearchSuggestions) &&
                                             searchSuggestions.map((suggestion) => (
                                                 <div key={suggestion} className={`py-2 px-4 font-[500] cursor-pointer`}>
-                                                    <Link to={`/results?q=${searchInput.split(' ').join('+')}`}>  {suggestion.length > 45 ? suggestion.slice(0, 45) + '...' : suggestion}</Link>
+                                                    <Link
+                                                        onClick={() => {
+                                                            setShowSearchPannel((prev) => !prev)
+                                                        }}
+                                                        to={`/results?q=${searchInput.split(' ').join('+')}`}>  {suggestion.length > 45 ? suggestion.slice(0, 45) + '...' : suggestion}</Link>
                                                 </div>
                                             ))
                                         }</p>

@@ -38,7 +38,7 @@ const Comments = () => {
 
     return (
         <div className='text-white w-full grid grid-cols-1 min-h-10 py-[1.3vw] px-2 lt-sm:hidden'>
-            <h2 className='font-bold text-[1.2vw]'>{commentList?.length} Comments</h2>
+            <h2 className=' text-[1.2vw]'>{commentList?.length} Comments</h2>
 
             <div className='grid place-items-center grid-cols-[10%_90%]'>
                 <div>

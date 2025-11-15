@@ -113,7 +113,7 @@ const MainVideos = () => {
                     })}
                 </div> */}
 
-                <div className='text-white bg-green- w-[100vw] flex justify-center p-5 md:p-0   '>
+                <div className='text-white  w-[100vw] flex justify-center p-5 md:p-0   '>
                     {errMessage ? <div classaName=' '>{errMessage}</div> : <div className='sm:flex flex-wrap justify-center'>
                         {
                             loading ? (
@@ -122,23 +122,23 @@ const MainVideos = () => {
                                 </div>
                             ) : videos.map((video, index) => {
                                 return (<Link key={index} to={`/video/videoPlayer?v=${video._id}`} className=' sm:m-4'>
-                                    <div className='sm:w-[28vw]    '>
+                                    <div className='sm:w-[28vw] transition-all duration-500 bg-opacity-50 hover:bg-black py-2 rounded-xl min-h-[23vmax] '>
                                         <div>
                                             <img
-                                                className='w-full aspect-[16/9] object-cover rounded object-center '
+                                                className='w-[90%] mx-auto  aspect-[16/9] object-cover rounded-xl object-center '
                                                 src={video?.thumbnail_Url?.secureurl}
                                                 alt=""
                                             />
                                         </div>
 
-                                        <div className='flex  px-[.5vw] py-[.2vw] gap-[vw]  justify-between lt-sm:py-[4vw] lt-sm:px-[1.4vw] '>
-                                            <div className='w-[ ] mt-[1.4vw] place-content-center '>
-                                                <img className='w-[4vw] h-[4vw] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full' src={`${logos[video?.userId]?.userId}`} alt="" />
+                                        <div className='flex   justify-evenly md:mt-2  lt-sm:py-[4vw] lt-sm:px-[1.4vw] '>
+                                            <div className='mt-1 place-content-start '>
+                                                <img className='w-[2.7vw] h-[2.7vw] aspect-auto[1/1] lt-sm:w-[10vw]  lt-sm:h-[10vw] rounded-full object-cover' src={`${logos[video?.userId]?.userId}`} alt="" />
                                             </div>
 
-                                            <div className='w-[75%] font-bebasNeue  h-[100%]'>
+                                            <div className='w-[75%] font-Roboto   h-[100%]'>
                                                 {/* TITLE */}
-                                                <div className='  '>
+                                                <div className=' leading-6 '>
                                                     <div>
                                                         <h3 className=' text-custom-white text-[1.4vw] lt-sm:text-[5vw]'>
                                                             {video.title.length > 40 ? video.title.substring(0, 40) + '...' : video.title}
@@ -148,7 +148,7 @@ const MainVideos = () => {
 
                                                 {/* CHANNEL NAME */}
                                                 <div >
-                                                    <p className='text-zinc-500 lt-sm:text-[2vh]'>{logos[video?.userId]?.channelName}</p>
+                                                    <p className='text-zinc-500 uppercase lt-sm:text-[2vh]'>{logos[video?.userId]?.channelName}</p>
                                                     <div className='flex items-center leading-none lt-sm:text-[2vh]'>
                                                         <p className='text-zinc-500'>{video.views} views <span className='font-black'>.</span></p> &nbsp;
 <p className='text-zinc-500'>{calculateAgo(video.createdAt)}</p>

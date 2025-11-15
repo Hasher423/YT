@@ -35,10 +35,13 @@ const VideoPlayerElement = ({
 
 
   return (
-    <div className="relative  w-full  ">
+    <div className="relative   w-full md:mt-[3vh] mt-2    ">
       <video
         ref={videoRef}
-        onPlay={() => dispatch(setVideoStarted(true))}
+        onPlay={() => {
+          dispatch(setPlaying(true))
+          dispatch(setVideoStarted(true))
+        }}
         onLoadedMetadata={() => dispatch(setDuration(videoRef.current?.duration))}
         onCanPlay={() => {
           videoRef.current.play();
@@ -55,7 +58,7 @@ const VideoPlayerElement = ({
         onPause={() => {
           dispatch(setPlaying(false));
         }}
-        className="w-full md:min-h-[70vh] rounded-xl max-h-[50vh]"
+        className="w-full  rounded-xl "
         src={videoData?.video?.video_Url?.secureUrl}
         controls={false}
         height="100%"

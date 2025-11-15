@@ -8,7 +8,6 @@ const Controls = ({
 }) => {
     const dispatch = useDispatch();
     const videoData = useSelector((state) => state.video)
-    // console.log(videoData)
     const vloumeBar = useRef(null);
     const playback = useRef(null);
     const [showPlayBack, setshowPlayBack] = useState(true);
@@ -69,10 +68,10 @@ const Controls = ({
 
     return (
         <div>
-            <div className="controls w-full sm:h-[90px] absolute 2xl:bottom-20 bottom-0 sm:py-4 px-3 bg-transparent">
+            <div className="controls w-full sm:h-[90px] absolute 2xl:bottom-20 bottom-2 sm:py-4 px-3 bg-transparent">
                 <input
                     type="range"
-                    className="w-full accent-red-600 "
+                    className="w-full accent-red-700 h-[4px]  "
                     min={0}
                     max={isNaN(videoData?.duration) ? 0 : videoData?.duration}
                     value={isNaN(videoData?.currentTime) ? 0 : videoData?.currentTime}
@@ -80,20 +79,17 @@ const Controls = ({
                 />
                 <div className="controls flex w-full justify-between items-center">
                     <div className="flex items-center gap-3 sm:gap-5">
-                        <i className="ri-skip-back-fill text-[4vw] sm:text-[2vw] text-white"></i>
-                       
                         {videoData?.playing ? (
-                            <i onClick={handlePlayToggle} className="ri-pause-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
+                            <i onClick={handlePlayToggle} className="ri-pause-fill bg-black bg-opacity-30 rounded-full px-2 text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         ) : (
-                            <i onClick={handlePlayToggle} className="ri-play-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
+                            <i onClick={handlePlayToggle} className="ri-play-fill bg-black bg-opacity-30 rounded-full px-2 text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         )}
-                        <i className="ri-skip-forward-fill text-[4vw] sm:text-[2vw] text-white"></i>
 
                         <div className="flex items-center gap-4">
                             {videoData?.mute ? (
-                                <i onClick={handleMute} className="ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
+                                <i onClick={handleMute} className="bg-black bg-opacity-30 rounded-full px-3 ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             ) : (
-                                <i onClick={handleMute} className="ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
+                                <i onClick={handleMute} className="bg-black bg-opacity-30 rounded-full px-2  ri-volume-up-fill text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                             )}
                             <input
                                 ref={vloumeBar}
@@ -101,12 +97,12 @@ const Controls = ({
                                 min="0"
                                 max="100"
                                 defaultValue={volumeRange}
-                                className="sm:w-[6vw] sm:block hidden accent-red-600"
+                                className="sm:w-[6vw] sm:block hidden accent-red-800"
                                 onChange={handleVolume}
                             />
                         </div>
 
-                        <div className="text-white text-[4vw] sm:text-[1.4vw]">
+                        <div className="text-white text-[4vw] sm:text-[1.4vw] bg-black px-3 sm:py-1 md:py-2 rounded-3xl bg-opacity-40">
                             {`${Math.floor(videoData?.currentTime / 60)}:${Math.floor(videoData?.currentTime % 60).toString().padStart(2, '0')}`} /{' '}
                             {videoData?.duration
                                 ? `${Math.floor(videoData?.duration / 60)}:${Math.floor(videoData?.duration % 60).toString().padStart(2, '0')}`
@@ -114,8 +110,8 @@ const Controls = ({
                         </div>
                     </div>
 
-                    <div className="flex gap-[4vh] sm:gap-3">
-                        <div className='flex flex-col'>
+                    <div className="flex gap-[4vh] sm:gap-3 bg-black px-3 sm:py-1 md:py-2 bg-opacity-40 rounded-3xl">
+                        <div className='flex flex-col cursor-pointer'>
                             <div
                                 ref={playback}
                                 className={`${showPlayBack ? 'hidden' : 'block'} absolute bottom-[7vw] flex flex-col py-2 right-[2vw] bg-black text-white`}>

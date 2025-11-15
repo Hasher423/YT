@@ -47,7 +47,7 @@ const ChannelInfo = () => {
           alt="channel"
         />
       </Link>
-      <div className="text-custom-white font-bold">{videoData?.videoOwner?.channelName}</div>
+      <div className="text-custom-white ">{videoData?.videoOwner?.channelName}</div>
       {channelId !== currentUser?._id && (
         <button
           onClick={handleSubscribeClick}

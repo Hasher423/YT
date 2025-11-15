@@ -55,7 +55,7 @@ const Videoplay = () => {
   if (!video || !videoOwner) return <div><Loader /></div>;
 
   return (
-    <div className="videoData-container b flex-1 sm:h-[70%] lt-sm:pb-10">
+    <div className="videoData-container min-w-[60%] font-Roboto b flex-1 sm:h-[50%] lt-sm:pb-10">
 
       <div className="relative w-full  h-full">
         {videoData.loading && <Loader />}

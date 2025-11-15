@@ -9,7 +9,7 @@ const VideoDescription = () => {
   const dispatch = useDispatch()
   return (
     <div className="text-white bg-custom-black rounded p-2 w-[fu]">
-      <div className="font-[700] flex items-center gap-[.6vw]">
+      <div className="font-[400] flex items-center gap-[.6vw]">
         <p>{video.views} views</p>
         <p>{ago} ago</p>
       </div>
