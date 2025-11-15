@@ -305,7 +305,7 @@ export default function UploadVideo() {
           )}
 
           {/* PROGRESS BAR – show as soon as upload starts */}
-          {state.progress > 0 && (
+          {(state.progress > 0 && !state.error) (
             <div className="space-y-1">
               <div className="flex justify-between text-sm text-white">
                 <span>Uploading…</span>
