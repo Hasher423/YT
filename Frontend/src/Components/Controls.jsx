@@ -110,7 +110,7 @@ const Controls = ({
                         </div>
                     </div>
 
-                    <div className="flex gap-[4vh] sm:gap-3 bg-black px-3 sm:py-1 md:py-2 bg-opacity-40 rounded-3xl">
+                    <div className="flex gap-[4vh] sm:gap-3 bg-black px-3 sm:py-1 md:py-1 bg-opacity-40 rounded-3xl">
                         <div className='flex flex-col cursor-pointer'>
                             <div
                                 ref={playback}

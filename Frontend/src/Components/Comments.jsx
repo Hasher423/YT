@@ -43,8 +43,8 @@ const Comments = () => {
             <div className='grid place-items-center grid-cols-[10%_90%]'>
                 <div>
                     <img
-                        className='w-10 h-10 2xl:h-20 2xl:w-20 aspect-square rounded-full'
-                        src='https://res.cloudinary.com/dmazphi1z/image/upload/v1751113598/my_thumbnail/my_thumbnail/thumbnail_1751113596025.jpg'
+                        className='w-10 h-10 2xl:h-20 2xl:w-20 aspect-square object-cover rounded-full'
+                        src={`${JSON.parse(localStorage.user).logoId}`}
                         alt='User'
                     />
                 </div>

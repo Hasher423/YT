@@ -79,7 +79,7 @@ const ChannelVideos = ({ user }) => {
   return (
     <div>
       {/* For You Slider */}
-      <div className="py-[3vw] border-b-[1px] border-zinc-700 md:py-[.6vw] text-white text-[5vw] md:text-[1.8vw] font-[600]">
+      <div className="py-[3vw] border-b-[1px]  border-zinc-700 md:py-[.6vw] text-white text-[5vw] md:text-[1.8vw] font-[600]">
         <h2 className="py-[2vw] text-red-900">For You</h2>
         <div className="relative px-[6vw]">
           <div

@@ -34,7 +34,7 @@ const ChannelVideos = ({ user }) => {
             <Link
               key={idx}
               to={`/video/videoPlayer?v=${elem._id}`}
-              className={`w-[90vw] ${idx === 0 && 'pt-9'} grid sm:grid-cols-[3fr_5fr_1fr] pb-[2vw] items-stretch px-5`}
+              className={`w-[90vw] ${idx === 0 && 'pt-9'} h-full grid sm:grid-cols-[3fr_5fr_1fr] pb-[2vw] items-stretch px-5`}
             >
               <div className="p-[1vw]">
                 <img

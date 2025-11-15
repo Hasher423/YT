@@ -140,7 +140,7 @@ const SearchBar = () => {
             style={{
                 transition: 'all 5s ease-in-out',
             }}
-            ref={searchBar} className={`w-full h-[8vh] fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
+            ref={searchBar} className={`w-full md:h-[8vh] fixed lt-sm:py-[2vw]  z-[99] px-[3vw] sm:px-[3.3vw] py-[.6vw] text-[1.3vw] flex items-center gap-10 justify-between bg-custom-black`}>
 
 
             <div
@@ -163,9 +163,9 @@ const SearchBar = () => {
                     className="ri-menu-line text-custom-white font-[100]  text-[4vw]  sm:text-[2vw]"></i> */}
                 <div className='flex items-center gap-[.2vw]'>
                     <img
-                        className='w-[6vw] h-[6vw]  sm:w-[2.3vw] sm:h-[2.3vw] '
+                        className='w-[6vw] h-[6vw] rounded  sm:w-[2.3vw] sm:h-[2.3vw] '
                         src="/assets/images/ytlogo.png" alt="" />
-                    <Link to={'/'} className='font-youtube font-[500] ml-[1.4vw] sm:ml-0 text-[3.3vw] sm:text-[1.6vw] text-custom-white tracking-[-.1vw] after:content-["PK"] after:text-gray-400 after:absolute sm:after:top-3 after:top-[3vw] after:text-[3vw] sm:after:text-[.8vw] after:font-light '>HTube</Link>
+                    <Link to={'/'} className='font-youtube font-[500] ml-[1.4vw] sm:ml-0 text-[3.3vw] sm:text-[1.6vw] text-custom-white tracking-[-.1vw] after:content-[""] after:text-gray-400 after:absolute sm:after:top-3 after:top-[3vw] after:text-[3vw] sm:after:text-[.8vw] after:font-light '>HTube</Link>
                 </div>
             </div>
 
@@ -219,8 +219,8 @@ const SearchBar = () => {
 
             {/* CREATE CHANNEL NOTIFICATION */}
 
-            <div className='flex items-center justify-between sm:gap-4 gap-[3vw] cursor-pointer'>
-                <div className='relative flex items-center bg-custon-white px-3 py-1 font-light sm:rounded-xl rounded-[3vw] text-[1.2vw] text-custom-white'>
+            <div className='flex items-center  justify-between sm:gap-4 gap-[3vw] cursor-pointer'>
+                <div className='relative flex items-center bg-custon-white px-3 py-1 bg-black bg-opacity-30 font-light sm:rounded-xl rounded-[3vw] text-[1.2vw] text-custom-white'>
                     {showPanel ? <div className='lt-sm:text-[1.4vh] lt-sm:-bottom-[18vw] absolute font-semibold tracking-tighter -bottom-[7.8vw] right-[-2vw] bg-black whitespace-nowrap '>
                         <div className='px-2 py-1 gap-[.8vw] flex items-center text-white hover:bg-zinc-800'>
                             <div><i className="ri-video-add-line"></i></div>
@@ -240,7 +240,7 @@ const SearchBar = () => {
                         Create
                     </div>
                 </div>
-                <div className='text-[5vw] sm:text-[1.7vw] text-red-900'><i className="ri-notification-4-line text-red-900"></i></div>
+                {/* <div className='text-[5vw] sm:text-[1.7vw] text-red-900'><i className="ri-notification-4-line text-red-900"></i></div> */}
 
                 <div
                     onClick={() => {

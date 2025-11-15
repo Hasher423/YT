@@ -122,7 +122,7 @@ const MainVideos = () => {
                                 </div>
                             ) : videos.map((video, index) => {
                                 return (<Link key={index} to={`/video/videoPlayer?v=${video._id}`} className=' sm:m-4'>
-                                    <div className='sm:w-[28vw] transition-all duration-500 bg-opacity-50 hover:bg-black py-2 rounded-xl min-h-[23vmax] '>
+                                    <div className='sm:w-[28vw] transition-all duration-500 hover:bg-yellow-900 hover:bg-opacity-35  py-2 rounded-xl min-h-[23vmax] '>
                                         <div>
                                             <img
                                                 className='w-[90%] mx-auto  aspect-[16/9] object-cover rounded-xl object-center '

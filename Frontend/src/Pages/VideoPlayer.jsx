@@ -20,7 +20,7 @@ const VideoPlayer = () => {
     }, [videoId]);
 
     return (
-        <div className='min-h-screen min-w-screen bg-[#0F0F0F] '>
+        <div className='min-h-screen min-w-screen bg-[#0F0F0F] px-3 '>
             <div className='sm:flex sm:gap6   min-w-screen   pt-10 md:pt-[9v]'>
                 {/* <SideBar showSideBar={showSideBar} /> */}
                 <Videoplay />
