@@ -16,7 +16,6 @@ const searchRouter = require('./Routes/search.routes');
 
 const app = express();
 
-// ✅ CORS setup (must be at very top)
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -26,7 +25,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-// ✅ Extra CORS safety headers (for long uploads)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");

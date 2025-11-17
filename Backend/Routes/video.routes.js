@@ -6,11 +6,9 @@ const isLoggedIn = require('../Middlewares/auth.middleware');
 
 
 
-Router.post('/upload', uploadFields([
-    { name: 'video_Url', maxCount: 1 },
-    { name: 'thumbnail', maxCount: 1 }
-  ]), isLoggedIn.auth ,videoController.createVideo);
+Router.post('/upload', isLoggedIn.auth ,videoController.createVideo);
 
+  Router.get('/signUpload',  videoController.signUpload)
 
 Router.get('/getVideos' , isLoggedIn.auth,videoController.getVideos)
 Router.get('/getVideo' , isLoggedIn.auth,videoController.getVideo)
