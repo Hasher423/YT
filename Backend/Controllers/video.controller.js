@@ -8,48 +8,18 @@ const videoView = require('../models/videoView.js');
 const cloudinaryUploadChunkedBuffer = require('../Services/videoUpload.service.js');
 const { ToDataBase } = require('../Services/video.service.js');
 
+const crypto = require('crypto')
+
 
 module.exports.createVideo = async (req, res) => {
-  const { title, description }  = req.body;
+  const { title, description,videoResponse,thumbnailResponse } = req.body;
   console.log(req.body)
-
-  const videoFile = req.files?.video_Url?.[0];
-  const thumbnailFile = req.files?.thumbnail?.[0];
-
-  if (!videoFile || !thumbnailFile) {
-    return res.status(400).json({ message: "Video and thumbnail files are required" });
-  }
-
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized - user not found" });
   }
 
 
   try {
-    // Upload video
-    console.log(req.body)
-    const videoResponse = await cloudinaryUploadChunkedBuffer(
-      videoFile.buffer,
-      videoFile.mimetype,
-      'video',
-      req.body.socketid
-    );
-
-    if (videoResponse?.status === 'Error') {
-      return res.status(400).json({ message: videoResponse.message });
-    }
-
-    // Upload thumbnail
-    const thumbnailResponse = await cloudinaryUploadChunkedBuffer(
-      thumbnailFile.buffer,
-      thumbnailFile.mimetype,
-      'image',
-      'upload-progress-thumbnail' // custom event name
-    );
-
-    if (thumbnailResponse?.status === 'Error') {
-      return res.status(400).json({ message: thumbnailResponse.message });
-    }
 
     // Extract URLs
     const videoData = {
@@ -233,4 +203,35 @@ module.exports.handleDislike = async (req, res) => {
 
 
 
+module.exports.signUpload = async (req, res) => {
+  try {
+    const { type } = req.query; // 'video' or 'image'
+    if (!['video', 'image'].includes(type)) {
+      return res.status(400).json({ error: 'Invalid type' });
+    }
 
+    const folder = type === 'video' ? 'htube_videos' : 'htube_thumbnails';
+    const timestamp = Math.floor(Date.now() / 1000); // Cloudinary requires timestamp in seconds
+    const uniqueId = crypto.randomBytes(8).toString('hex'); // shorter unique string
+    const filename = `${type}_${uniqueId}_${timestamp}`;
+    console.log(filename);
+
+    const params_to_sign = {
+      folder,
+      public_id: filename,
+      timestamp,
+    };
+
+    const signature = cloudinary.utils.api_sign_request(params_to_sign, process.env.CLOUD_SECRET);
+    res.json({
+      signature,
+      timestamp,
+      apiKey: process.env.CLOUD_KEY,
+      cloudName: process.env.CLOUD_NAME,
+      folder,
+      filename
+    });
+  } catch (err) {
+    console.log(err)
+  }
+}
