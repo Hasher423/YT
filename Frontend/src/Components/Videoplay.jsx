@@ -73,11 +73,14 @@ const Videoplay = () => {
 
         <VideoDescription />
       </div>
-      <div className='lt-sm:hidden md:flex md:justify-between'>
+      <div className='md:flex md:justify-between'>
         <ChannelInfo />
         <InteractionBar />
       </div>
-      <VideoDescription />
+      <div className='lt-sm:hidden'>
+
+        <VideoDescription />
+      </div>
       <CommentsSection />
     </div>
   );
