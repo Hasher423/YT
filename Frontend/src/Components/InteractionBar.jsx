@@ -9,34 +9,25 @@ import {
   handleLike,
 } from '../redux/features/videoSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-
-
-
 
 const InteractionBar = () => {
-  let { video, isLike, isDislike, likes, dislikes } = useSelector((state) => state.video)
-  let Data = useSelector((state) => state.video)
+  let { video, isLike, isDislike, likes, dislikes } = useSelector(
+    (state) => state.video
+  );
 
+  const dispatch = useDispatch();
 
-
-
-
-
-
-
-  const dispatch = useDispatch()
   useEffect(() => {
     if (video?._id) {
       dispatch(fetchVideoData(video._id)).unwrap();
     }
   }, [video?._id, dispatch]);
 
+  /* ----------------- LIKE HANDLER ----------------- */
   const frontHandleLike = async () => {
     const alreadyLiked = isLike;
     const alreadyDisliked = isDislike;
 
-    // Optimistic UI update
     dispatch(forceLike(!alreadyLiked));
     dispatch(forceDislike(false));
     dispatch(setLikes(likes + (alreadyLiked ? -1 : 1)));
@@ -44,32 +35,28 @@ const InteractionBar = () => {
 
     try {
       const res = await dispatch(handleLike(video._id)).unwrap();
-
-      // Optional: rollback if server fails or returns unexpected message
-      if (res.message !== "Video Liked Successfully" && res.message !== "Like removed successfully") {
-        // rollback
+      if (
+        res.message !== "Video Liked Successfully" &&
+        res.message !== "Like removed successfully"
+      ) {
         dispatch(forceLike(alreadyLiked));
         dispatch(forceDislike(alreadyDisliked));
         dispatch(setLikes(likes));
         if (alreadyDisliked) dispatch(setDislikes(dislikes));
       }
     } catch (err) {
-      // rollback on error
       dispatch(forceLike(alreadyLiked));
       dispatch(forceDislike(alreadyDisliked));
       dispatch(setLikes(likes));
       if (alreadyDisliked) dispatch(setDislikes(dislikes));
-      console.error("Like failed:", err);
     }
   };
 
-
-
+  /* ----------------- DISLIKE HANDLER ----------------- */
   const frontHandleDislike = async () => {
     const alreadyLiked = isLike;
     const alreadyDisliked = isDislike;
 
-    // Optimistic UI update
     dispatch(forceDislike(!alreadyDisliked));
     dispatch(forceLike(false));
     dispatch(setDislikes(dislikes + (alreadyDisliked ? -1 : 1)));
@@ -77,8 +64,6 @@ const InteractionBar = () => {
 
     try {
       const res = await dispatch(handleDislike(video._id)).unwrap();
-
-      // Optional: rollback if unexpected response
       if (
         res.message !== "Video disliked successfully" &&
         res.message !== "Dislike removed successfully"
@@ -89,47 +74,95 @@ const InteractionBar = () => {
         if (alreadyLiked) dispatch(setLikes(likes));
       }
     } catch (err) {
-      // rollback on error
       dispatch(forceDislike(alreadyDisliked));
       dispatch(forceLike(alreadyLiked));
       dispatch(setDislikes(dislikes));
       if (alreadyLiked) dispatch(setLikes(likes));
-      console.error("Dislike failed:", err);
     }
   };
 
+  /* ----------------- SHARE HANDLER ----------------- */
+  const handleShare = async () => {
+    const shareUrl = window.location.href; // or video.shareUrl
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: video?.title || "Video",
+          text: "Check out this video!",
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.log("Share cancelled", err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Link copied to clipboard!");
+    }
+  };
+
+  /* ----------------- DOWNLOAD HANDLER ----------------- */
+  const handleDownload = async () => {
+    const fileUrl = video?.video_Url?.url;
+    if (!fileUrl) return alert("Download not available");
+
+    const fileName = video?.title?.replace(/\s+/g, "_") + ".mp4";
+
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = fileName;
+    a.click();
+
+    window.URL.revokeObjectURL(blobUrl);
+  };
 
   return (
-    <div className="text-custom-white 2xl:py-6 flex py-[3vw] md:py-1  items-center gap-[.6vw] flex-wrap">
-      <div className="bg-zinc-800 2xl:text-[2rem] 2xl:py-5 px-[2vw] py-[.4vw] font-[400] text-sm rounded-3xl flex items-center gap-4">
-        <i
+    <div className="text-custom-white flex items-center flex-wrap gap-1 md:gap-4 2xl:py-6 py-[3vw] md:py-1">
+
+      {/* LIKE / DISLIKE */}
+      <div className="flex items-center bg-zinc-800 rounded-full overflow-hidden">
+        <button
           onClick={frontHandleLike}
-          className={`ri-thumb-up-line cursor-pointer ${isLike ? 'text-blue-400' : ''}`}
-        ></i>
-        {likes}
+          className={`flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 md:py-1 transition hover:bg-zinc-700
+            ${isLike ? "text-blue-400" : "text-custom-white"}`}
+        >
+          <i className="ri-thumb-up-line"></i>
+          <span>{likes}</span>
+        </button>
 
+        <div className="h-6 w-[1px] bg-zinc-600"></div>
 
-        <i
+        <button
           onClick={frontHandleDislike}
-          className={`ri-thumb-down-line cursor-pointer 2xl:text-[2.5rem] text-rd-400 ${isDislike ? 'text-red-400' : ''}`}
-        ></i>
-        {dislikes}
+          className={`flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 md:py-1 transition hover:bg-zinc-700
+            ${isDislike ? "text-red-400" : "text-custom-white"}`}
+        >
+          <i className="ri-thumb-down-line"></i>
+          <span>{dislikes}</span>
+        </button>
       </div>
 
-      <div className="bg-zinc-800 px-[2vw] py-[.4vw] 2xl:py-5 font-[400] 2xl:text-[2.5rem] text-sm rounded-3xl">
-        <i className="ri-share-forward-line"></i> &nbsp; Share
-      </div>
+      {/* SHARE */}
+      <button
+        onClick={handleShare}
+        className="flex items-center gap-1 md:gap-2 bg-zinc-800 rounded-full  px-3 md:px-4 py-2 md:py-1 transition hover:bg-zinc-700"
+      >
+        <i className="ri-share-forward-line"></i>
+        Share
+      </button>
 
-      <div className="bg-red-900 px-[2vw] py-[.4vw] 2xl:py-5 font-[400] 2xl:text-[2.5rem] text-sm rounded-3xl">
-        <i className="ri-download-line "></i> &nbsp;
-        <Link href={video?.video_Url?.url} download>
-          Download
-        </Link>
-      </div>
-
-      <div className=" bg-red-900 px-[.7vw] py-[.5vw] 2xl:p-5 2xl:text-[2.5rem] rounded-full flex items-center justify-center font-bold text-sm">
-        <i className="ri-more-fill "></i>
-      </div>
+      {/* DOWNLOAD */}
+      <button
+        onClick={handleDownload}
+        className="flex items-center gap-1 md:gap-2 bg-zinc-800 rounded-full px-3 md:px-4 py-2 md:py-1 transition hover:bg-zinc-700"
+      >
+        <i className="ri-download-line"></i>
+        Download
+      </button>
     </div>
   );
 };

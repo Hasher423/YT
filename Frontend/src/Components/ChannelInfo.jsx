@@ -39,19 +39,19 @@ const ChannelInfo = () => {
   if (!currentUser) return null;
 
   return (
-    <div  className="flex items-center  gap-[2vw] px-[1vw] my-[1vw]">
-      <Link to={`${import.meta.env.VITE_FRONTEND_URI}/channel/@${videoData?.videoOwner?.channelName}/${videoData?.videoOwner._id}`}>
+    <div className="flex items-center gap-[2vw] lt-sm:justify-between  md:px-[1vw]  my-[1vw]">
+      <Link to={`${import.meta.env.VITE_FRONTEND_URI}/channel/@${videoData?.videoOwner?.channelName}/${videoData?.videoOwner._id}`} className='flex items-center gap-2'>
         <img
           className="w-[3vw] h-[3vw] rounded-full object-cover lt-sm:w-[6vh] lt-sm:h-[6vh]"
           src={`${videoData?.videoOwner?.logoId}`} // fallback image
           alt="channel"
         />
+        <div className="text-custom-white">{videoData?.videoOwner?.channelName}</div>
       </Link>
-      <div className="text-custom-white ">{videoData?.videoOwner?.channelName}</div>
       {channelId !== currentUser?._id && (
         <button
           onClick={handleSubscribeClick}
-          className={` px-[1vw] py-[.5vw] 2xl:py-4 2xl:text-[1.5rem]  rounded-3xl font-[500] text-sm ${videoData?.isSubscribed ? 'border-white border-[1px] text-white' : 'bg-custom-white'} `}
+          className={` px-[3.3vw] md:px-[1vw] py-[1vw] md:py-[.5vw] 2xl:py-4 2xl:text-[1.5rem] mr-3 md:rounded-3xl rounded-xl font-semibold md:font-[500] text-sm ${videoData?.isSubscribed ? 'border-white border-[1px] text-white' : 'bg-custom-white'} `}
         >
           {videoData?.isSubscribed ? 'SUBSCRIBED' : 'SUBSCRIBE'}
         </button>

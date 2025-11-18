@@ -1,4 +1,4 @@
-import React, { useEffect, useRef,  } from 'react';
+import React, { useEffect, useRef, } from 'react';
 import { useLocation } from 'react-router-dom';
 import Controls from './Controls';
 import VideoPlayerElement from './VideoPlayerElement';
@@ -29,7 +29,7 @@ const Videoplay = () => {
 
 
   const getVideo = async () => {
-     await dispatch(fetchVideo(videoId)).unwrap();
+    await dispatch(fetchVideo(videoId)).unwrap();
   };
 
   useEffect(() => {
@@ -69,8 +69,14 @@ const Videoplay = () => {
       </div>
 
       <VideoInfo />
-      <ChannelInfo />
-      <InteractionBar />
+      <div className='md:hidden'>
+
+        <VideoDescription />
+      </div>
+      <div className='md:flex md:justify-between'>
+        <ChannelInfo />
+        <InteractionBar />
+      </div>
       <VideoDescription />
       <CommentsSection />
     </div>
