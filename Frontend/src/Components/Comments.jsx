@@ -76,7 +76,7 @@ const Comments = () => {
                     <input
                         type="text"
                         placeholder="Add a comment"
-                        className="outline-none font-robotoCustom text-[3vh] md:text-[1.2vw] w-full bg-transparent border-b-[1px]"
+                        className="outline-none font-robotoCustom text-[2vh] md:text-[1.2vw] w-full bg-transparent border-b-[1px]"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                     />
@@ -86,7 +86,7 @@ const Comments = () => {
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="mt-3 md:mt-[1vw] lt-sm:text-[3vh] font-bebasNeue lt-sm:bg-yellow-700 hover:bg-white hover:bg-opacity-20 p-[.3vw] px-4 md:px-[1.2vw] rounded-2xl"
+                                className="mt-3 md:mt-[1vw] lt-sm:text-[2vh] font-bebasNeue lt-sm:bg-yellow-700 hover:bg-white hover:bg-opacity-20 p-[.3vw] px-4 md:px-[1.2vw] rounded-2xl"
                             >
                                 Cancel
                             </button>
@@ -94,7 +94,7 @@ const Comments = () => {
                             <button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="mt-3 lt-sm:text-[3vh] md:mt-[1vw] bg-blue-800 font-bebasNeue md:text-black md:p-[.3vw] px-[3vw] md:px-[1.2vw] rounded-2xl"
+                                className="mt-3 lt-sm:text-[2vh] md:mt-[1vw] bg-blue-800 font-bebasNeue md:text-black md:p-[.3vw] px-[3vw] md:px-[1.2vw] rounded-2xl"
                             >
                                 Comment
                             </button>
