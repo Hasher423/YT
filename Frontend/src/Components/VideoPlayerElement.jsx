@@ -15,7 +15,6 @@ const VideoPlayerElement = ({ videoRef }) => {
   const videoData = useSelector((state) => state.video);
   const hlsRef = useRef(null);
 
-  // Get the HLS URL from Cloudinary response
   const hlsUrl = videoData?.video?.video_Url?.playback_url; // ← This is your .m3u8
   const fallbackMp4 = videoData?.video?.video_Url?.secure_url;
 
@@ -25,10 +24,8 @@ const VideoPlayerElement = ({ videoRef }) => {
     const video = videoRef.current;
     let hls;
 
-    // Show loading immediately
     dispatch(setLoading(true));
 
-    // Native HLS (Safari/iOS)
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = hlsUrl;
       video.addEventListener('loadedmetadata', () => {
@@ -36,35 +33,34 @@ const VideoPlayerElement = ({ videoRef }) => {
       });
       video.play().catch(() => console.log("Autoplay prevented"));
     }
-    // HLS.js for Chrome, Firefox, Android
+    // Inside your VideoPlayerElement.jsx → in the Hls() config
     else if (Hls.isSupported()) {
-      hls = new Hls({
-        startLevel: 9,
-        capLevelToPlayerSize: true,
+      const hls = new Hls({
+        startLevel: -1,              // Auto-select optimal starting quality
+        maxBufferLength: 30,         // Keep 30 seconds ahead
+        maxMaxBufferLength: 60,      // Maximum 1 minute buffer
+        maxBufferSize: 60 * 1000 * 1000,  // 60MB buffer (stable HD)
+        lowLatencyMode: false,       // Disable low-latency for VOD
+        backBufferLength: 30,        // Keep 30 seconds behind
         enableWorker: true,
-        lowLatencyMode: true,
-        backBufferLength: 30,
-        maxBufferLength: 30,
-        liveSyncDurationCount: 3,
+        progressive: false
       });
 
       hls.loadSource(hlsUrl);
       hls.attachMedia(video);
       hlsRef.current = hls;
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        dispatch(setDuration(video.duration));
-        video.muted = true;
-        video.play().catch(() => console.log("Autoplay blocked"));
+      // This is CRITICAL — start playing as soon as 1-2 chunks arrive
+      hls.on(Hls.Events.FRAG_LOADED, () => {
+        if (video.paused && !videoData.isPlaying) {
+          video.play().catch(() => { });
+        }
       });
 
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) {
-          console.error('HLS fatal error:', data);
-          // Fallback to direct MP4
-          video.src = fallbackMp4;
-          video.play();
-        }
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        dispatch(setDuration(video.duration));
+        // Start playing IMMEDIATELY
+        video.play().catch(() => console.log("Autoplay blocked"));
       });
     }
     // Very old browsers → fallback to MP4

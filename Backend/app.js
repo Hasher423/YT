@@ -17,7 +17,7 @@ const searchRouter = require('./Routes/search.routes');
 const app = express();
 
 const corsOptions = {
-  origin: "https://yt-jpx7.vercel.app",
+  origin:[ "https://yt-jpx7.vercel.app", "http://localhost:5173"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma"],
@@ -25,8 +25,17 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
+const allowedOrigins = [
+  "https://yt-jpx7.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://yt-jpx7.vercel.app");
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control, Pragma");
   next();
