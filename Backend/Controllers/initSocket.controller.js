@@ -6,7 +6,7 @@ let id;
 const initSocket = (httpServer) => {
     io = socketServer(httpServer, {
         cors: {
-            origin: ["http://localhost:5173", "http://localhost:3000"], // allow specific origins
+            origin: ["https://yt-jpx7.vercel.app", "http://localhost:3000"], // allow specific origins
             methods: ["GET", "POST"],
             credentials: true, // allow credentials
         },
