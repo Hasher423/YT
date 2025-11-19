@@ -17,7 +17,7 @@ const searchRouter = require('./Routes/search.routes');
 const app = express();
 
 const corsOptions = {
-  origin: "https://yt-jpx7.vercle.app",
+  origin: "https://yt-jpx7.vercel.app",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma"],
