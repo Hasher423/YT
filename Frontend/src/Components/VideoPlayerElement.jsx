@@ -39,7 +39,7 @@ const VideoPlayerElement = ({ videoRef }) => {
     // HLS.js for Chrome, Firefox, Android
     else if (Hls.isSupported()) {
       hls = new Hls({
-        startLevel: 9,
+        startLevel: 0,
         capLevelToPlayerSize: true,
         enableWorker: true,
         lowLatencyMode: true,
