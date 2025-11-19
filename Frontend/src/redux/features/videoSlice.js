@@ -187,7 +187,7 @@ const videoSlice = createSlice({
     duration: 0,
     currentTime: 0,
     play: false,
-    mute: false,
+    mute: true,
     showDescription: false,
     isLike: false,
     isDislike: false,

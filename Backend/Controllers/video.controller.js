@@ -12,8 +12,8 @@ const crypto = require('crypto')
 
 
 module.exports.createVideo = async (req, res) => {
-  const { title, description,videoResponse,thumbnailResponse } = req.body;
-  console.log(req.body)
+  const { title, description,videoResponse,thumbResponse } = req.body;
+  // console.log(req.body)
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized - user not found" });
   }
@@ -23,14 +23,14 @@ module.exports.createVideo = async (req, res) => {
 
     // Extract URLs
     const videoData = {
-      url: videoResponse?.response?.url || videoResponse?.url,
-      secureUrl: videoResponse?.response?.secure_url || videoResponse?.secure_url,
-      playback_url: videoResponse?.response?.playback_url || videoResponse?.playback_url,
+      url: videoResponse?.data?.url || videoResponse?.url,
+      secureUrl: videoResponse?.data?.secure_url || videoResponse?.secure_url,
+      playback_url: videoResponse?.data?.playback_url || videoResponse?.playback_url,
     };
 
     const thumbnailData = {
-      url: thumbnailResponse?.response?.url || thumbnailResponse?.url,
-      secureUrl: thumbnailResponse?.response?.secure_url || thumbnailResponse?.secure_url,
+      url: thumbResponse?.data?.url || thumbResponse?.url,
+      secureUrl: thumbResponse?.data?.secure_url || thumbResponse?.secure_url,
     };
 
     const user = await userModel.findOne({ _id: req.user._id });
