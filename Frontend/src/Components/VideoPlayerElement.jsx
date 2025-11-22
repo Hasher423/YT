@@ -41,7 +41,7 @@ const VideoPlayerElement = ({ videoRef }) => {
         maxMaxBufferLength: 60,      // Maximum 1 minute buffer
         maxBufferSize: 60 * 1000 * 1000,  // 60MB buffer (stable HD)
         lowLatencyMode: false,       // Disable low-latency for VOD
-        backBufferLength: 30,        // Keep 30 seconds behind
+        backBufferLength: 60,        // Keep 30 seconds behind
         enableWorker: true,
         progressive: false
       });
