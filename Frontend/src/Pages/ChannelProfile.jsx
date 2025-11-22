@@ -59,7 +59,7 @@ const Home = () => {
                             <div className='flex items-start justify-start text-gray-200 text-opacity-85 md:text-[2vw]'>
                                 <div className='sm:text-[1.5vw]'>{user.subscribers} Subscribers</div>
                                 <span className='mx-[1.2vw] font-[900] sm:text-[1.2vw]'>.</span>
-                                <div className='sm:text-[1.5vw]'>{user.videos} videos</div>
+                                <div className='sm:text-[1.5vw]'>{user.videos.length} videos</div>
                             </div>
                                 {/* FIX SUBSCRIBING FROM THE PROFILE ! */}
                             {/* <div className='hidden sm:block'>
