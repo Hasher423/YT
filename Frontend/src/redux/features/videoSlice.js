@@ -294,7 +294,7 @@ export const {
   startViewTimer,
   forceLike,
   forceDislike,
-  setPlaying,
+  setPlaying, 
   ToggleSubscribe,
   setDisikes,
   setLikes,

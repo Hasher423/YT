@@ -1,12 +1,16 @@
 // --- FIXED CONTROLS.JSX ---
+// Added rewind and forward buttons and their handlers
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleMute, setPlaying, setCurrentTime } from '../redux/features/videoSlice';
+import { useLocation } from 'react-router-dom'
+
 
 const Controls = ({
     video,
 }) => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const videoData = useSelector((state) => state.video)
     const vloumeBar = useRef(null);
     const playback = useRef(null);
@@ -27,7 +31,7 @@ const Controls = ({
         const newTime = e.target.value;
         if (video.current) {
             video.current.currentTime = newTime;
-            setCurrentTime(newTime);
+            dispatch(setCurrentTime(newTime));
         }
     };
 
@@ -53,7 +57,27 @@ const Controls = ({
         }
     };
 
+    // New handlers for rewind and forward
+    const handleRewind = () => {
+        if (!video.current) return;
+        const newTime = Math.max(video.current.currentTime - 10, 0);
+        video.current.currentTime = newTime;
+        dispatch(setCurrentTime(newTime));
+    };
+
+    const handleForward = () => {
+        if (!video.current || isNaN(videoData.duration)) return;
+        const newTime = Math.min(video.current.currentTime + 10, videoData.duration);
+        video.current.currentTime = newTime;
+        dispatch(setCurrentTime(newTime));
+
+    };
+
+
     useEffect(() => {
+
+
+
         const handleKeyDown = (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.code === 'Space') {
@@ -84,6 +108,10 @@ const Controls = ({
                         ) : (
                             <i onClick={handlePlayToggle} className="ri-play-fill bg-black bg-opacity-30 rounded-full px-2 text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         )}
+
+                        {/* Rewind and forward buttons added here */}
+                        <i onClick={handleRewind} className="ri-rewind-fill bg-black bg-opacity-30 rounded-full px-2 text-[3vw] sm:text-[1.8vw] text-white cursor-pointer"></i>
+                        <i onClick={handleForward} className="ri-fast-forward-fill bg-black bg-opacity-30 rounded-full px-2 text-[3vw] sm:text-[1.8vw] text-white cursor-pointer"></i>
 
                         <div className="flex items-center gap-4">
                             {videoData?.mute ? (

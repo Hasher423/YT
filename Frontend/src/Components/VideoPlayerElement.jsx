@@ -24,7 +24,7 @@ const VideoPlayerElement = ({ videoRef }) => {
     const video = videoRef.current;
     let hls;
 
-    dispatch(setLoading(true));
+    dispatch(setLoading(true)); 
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = hlsUrl
@@ -46,6 +46,11 @@ const VideoPlayerElement = ({ videoRef }) => {
       hls.loadSource(hlsUrl);
       hls.attachMedia(video);
       hlsRef.current = hls;
+
+      video.addEventListener("loadedmetadata", () => {
+        dispatch(setDuration(video.duration));
+      });
+
 
       // This is CRITICAL — start playing as soon as 1-2 chunks arrive
       hls.on(Hls.Events.FRAG_LOADED, () => {
@@ -113,6 +118,9 @@ const VideoPlayerElement = ({ videoRef }) => {
         onCanPlay={() => dispatch(setLoading(false))}
         onDoubleClick={toggleFullScreen}
         onClick={(e) => e.target.pause?.()} // Optional: click to pause
+        onDurationChange={() => {
+          dispatch(setDuration(videoRef.current?.duration || 0));
+        }}
       />
     </div>
   );
