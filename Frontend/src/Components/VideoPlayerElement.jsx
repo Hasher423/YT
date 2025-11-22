@@ -27,10 +27,7 @@ const VideoPlayerElement = ({ videoRef }) => {
     dispatch(setLoading(true));
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = hlsUrl;
-      video.addEventListener('loadedmetadata', () => {
-        dispatch(setDuration(video.duration));
-      });
+      video.src = hlsUrl
       video.play().catch(() => console.log("Autoplay prevented"));
     }
     // Inside your VideoPlayerElement.jsx → in the Hls() config
@@ -104,7 +101,7 @@ const VideoPlayerElement = ({ videoRef }) => {
         autoPlay
         playsInline
         muted
-        preload="metadata"
+        preload="auto"
         onPlay={() => {
           dispatch(setPlaying(true));
           dispatch(setVideoStarted(true));
