@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from './Pages/Home'
 import 'remixicon/fonts/remixicon.css'
 import VideoPlayer from './Pages/VideoPlayer'
@@ -11,13 +11,24 @@ import Login from './Pages/Login';
 import ChannelProfile from './Pages/ChannelProfile';
 import SearchResults from './Components/SearchResults';
 import SearchBar from './Components/SearchBar';
-
+import { useDispatch } from 'react-redux';
+import { setMute } from './redux/features/videoSlice';
 
 
 const App = () => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const isVideoPage = location.pathname.startsWith("/video");
+
+    if (isVideoPage) {
+      dispatch(setMute(true));
+    }
+  }, [location.pathname])
   return (
     <div className='font-robotoCustom 2xl:text-[2.5rem]'>
-    
+
       <Routes>
         <Route path="/" element={<IsLoggedIn element={<Home />} />} />
         <Route path="/channel/:channel_Profile/:id" element={<IsLoggedIn element={<ChannelProfile />} />} />

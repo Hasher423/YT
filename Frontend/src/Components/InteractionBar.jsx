@@ -101,7 +101,6 @@ const InteractionBar = () => {
     }
   };
 
-  /* ----------------- DOWNLOAD HANDLER ----------------- */
   const handleDownload = async () => {
     const fileUrl = video?.video_Url?.url;
     if (!fileUrl) return alert("Download not available");

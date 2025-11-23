@@ -30,7 +30,7 @@ const VideoPlayerElement = ({ videoRef }) => {
       video.src = hlsUrl
       video.play().catch(() => console.log("Autoplay prevented"));
     }
-    // Inside your VideoPlayerElement.jsx → in the Hls() config
+
     else if (Hls.isSupported()) {
       const hls = new Hls({
         startLevel: -1,              // Auto-select optimal starting quality
@@ -66,7 +66,8 @@ const VideoPlayerElement = ({ videoRef }) => {
       });
     }
     // Very old browsers → fallback to MP4
-    else {
+    else if (fallbackMp4) {
+      
       video.src = fallbackMp4;
       video.addEventListener('loadedmetadata', () => {
         dispatch(setDuration(video.duration));

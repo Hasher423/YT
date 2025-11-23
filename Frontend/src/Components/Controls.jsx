@@ -2,7 +2,7 @@
 // Added rewind and forward buttons and their handlers
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleMute, setPlaying, setCurrentTime } from '../redux/features/videoSlice';
+import { toggleMute, setPlaying, setCurrentTime, setMute } from '../redux/features/videoSlice';
 import { useLocation } from 'react-router-dom'
 
 
@@ -93,7 +93,7 @@ const Controls = ({
     }, []);
 
     return (
-        <div>
+        <div >
             <div className="controls w-full sm:h-[90px] absolute 2xl:bottom-20 bottom-2 sm:py-4 px-3 bg-transparent">
                 <input
                     type="range"
@@ -157,30 +157,30 @@ const Controls = ({
                                 className="ri-settings-3-fill text-[4vw] sm:text-[2vw] text-white"></i>
                         </div>
                         {availableLevels && availableLevels.length > 1 && (
-                        <div className='flex flex-col cursor-pointer relative'>
-                            <div
-                                ref={qualityRef}
-                                className={`${showQuality ? 'block' : 'hidden'} absolute bottom-[7vw] flex flex-col py-2 right-[10vw] bg-black text-white rounded-lg overflow-hidden`}>
-                                <button
-                                    className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === -1 ? 'bg-gray-700' : ''}`}
-                                    onClick={() => handleQualitySelect(-1)}
-                                >
-                                    Auto
-                                </button>
-                                {availableLevels.map(level => (
+                            <div className='flex flex-col cursor-pointer relative'>
+                                <div
+                                    ref={qualityRef}
+                                    className={`${showQuality ? 'block' : 'hidden'} absolute bottom-[7vw] flex flex-col py-2 right-[10vw] bg-black text-white rounded-lg overflow-hidden`}>
                                     <button
-                                        key={level.index}
-                                        className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === level.index ? 'bg-gray-700' : ''}`}
-                                        onClick={() => handleQualitySelect(level.index)}
+                                        className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === -1 ? 'bg-gray-700' : ''}`}
+                                        onClick={() => handleQualitySelect(-1)}
                                     >
-                                        {level.name} ({Math.round(level.bitrate / 1000)} kbps)
+                                        Auto
                                     </button>
-                                ))}
+                                    {availableLevels.map(level => (
+                                        <button
+                                            key={level.index}
+                                            className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === level.index ? 'bg-gray-700' : ''}`}
+                                            onClick={() => handleQualitySelect(level.index)}
+                                        >
+                                            {level.name} ({Math.round(level.bitrate / 1000)} kbps)
+                                        </button>
+                                    ))}
+                                </div>
+                                <i
+                                    onClick={() => setShowQuality(!showQuality)}
+                                    className="ri-equalizer-fill text-[4vw] sm:text-[2vw] text-white"></i>
                             </div>
-                            <i
-                                onClick={() => setShowQuality(!showQuality)}
-                                className="ri-equalizer-fill text-[4vw] sm:text-[2vw] text-white"></i>
-                        </div>
                         )}
 
                         <i className="ri-fullscreen-line text-[4vw] sm:text-[2vw] text-white cursor-pointer" onClick={toggleFullScreen}></i>

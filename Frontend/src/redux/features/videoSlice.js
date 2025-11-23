@@ -238,6 +238,9 @@ const videoSlice = createSlice({
     toggleMute: (state) => {
       state.mute = !state.mute;
     },
+    setMute: (state,action) => {
+      state.mute = action.payload
+    },
     toggleDescription: (state) => {
       state.showDescription = !state.showDescription;
     },
@@ -290,6 +293,7 @@ export const {
   setCurrentTime,
   togglePlay,
   toggleMute,
+  setMute,
   toggleDescription,
   startViewTimer,
   forceLike,
