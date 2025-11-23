@@ -101,7 +101,7 @@ const VideoPlayerElement = ({ videoRef }) => {
     <div className="relative w-full md:mt-[3vh] mt-2">
       <video
         ref={videoRef}
-        className="w-full rounded-xl bg-black"
+        className="w-full rounded-xl bg-black max-h-[60vw] md:min-h-[65vh] "
         controls={false}
         autoPlay
         playsInline

@@ -8,13 +8,18 @@ import { useLocation } from 'react-router-dom'
 
 const Controls = ({
     video,
+    availableLevels,
+    currentLevel,
+    setQualityLevel,
 }) => {
     const dispatch = useDispatch();
     const location = useLocation();
     const videoData = useSelector((state) => state.video)
     const vloumeBar = useRef(null);
     const playback = useRef(null);
+    const qualityRef = useRef(null);
     const [showPlayBack, setshowPlayBack] = useState(true);
+    const [showQuality, setShowQuality] = useState(false);
     const [volumeRange, setvolumeRange] = useState(100);
 
     const handleVolume = (e) => {
@@ -57,32 +62,29 @@ const Controls = ({
         }
     };
 
-    // New handlers for rewind and forward
-    const handleRewind = () => {
-        if (!video.current) return;
-        const newTime = Math.max(video.current.currentTime - 10, 0);
-        video.current.currentTime = newTime;
-        dispatch(setCurrentTime(newTime));
+    const handleQualitySelect = (levelIndex) => {
+        setShowQuality(false);
+        if (typeof setQualityLevel === 'function') {
+            setQualityLevel(levelIndex);
+        }
     };
-
-    const handleForward = () => {
-        if (!video.current || isNaN(videoData.duration)) return;
-        const newTime = Math.min(video.current.currentTime + 10, videoData.duration);
-        video.current.currentTime = newTime;
-        dispatch(setCurrentTime(newTime));
-
-    };
-
 
     useEffect(() => {
-
-
-
         const handleKeyDown = (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.code === 'Space') {
                 e.preventDefault();
                 handlePlayToggle();
+            }
+            if (e.key === "ArrowLeft") {
+                const newTime = video.current.currentTime - 5;
+                video.current.currentTime = newTime;
+                dispatch(setCurrentTime(newTime));
+            }
+            if (e.key === "ArrowRight") {
+                const newTime = video.current.currentTime + 5;
+                video.current.currentTime = newTime;
+                dispatch(setCurrentTime(newTime));
             }
         };
 
@@ -108,11 +110,6 @@ const Controls = ({
                         ) : (
                             <i onClick={handlePlayToggle} className="ri-play-fill bg-black bg-opacity-30 rounded-full px-2 text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
                         )}
-
-                        {/* Rewind and forward buttons added here */}
-                        <i onClick={handleRewind} className="ri-rewind-fill bg-black bg-opacity-30 rounded-full px-2 text-[3vw] sm:text-[1.8vw] text-white cursor-pointer"></i>
-                        <i onClick={handleForward} className="ri-fast-forward-fill bg-black bg-opacity-30 rounded-full px-2 text-[3vw] sm:text-[1.8vw] text-white cursor-pointer"></i>
-
                         <div className="flex items-center gap-4">
                             {videoData?.mute ? (
                                 <i onClick={handleMute} className="bg-black bg-opacity-30 rounded-full px-3 ri-volume-mute-line text-[4vw] sm:text-[2vw] text-white cursor-pointer"></i>
@@ -159,6 +156,32 @@ const Controls = ({
                                 onClick={() => setshowPlayBack(!showPlayBack)}
                                 className="ri-settings-3-fill text-[4vw] sm:text-[2vw] text-white"></i>
                         </div>
+                        {availableLevels && availableLevels.length > 1 && (
+                        <div className='flex flex-col cursor-pointer relative'>
+                            <div
+                                ref={qualityRef}
+                                className={`${showQuality ? 'block' : 'hidden'} absolute bottom-[7vw] flex flex-col py-2 right-[10vw] bg-black text-white rounded-lg overflow-hidden`}>
+                                <button
+                                    className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === -1 ? 'bg-gray-700' : ''}`}
+                                    onClick={() => handleQualitySelect(-1)}
+                                >
+                                    Auto
+                                </button>
+                                {availableLevels.map(level => (
+                                    <button
+                                        key={level.index}
+                                        className={`py-2 px-8 hover:bg-gray-700 ${currentLevel === level.index ? 'bg-gray-700' : ''}`}
+                                        onClick={() => handleQualitySelect(level.index)}
+                                    >
+                                        {level.name} ({Math.round(level.bitrate / 1000)} kbps)
+                                    </button>
+                                ))}
+                            </div>
+                            <i
+                                onClick={() => setShowQuality(!showQuality)}
+                                className="ri-equalizer-fill text-[4vw] sm:text-[2vw] text-white"></i>
+                        </div>
+                        )}
 
                         <i className="ri-fullscreen-line text-[4vw] sm:text-[2vw] text-white cursor-pointer" onClick={toggleFullScreen}></i>
                     </div>
