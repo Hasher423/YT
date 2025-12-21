@@ -233,24 +233,7 @@ npm run dev
 - `POST /user/subscription/:channelId` - Subscribe/unsubscribe
 - `GET /user/isSubscribed/:channel` - Check subscription status
 
-## 🧪 Testing
 
-### Manual Testing Checklist
-- [ ] User registration with logo and banner
-- [ ] User login and authentication
-- [ ] Video upload with progress tracking
-- [ ] Like/dislike functionality
-- [ ] Comment system
-- [ ] Search functionality
-- [ ] Subscription system
-- [ ] View counting (30-second rule)
-- [ ] Responsive design on mobile
-
-### API Testing with Postman
-1. Import the provided Postman collection
-2. Test each endpoint with appropriate headers
-3. Verify authentication tokens are working
-4. Test file uploads with form-data
 
 
 ### Environment Variables for Production
