@@ -14,6 +14,8 @@ const IsLoggedIn = ({ element }) => {
         const response = await axios(`${import.meta.env.VITE_BACKEND_URI}/user/validateToken`, {
           withCredentials: true,
         });
+
+        console.log(response)
         if (response.data.valid) {
           setIsLoggedIn(true);
         } else {
