@@ -7,6 +7,7 @@ const userModel = require('../models/user.model'); // Make sure this path is cor
 module.exports.auth = async (req, res, next) => {
 
   const token = req.cookies.token;
+  console.log(req)
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: No token provided' });
