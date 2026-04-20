@@ -221,10 +221,6 @@ module.exports.getUsersForLogos = async (req, res) => {
 
 
 module.exports.validateToken = async (req, res) => {
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-    res.set('Surrogate-Control', 'no-store');
     res.json({ valid: true })
 }
 
