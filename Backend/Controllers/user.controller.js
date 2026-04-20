@@ -75,6 +75,7 @@ module.exports.registerUser = async (req, res) => {
         // Generate token
         const token = await newUser.generateToken();
 
+        res.header('Cache-Control', 'no-store, private');
         // Set cookie
         res.cookie('token', token, {
             httpOnly: true,
@@ -116,15 +117,16 @@ module.exports.login = async (req, res) => {
         }
 
         const token = await user.generateToken();
-       res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',   // ✅ lowercase 'none' (was 'Secure' which is invalid)
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      path: '/',
-    });
+        res.header('Cache-Control', 'no-store, private');
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',   // ✅ lowercase 'none' (was 'Secure' which is invalid)
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            path: '/',
+        });
 
-    console.log("token generated ", token)
+        console.log("token generated ", token)
 
 
 
