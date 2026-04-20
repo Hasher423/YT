@@ -80,7 +80,7 @@ module.exports.registerUser = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,          // <-- only send over HTTPS
-            sameSite: 'none',      // <-- required for cross-site with credentials
+            sameSite: 'lax',      // <-- required for cross-site with credentials
             maxAge: 30 * 24 * 60 * 60 * 1000,
             path: '/',
         });
@@ -121,7 +121,7 @@ module.exports.login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',   // ✅ lowercase 'none' (was 'Secure' which is invalid)
+            sameSite: 'lax',   // 
             maxAge: 30 * 24 * 60 * 60 * 1000,
             path: '/',
         });
