@@ -124,6 +124,7 @@ module.exports.login = async (req, res) => {
       path: '/',
     });
 
+    console.log("token generated ", token)
 
 
 
