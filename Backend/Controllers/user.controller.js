@@ -116,13 +116,13 @@ module.exports.login = async (req, res) => {
         }
 
         const token = await user.generateToken();
-        res.cookie('token', token, {
-            httpOnly: true,          // safer: cannot be read by JS
-            secure: true,            // required for HTTPS
-            sameSite: 'Secure',        // must be None for cross-site requests
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-            path: '/',
-        });
+       res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',   // ✅ lowercase 'none' (was 'Secure' which is invalid)
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
 
 
 
