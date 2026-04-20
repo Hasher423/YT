@@ -119,7 +119,7 @@ module.exports.login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,          // safer: cannot be read by JS
             secure: true,            // required for HTTPS
-            sameSite: 'None',        // must be None for cross-site requests
+            sameSite: 'Secure',        // must be None for cross-site requests
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             path: '/',
         });
