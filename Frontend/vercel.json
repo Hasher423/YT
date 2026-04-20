@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://your-actual-backend-url.com/$1" },
+    { "source": "/api/(.*)", "destination": "https://yt-nu-five.vercel.app/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
