@@ -6,8 +6,6 @@ How to Report
 
 Email: hasher423@gmail.com
 
-Or open a Private Security Advisory on GitHub:
-Security → Advisories → New Draft Advisory
 
 What to Include
 
