@@ -197,10 +197,14 @@ const videoSlice = createSlice({
     isSubscribed: false,
   },
   reducers: {
+    resetVideo: (state) => {
+      state.video = null;
+      state.videoOwner = null;
+      state.loading = true;
+    },
     setVideoStarted: (state, action) => {
       state.videoStarted = action.payload;
     },
-
     setPlaying: (state, action) => {
       state.playing = action.payload;
     },
@@ -238,7 +242,7 @@ const videoSlice = createSlice({
     toggleMute: (state) => {
       state.mute = !state.mute;
     },
-    setMute: (state,action) => {
+    setMute: (state, action) => {
       state.mute = action.payload
     },
     toggleDescription: (state) => {
@@ -267,7 +271,7 @@ const videoSlice = createSlice({
         state.video = action.payload.video;
         state.description = action.payload.video.description;
         state.isLike = action.payload.userLiked;
-        state.isDislike = action.payload.userDisliked; 
+        state.isDislike = action.payload.userDisliked;
       })
       .addCase(fetchVideo.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
@@ -298,11 +302,12 @@ export const {
   startViewTimer,
   forceLike,
   forceDislike,
-  setPlaying, 
+  setPlaying,
   ToggleSubscribe,
   setDisikes,
   setLikes,
   setDislikes,
+  resetVideo,
 } = videoSlice.actions;
 
 export default videoSlice.reducer;

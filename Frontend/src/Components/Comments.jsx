@@ -66,7 +66,7 @@ const Comments = () => {
             <div className="grid place-items-center md:grid-cols-[10%_90%] grid-cols-[20%_80%]">
                 <div>
                     <img
-                        className="w-10 md:h-10 2xl:h-20 2xl:w-20 aspect-square object-cover rounded-full"
+                        className="w-10 h-10 md:h-10 2xl:h-20 2xl:w-20 aspect-square object-cover rounded-full"
                         src={`${JSON.parse(localStorage.user).logoId}`}
                         alt="User"
                     />
@@ -107,11 +107,11 @@ const Comments = () => {
             {visibleComments.map((element, idx) => (
                 <div
                     key={idx}
-                    className="w-full grid grid-cols-[.3fr_3fr_.1fr] mt-4 px-2"
+                    className="w-full grid grid-cols-[.5fr_3fr_.1fr] mt-4 px-2"
                 >
                     <div className="flex items-center justify-center">
                         <img
-                            className="w-10 h-10 2xl:h-20 2xl:w-20 rounded-full object-cover"
+                            className=" w-8 h-8 rounded-full 2xl:h-20 2xl:w-20 md:rounded-full object-cover"
                             src={element.logo}
                             alt="User"
                         />

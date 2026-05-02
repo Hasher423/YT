@@ -13,6 +13,7 @@ import store from '../redux/store';
 import {
   increaseViewCount,
   fetchVideo,
+  resetVideo,
 } from '../redux/features/videoSlice';
 
 
@@ -39,6 +40,9 @@ const Videoplay = () => {
 
   useEffect(() => {
     if (!videoStarted) return;
+
+    dispatch(resetVideo());
+
     const timer = setTimeout(() => {
       if (!store.getState().video.viewed) {
         dispatch(increaseViewCount(videoId));
