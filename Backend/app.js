@@ -27,6 +27,7 @@ app.options("*", cors(corsOptions));
 
 const allowedOrigins = [
   "https://yt-jpx7.vercel.app",
+  "https://h-yt.vercel.app",
   "http://localhost:3000",
   "http://localhost:5173"
 ];
