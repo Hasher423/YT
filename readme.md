@@ -5,7 +5,7 @@ A **modern MERN stack video platform** featuring real-time video uploads, stream
 ---
 
 ## ✨ Features
-
+ 
 ### 🔐 Authentication & User Management
 - 📝 **User Registration** with channel creation (username, email, password, channel name, logo, banner)  
 - 🔒 **Secure Login/Logout** using JWT tokens  
